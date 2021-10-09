@@ -1,0 +1,61 @@
+@import "../../node_modules/@fortawesome/fontawesome-free/css/all.css";
+@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+@import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "../../node_modules/sweetalert2/dist/sweetalert2.min.css";
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    max-width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#root {
+    width: inherit;
+    min-height: inherit;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: max-content minmax(50px, max-content) auto minmax(100px, max-content);
+}
+
+#root > header .logo img:nth-child(1) {
+    width: 400px;
+}
+
+#root > header .logo img:nth-child(2) {
+    width: 100%;
+    max-width: 200px;
+    display: none;
+}
+
+#root > header .icons i {
+    font-size: 1.5rem;
+    color: #18363d;
+    cursor: pointer;
+}
+
+#root > header .icons i:hover {
+    color: #31636f;
+}
+
+#root > nav {
+    background-color: #18363d;
+}
+
+@media (max-width: 768px) {
+    #root > header .logo img:nth-child(1) {
+        display: none;
+    }
+
+    #root > header .logo img:nth-child(2) {
+        display: inline-block;
+    }
+}
+
+/***************************************/
+
+.text-align-justify {
+    text-align: justify;
+}
