@@ -1,10 +1,27 @@
 package proyecto.act2modelo;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "usuarios")
 public class Usuario {
 
+    //Necesario para el mapeo
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_articulo")
+    private int id;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "apellido")
     private String apellido;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "cargo")
     private String cargo;
 
     public Usuario(String nombre, String apellido, String email, String cargo) {
@@ -45,6 +62,5 @@ public class Usuario {
     public void setCargo(String cargo) {
         this.cargo = cargo;
     }
-    
-    
+
 }
