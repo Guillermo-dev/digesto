@@ -121,7 +121,7 @@ class Permission implements JsonSerializable {
             throw new Exception($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new Exception(pg_last_error($conn));
 
         return $permissions;
     }
@@ -164,7 +164,7 @@ class Permission implements JsonSerializable {
     public static function createPermission(Permission $permission): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("INSERT INTO permissions (name,description) VALUES ('%s','%s') RETURNING Currval('permissions_id_seq')",
+        $query = sprintf("INSERT INTO permissions (name, description) VALUES ('%s','%s') RETURNING Currval('permissions_id_seq')",
             pg_escape_string($permission->getName()),
             pg_escape_string($permission->getDescription())
         );
