@@ -9,7 +9,7 @@ use Exception;
  *
  * @package models
  */
-class Connection {
+abstract class Connection {
     /**
      * @var resource
      */
