@@ -153,18 +153,19 @@ export default function Search() {
      * @private
      */
     function _selectOption(event) {
-        const length = _getCheckedOptions(_searchForm[this.name]);
-        if (this.name === "tag") {
+        const option = event.target;
+        const length = _getCheckedOptions(_searchForm[option.name]);
+        if (option.name === "tag") {
             if (length === 0) _selectedText[0].textContent = 'Todas';
-            else if (length === 1) _selectedText[0].textContent = this.value;
+            else if (length === 1) _selectedText[0].textContent = option.value;
             else _selectedText[0].textContent = `(${length} Seleccionados)`;
-        } else if (this.name === "year") {
+        } else if (option.name === "year") {
             if (length === 0) _selectedText[1].textContent = 'Todas';
-            else if (length === 1) _selectedText[1].textContent = this.value;
+            else if (length === 1) _selectedText[1].textContent = option.value;
             else _selectedText[1].textContent = `(${length} Seleccionados)`;
-        } else if (this.name === "emitter") {
+        } else if (option.name === "emitter") {
             if (length === 0) _selectedText[2].textContent = 'Todas';
-            else if (length === 1) _selectedText[2].textContent = this.value;
+            else if (length === 1) _selectedText[2].textContent = option.value;
             else _selectedText[2].textContent = `(${length} Seleccionados)`;
         }
     }
@@ -217,7 +218,32 @@ export default function Search() {
      */
     function _submit(event) {
         try {
-            errorAlert('Sin servicio');
+            const searchObj = {
+                search: '',
+            }
+            _searchForm['tag'].forEach(option => {
+                if (option.checked) {
+                    if (searchObj.tags === undefined)
+                        searchObj.tags = [];
+                    searchObj.tags.push(option.value);
+                }
+            });
+            _searchForm['year'].forEach(option => {
+                if (option.checked){
+                    if (searchObj.years === undefined)
+                        searchObj.years = [];
+                    searchObj.years.push(option.value);
+                }
+            });
+            _searchForm['emitter'].forEach(option => {
+                if (option.checked){
+                    if (searchObj.emitters === undefined)
+                        searchObj.emitters = [];
+                    searchObj.emitters.push(option.value);
+                }
+            });
+            searchObj.search = _searchForm['search'].value;
+            console.log(searchObj);
         } catch (error) {
             errorAlert(error);
         }
