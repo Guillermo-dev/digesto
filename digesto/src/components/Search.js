@@ -16,8 +16,8 @@ loadStyle(`<style id="SearchJs">
         max-width: 500px;
     }
     .Search .drop-down-box ul {
-        display: flex;
-        flex-flow: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
     }
     .Search .drop-down-box ul li {
         padding: 10px;
@@ -51,52 +51,49 @@ export default function Search() {
                 </div>
             </div>
             <div class="col-md-auto text-center position-relative">
-                <button type="button" class="btn w-100 text-white">
-                    <b class="me-2">Etiquetas</b><span>Todas</span><i class="ms-2 bi-chevron-down"></i>
+                <button type="button" name="tagBtn" class="btn w-100 text-white">
+                    <b class="me-2">Etiquetas</b>
+                    <span data-js="selected-text">Todas</span>
+                    <i class="ms-2 bi-chevron-down"></i>
                 </button>
                 <div class="drop-down-box p-3 shadow d-none" data-js="drop-box">
                     <ul class="list-unstyled m-0 p-0">
-                        <li><input name="tags" type="checkbox" class="me-2">Etiqueta 1</li>
-                        <li><input name="tags" type="checkbox" class="me-2">Etiqueta 2</li>
-                        <li><input name="tags" type="checkbox" class="me-2">Etiqueta 3</li>
-                        <li><input name="tags" type="checkbox" class="me-2">Etiqueta 4</li>
-                        <li><input name="tags" type="checkbox" class="me-2">Etiqueta 5</li>
+                        <!--dynamic loading-->
                     </ul>
                 </div>
             </div>
             <div class="col-md-auto text-center position-relative">
-                <button type="button" class="btn w-100 text-white">
-                    <b class="me-2">Año publicacion</b><span>Todos</span> <i class="ms-2 bi-chevron-down"></i>
+                <button type="button" name="yearBtn" class="btn w-100 text-white">
+                    <b class="me-2">Año publicacion</b>
+                    <span data-js="selected-text">Todos</span>
+                    <i class="ms-2 bi-chevron-down"></i>
                 </button>
                 <div class="drop-down-box p-3 shadow d-none" data-js="drop-box">
                     <ul class="list-unstyled m-0 p-0">
-                        <li>Etiqueta1</li>
-                        <li>Etiqueta2</li>
-                        <li>Etiqueta3</li>
-                        <li>Etiqueta4</li>
-                        <li>Etiqueta5</li>
+                        <!--dynamic loading-->
                     </ul>
                 </div>
             </div>
             <div class="col-md-auto text-center position-relative">
-                <button type="button" class="btn w-100 text-white">
-                    <b class="me-2">Emisor</b><span>Todos</span> <i class="ms-2 bi-chevron-down"></i>
+                <button type="button" name="emitterBtn" class="btn w-100 text-white">
+                    <b class="me-2">Emisor</b>
+                    <span data-js="selected-text">Todos</span>
+                    <i class="ms-2 bi-chevron-down"></i>
                 </button>
                 <div class="drop-down-box p-3 shadow d-none" data-js="drop-box">
                     <ul class="list-unstyled m-0 p-0">
-                        <li>Etiqueta1</li>
-                        <li>Etiqueta2</li>
-                        <li>Etiqueta3</li>
-                        <li>Etiqueta4</li>
-                        <li>Etiqueta5</li>
+                        <!--dynamic loading-->
                     </ul>
                 </div>
             </div>
         </div>
     </form>
 </div>`);
+    const _lists = _this.root.querySelectorAll('[data-js="drop-box"] ul');
     const _searchForm = _this.root.querySelector('[data-js="form"]');
     const _buttons = _searchForm.querySelectorAll('button[type="button"]');
+    const _selectedText = _searchForm.querySelectorAll('[data-js="selected-text"]');
+
     let _currentOpenedDropBox = null;
 
     /**
@@ -105,12 +102,13 @@ export default function Search() {
     (function _constructor() {
         _searchForm.onsubmit = _submit;
         Array.from(_buttons).forEach(button => {
-            button.onclick = _openBox;
+            button.onclick = _openDropBox;
         });
         document.body.addEventListener('click', function () {
             if (_currentOpenedDropBox) _currentOpenedDropBox.classList.add('d-none');
             _currentOpenedDropBox = null;
         });
+        _fetchData();
     }())
 
     /**
@@ -118,7 +116,7 @@ export default function Search() {
      * @param event
      * @private
      */
-    function _openBox(event) {
+    function _openDropBox(event) {
         event.cancelBubble = true;
 
         const dropBox = this.parentElement.querySelector('[data-js="drop-box"]');
@@ -133,6 +131,83 @@ export default function Search() {
             dropBox.classList.add('d-none');
             _currentOpenedDropBox = null;
         }
+    }
+
+    /**
+     *
+     * @param radioNodeList
+     * @returns {number}
+     * @private
+     */
+    function _getCheckedOptions(radioNodeList) {
+        let length = 0;
+        radioNodeList.forEach(radio => {
+            if (radio.checked) length++;
+        });
+        return length;
+    }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _selectOption(event) {
+        const length = _getCheckedOptions(_searchForm[this.name]);
+        if (this.name === "tag") {
+            if (length === 0) _selectedText[0].textContent = 'Todas';
+            else if (length === 1) _selectedText[0].textContent = this.value;
+            else _selectedText[0].textContent = `(${length} Seleccionados)`;
+        } else if (this.name === "year") {
+            if (length === 0) _selectedText[1].textContent = 'Todas';
+            else if (length === 1) _selectedText[1].textContent = this.value;
+            else _selectedText[1].textContent = `(${length} Seleccionados)`;
+        } else if (this.name === "emitter") {
+            if (length === 0) _selectedText[2].textContent = 'Todas';
+            else if (length === 1) _selectedText[2].textContent = this.value;
+            else _selectedText[2].textContent = `(${length} Seleccionados)`;
+        }
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _fetchData() {
+        _processData({
+            tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10', 'tag11', 'tag12'],
+            years: [2018, 2019, 2020, 2021, 2022],
+            emitters: ['Consejo', 'Rectorado']
+        });
+    }
+
+    /**
+     *
+     * @param data
+     * @private
+     */
+    function _processData(data) {
+        data.tags.forEach(tag => {
+            const tagEntry = createElement('li')._html(`
+                <input name="tag" type="checkbox" class="me-2" value="${tag}"> ${tag}
+            `);
+            tagEntry.firstElementChild.onclick = _selectOption;
+            _lists[0].append(tagEntry);
+        });
+        data.years.forEach(year => {
+            const yearEntry = createElement('li')._html(`
+                <input name="year" type="checkbox" class="me-2" value="${year}"> ${year}
+            `);
+            yearEntry.firstElementChild.onclick = _selectOption;
+            _lists[1].append(yearEntry);
+        });
+        data.emitters.forEach(emitter => {
+            const emitterEntry = createElement('li')._html(`
+                <input name="emitter" type="checkbox" class="me-2" value="${emitter}"> ${emitter}
+            `);
+            emitterEntry.firstElementChild.onchange = _selectOption;
+            _lists[2].append(emitterEntry);
+        });
     }
 
     /**
