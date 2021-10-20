@@ -1,7 +1,12 @@
 {
-    "require": {
-        "bramus/router": "^1.6",
-      "ext-json": "*",
-      "ext-pgsql": "*"
+  "require": {
+    "bramus/router": "^1.6",
+    "ext-json": "*",
+    "ext-pgsql": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "": ""
     }
+  }
 }

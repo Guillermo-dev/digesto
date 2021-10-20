@@ -1,4 +1,4 @@
-import "../../node_modules/sweetalert2/dist/sweetalert2.min.js";
+import "../../../node_modules/sweetalert2/dist/sweetalert2.min.js";
 
 /**
  *

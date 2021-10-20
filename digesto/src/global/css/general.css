@@ -1,9 +1,10 @@
-@import 'https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap';
-@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
-@import "../../node_modules/@fortawesome/fontawesome-free/css/all.css";
-@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.css";
-@import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-@import "../../node_modules/sweetalert2/dist/sweetalert2.min.css";
+@import "../../../node_modules/@fontsource/roboto-condensed/300.css";
+@import "../../../node_modules/@fontsource/roboto-condensed/400.css";
+@import "../../../node_modules/@fontsource/roboto-condensed/700.css";
+@import "../../../node_modules/@fortawesome/fontawesome-free/css/all.css";
+@import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "../../../node_modules/sweetalert2/dist/sweetalert2.min.css";
 
 html, body {
     margin: 0;

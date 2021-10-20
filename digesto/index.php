@@ -1,3 +1,15 @@
 <?php
 
-echo file_get_contents('src/pages/home/home.html');
+use Bramus\Router\Router;
+
+include_once 'vendor/autoload.php';
+
+$router = new Router();
+
+include_once 'routes/web.php';
+
+try {
+    $router->run();
+} catch (Throwable $e) {
+    echo $e;
+}

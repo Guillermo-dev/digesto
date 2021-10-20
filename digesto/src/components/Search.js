@@ -1,4 +1,4 @@
-import {Component, createElement, errorAlert, loadStyle} from "../global/util.js";
+import {Component, createElement, errorAlert, loadStyle} from "../global/js/util.js";
 
 loadStyle(`<style id="SearchJs">
     .Search button, .Search input, .Search .input-group-text {
