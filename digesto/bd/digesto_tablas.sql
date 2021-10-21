@@ -56,6 +56,6 @@ CREATE TABLE documentos_tags (
 	documento_id INTEGER NOT NULL,
 	tag_id INTEGER NOT NULL,
 	CONSTRAINT documento_fk FOREIGN KEY (documento_id) REFERENCES documentos(documento_id),
-	CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+	CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES tags(tag_id),
 	CONSTRAINT documentos_tags_pk PRIMARY KEY (documento_id, tag_id)
 );
