@@ -3,8 +3,13 @@ import Search from "../../components/Search.js";
 
 //Create Search component
 const search = new Search();
+
+//Create DocumentoList component
 const documentList = new DocumentList();
 
-//Append component to the page
+//Set a DocumentList reference into Search
+search.setDocumentList(documentList);
+
+//Append components to the page
 search.append('Search');
 documentList.append('DocumentList');
