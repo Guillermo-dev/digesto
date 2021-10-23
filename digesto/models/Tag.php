@@ -136,19 +136,18 @@ class Tag implements JsonSerializable {
   public static function getTagsByDocumento(Documento $documento): array {
     $conn = Connection::getConnection();
 
-    $query = sprintf("SELECT permiso_id, nombre, descripcion 
-        FROM permisos P INNER JOIN usuarios_permisos U ON U.permiso_id = P.permiso_id
-        WHERE U.usuario_id = %d", $usuario->getId());
+    $query = sprintf("SELECT T.tag_id, T.nombre
+        FROM tags T INNER JOIN documentos_tags D ON D.tag_id = T.tag_id
+        WHERE D.documento_id = %d", $documento->getId());
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
 
         $tags = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
-            $permiso = new Permiso();
-            $permiso->setId($row['permiso_id']);
-            $permiso->setNombre($row['nombre']);
-            $permiso->setDescripcion($row['descripcion']);
-            $tags[] = $permiso;
+            $tag = new Tag();
+            $tag->setId($row['tag_id']);
+            $tag->setNombre($row['nombre']);
+            $tags[] = $tag;
         }
 
         if (($error = pg_last_error($conn)) != false)
