@@ -1,6 +1,6 @@
-import {Component, createElement, errorAlert, loadStyle} from "../global/js/util.js";
+import {Component, createElement, createStyle, errorAlert} from "../global/js/util.js";
 
-loadStyle(`<style id="SearchJs">
+createStyle('SearchJs')._content(`
     .Search button, .Search input, .Search .input-group-text {
         font-size: 0.9rem !important;
     }
@@ -32,7 +32,7 @@ loadStyle(`<style id="SearchJs">
             top: 45px;
         }
     }
-</style>`);
+`);
 
 /**
  *
@@ -89,27 +89,14 @@ export default function Search() {
         </div>
     </form>
 </div>`);
+
     const _lists = _this.root.querySelectorAll('[data-js="drop-box"] ul');
     const _searchForm = _this.root.querySelector('[data-js="form"]');
     const _buttons = _searchForm.querySelectorAll('button[type="button"]');
     const _selectedText = _searchForm.querySelectorAll('[data-js="selected-text"]');
 
     let _currentOpenedDropBox = null;
-
-    /**
-     * Constructor
-     */
-    (function _constructor() {
-        _searchForm.onsubmit = _submit;
-        Array.from(_buttons).forEach(button => {
-            button.onclick = _openDropBox;
-        });
-        document.body.addEventListener('click', function () {
-            if (_currentOpenedDropBox) _currentOpenedDropBox.classList.add('d-none');
-            _currentOpenedDropBox = null;
-        });
-        _fetchData();
-    }())
+    let _documentList = null;
 
     /**
      *
@@ -120,7 +107,9 @@ export default function Search() {
         event.cancelBubble = true;
 
         const dropBox = this.parentElement.querySelector('[data-js="drop-box"]');
-        dropBox.onclick = function (event) {event.cancelBubble = true;}
+        dropBox.onclick = function (event) {
+            event.cancelBubble = true;
+        }
 
         if (dropBox.classList.contains('d-none')) {
             dropBox.classList.remove('d-none');
@@ -213,6 +202,23 @@ export default function Search() {
 
     /**
      *
+     * @private
+     */
+    function _fetchDocumentos() {
+        _documentList.setLoading();
+        fetch('/api/documentos').then(response => {
+            response.json().then(result => {
+                if (result.status === 'success') {
+                    _documentList.processDocumentos(result.data["documentos"]);
+                } else {
+                    errorAlert('Error');
+                }
+            });
+        });
+    }
+
+    /**
+     *
      * @param event
      * @private
      */
@@ -229,14 +235,14 @@ export default function Search() {
                 }
             });
             _searchForm['year'].forEach(option => {
-                if (option.checked){
+                if (option.checked) {
                     if (searchObj.years === undefined)
                         searchObj.years = [];
                     searchObj.years.push(option.value);
                 }
             });
             _searchForm['emitter'].forEach(option => {
-                if (option.checked){
+                if (option.checked) {
                     if (searchObj.emitters === undefined)
                         searchObj.emitters = [];
                     searchObj.emitters.push(option.value);
@@ -249,6 +255,30 @@ export default function Search() {
         }
         return false;
     }
+
+    /**
+     *
+     * @param documentList
+     */
+    this.setDocumentList = function (documentList) {
+        _documentList = documentList;
+        _fetchDocumentos();
+    };
+
+    /**
+     * Constructor
+     */
+    (function _constructor() {
+        _searchForm.onsubmit = _submit;
+        Array.from(_buttons).forEach(button => {
+            button.onclick = _openDropBox;
+        });
+        document.body.addEventListener('click', function () {
+            if (_currentOpenedDropBox) _currentOpenedDropBox.classList.add('d-none');
+            _currentOpenedDropBox = null;
+        });
+        _fetchData();
+    })()
 }
 
 Object.setPrototypeOf(Search.prototype, new Component());
