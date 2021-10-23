@@ -84,6 +84,7 @@ class Response implements JsonSerializable {
      */
     public function setData(?array $data): Response {
         $this->data = $data;
+        return $this;
     }
 
     /**
