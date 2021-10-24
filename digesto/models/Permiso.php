@@ -246,4 +246,28 @@ class Permiso implements JsonSerializable {
 
         return $permisos;
     }
+
+    public static function hasPermiso(string $permiso, int $usuarioId): bool {
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            "SELECT P.nombre FROM usuarios_permisos U INNER JOIN permisos P ON U.permiso_id = P.permiso_id WHERE U.usuario_id = %d AND P.nombre = '%s'",
+            $usuarioId,
+            $permiso
+        );
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new Exception(pg_last_error($conn));
+
+        $found  = false;
+        if (pg_fetch_assoc($rs) != false)
+            $found  = true;
+
+        if (($error = pg_last_error($conn)) != false)
+            throw new Exception($error);
+
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error($conn));
+
+        return $found;
+    }
 }
