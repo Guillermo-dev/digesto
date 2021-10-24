@@ -4,6 +4,7 @@ namespace api;
 
 use Exception;
 use helpers\Response;
+use models\Documento;
 
 /**
  * Class Documentos
@@ -15,42 +16,7 @@ abstract class Documentos {
      *
      */
     public static function getDocumentos(): void {
-        Response::getResponse()->appendData('documentos', [[
-            "id" => 52,
-            "titulo" => "Hello world!",
-            "numero" => "4595/2020",
-            "descripcion" => "Esto es la descripcion del documento",
-            "pdf" => "",
-            "fecha" => date("Y-m-d"),
-        ], [
-            "id" => 52,
-            "titulo" => "Hello world!",
-            "numero" => "4595/2020",
-            "descripcion" => "Esto es la descripcion del documento",
-            "pdf" => "",
-            "fecha" => date("Y-m-d"),
-        ], [
-            "id" => 52,
-            "titulo" => "Hello world!",
-            "numero" => "4595/2020",
-            "descripcion" => "Esto es la descripcion del documento",
-            "pdf" => "",
-            "fecha" => date("Y-m-d"),
-        ], [
-            "id" => 52,
-            "titulo" => "Hello world!",
-            "numero" => "4595/2020",
-            "descripcion" => "Esto es la descripcion del documento",
-            "pdf" => "",
-            "fecha" => date("Y-m-d"),
-        ], [
-            "id" => 52,
-            "titulo" => "Hello world!",
-            "numero" => "4595/2020",
-            "descripcion" => "Esto es la descripcion del documento",
-            "pdf" => "",
-            "fecha" => date("Y-m-d"),
-        ]]);
+        Response::getResponse()->appendData('documentos', Documento::getDocumentos());
         Response::getResponse()->setStatus('success');
     }
 
@@ -95,3 +61,40 @@ abstract class Documentos {
         throw new Exception('Not implemented', 504);
     }
 }
+
+/**[[
+            "id" => 52,
+            "titulo" => "Hello world!",
+            "numero" => "4595/2020",
+            "descripcion" => "Esto es la descripcion del documento",
+            "pdf" => "",
+            "fecha" => date("Y-m-d"),
+        ], [
+            "id" => 52,
+            "titulo" => "Hello world!",
+            "numero" => "4595/2020",
+            "descripcion" => "Esto es la descripcion del documento",
+            "pdf" => "",
+            "fecha" => date("Y-m-d"),
+        ], [
+            "id" => 52,
+            "titulo" => "Hello world!",
+            "numero" => "4595/2020",
+            "descripcion" => "Esto es la descripcion del documento",
+            "pdf" => "",
+            "fecha" => date("Y-m-d"),
+        ], [
+            "id" => 52,
+            "titulo" => "Hello world!",
+            "numero" => "4595/2020",
+            "descripcion" => "Esto es la descripcion del documento",
+            "pdf" => "",
+            "fecha" => date("Y-m-d"),
+        ], [
+            "id" => 52,
+            "titulo" => "Hello world!",
+            "numero" => "4595/2020",
+            "descripcion" => "Esto es la descripcion del documento",
+            "pdf" => "",
+            "fecha" => date("Y-m-d"),
+        ]] */

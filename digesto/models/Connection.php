@@ -18,13 +18,14 @@ abstract class Connection {
     /**
      * Connection constructor.
      */
-    private function __construct() { }
+    private function __construct() {
+    }
 
     /**
      * @return string
      */
     private static function getConnectionString(): string {
-        $arr = explode(';', file_get_contents('../config/db-config'));
+        $arr = explode(';', file_get_contents('config/db-config'));
         return sprintf("host=%s user=%s password=%s dbname=%s", $arr[0], $arr[1], $arr[2], $arr[3]);
     }
 
