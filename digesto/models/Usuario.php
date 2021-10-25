@@ -17,7 +17,7 @@ class Usuario  implements JsonSerializable {
 
   public function __construct(int $id = 0, string $email = '', string $nombre = '', string $apellido = '') {
     $this->id = $id;
-    $this->emial = $email;
+    $this->email = $email;
     $this->nombre = $nombre;
     $this->apellido = $apellido;
   }
@@ -93,24 +93,23 @@ class Usuario  implements JsonSerializable {
   public static function getUsuarioById(int $id): ?Usuario {
     $conn = Connection::getConnection();
 
-    $query = sprintf('SELECT usuario_id, email, nombre, apellido FROM usuarios WHERE usuario_id=%id', $id);
-    if (($rs = pg_query($conn, $query)) == false)
+    $query = sprintf('SELECT usuario_id, email, nombre, apellido FROM usuarios WHERE usuario_id = %d', $id);
+    if (($rs = pg_query($conn, $query)) === false)
       throw new Exception(pg_last_error($conn));
 
     $usuario = null;
     if (($row = pg_fetch_assoc($rs)) != false) {
       $usuario = new Usuario();
-      $usuario->setID($row['usuario_id']);
+      $usuario->setId($row['usuario_id']);
       $usuario->setEmail($row['email']);
       $usuario->setNombre($row['nombre']);
       $usuario->setApellido($row['apellido']);
     }
-
     if (($error = pg_last_error($conn)) != false)
       throw new Exception($error);
 
     if (!pg_free_result($rs))
-      throw new Exception(pg_last_error($conn));
+      throw new Exception(pg_last_error());
 
     return $usuario;
   }
