@@ -152,7 +152,51 @@ class Documento implements JsonSerializable {
   public static function getDocumentos(): array {
     $conn = Connection::getConnection();
 
-    $query = 'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id FROM documentos';
+    $query = 'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
+    FROM documentos';
+    if (($rs = pg_query($conn, $query)) === false)
+      throw new Exception(pg_last_error($conn));
+
+    $documentos = [];
+    while (($row = pg_fetch_assoc($rs)) != false) {
+      $documento = new Documento();
+      $documento->setId($row['documento_id']);
+      $documento->setNumeroExpediente($row['numero_expediente']);
+      $documento->setTitulo($row['titulo']);
+      $documento->setDescripcion($row['descripcion']);
+      $documento->setTipo($row['tipo']);
+      $documento->setFechaEmision($row['fecha_emision']);
+      $documento->setDescargable($row['descargable']);
+      $documento->setPublico($row['publico']);
+      $documento->setPdfId($row['pdf_id']);
+      $documento->setEmisorId($row['emisor_id']);
+      $documento->setUsuarioId($row['usuario_id']);
+      $documentos[] = $documento;
+    }
+
+    if (($error = pg_last_error($conn)) != false)
+      throw new Exception($error);
+
+    if (!pg_free_result($rs))
+      throw new Exception(pg_last_error($conn));
+
+    return $documentos;
+  }
+
+  public static function getDocumentosSearch(string $search, array $emitters,  array $tags, array $years): array {
+    $conn = Connection::getConnection();
+
+    $query = sprintf(
+      "SELECT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.tipo, D.fecha_emision, D.descargable, D.publico, D.pdf_id, D.emisor_id, D.usuario_id 
+              FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
+                INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
+                INNER JOIN tags T ON DT.tag_id = T.tag_id
+              WHERE D.titulo @@ to_tsquery('%s') AND '%s' Like '%%'||E.nombre ||'%%' AND '%s' Like '%%'||T.nombre ||'%%'  AND '%s' Like '%%'||D.fecha_emision||'%%'",
+      pg_escape_string($search),
+      pg_escape_string(implode($emitters)),
+      pg_escape_string(implode($tags)),
+      pg_escape_string(implode($years))
+    );
     if (($rs = pg_query($conn, $query)) === false)
       throw new Exception(pg_last_error($conn));
 
@@ -185,7 +229,8 @@ class Documento implements JsonSerializable {
   public static function getDocumentoById(int $id): ?Documento {
     $conn = Connection::getConnection();
 
-    $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id FROM documentos WHERE documento_id=%d', $id);
+    $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
+    FROM documentos WHERE documento_id=%d', $id);
     if (($rs = pg_query($conn, $query)) === false)
       throw new Exception(pg_last_error($conn));
 
@@ -218,7 +263,8 @@ class Documento implements JsonSerializable {
     $conn = Connection::getConnection();
 
     $query = sprintf(
-      "INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id, usuario_id) VALUES ('%s','%s','%s','%s','%s',%s,%s,%d,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
+      "INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id, usuario_id) 
+      VALUES ('%s','%s','%s','%s','%s',%s,%s,%d,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
       pg_escape_string($documento->getNumeroExpediente()),
       pg_escape_string($documento->getTitulo()),
       pg_escape_string($documento->getDescripcion()),
@@ -246,7 +292,8 @@ class Documento implements JsonSerializable {
     $conn = Connection::getConnection();
 
     $query = sprintf(
-      "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', tipo='%s', fecha_emision='%s', descargable=%s, publico=%s, pdf_id=%d, emisor_id=%d, usuario_id=%d WHERE documento_id=%d",
+      "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', tipo='%s', fecha_emision='%s', descargable=%s, publico=%s, pdf_id=%d, emisor_id=%d, usuario_id=%d 
+      WHERE documento_id=%d",
       pg_escape_string($documento->getNumeroExpediente()),
       pg_escape_string($documento->getTitulo()),
       pg_escape_string($documento->getDescripcion()),
