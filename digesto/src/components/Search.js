@@ -1,9 +1,13 @@
 import {Component, createElement, createStyle, errorAlert} from "../global/js/util.js";
+import {DocumentosAPI} from "./Api.js";
+
+const documentosAPI = new DocumentosAPI();
 
 createStyle('SearchJs')._content(`
     .Search button, .Search input, .Search .input-group-text {
         font-size: 0.9rem !important;
     }
+    
     .Search .drop-down-box {
         position: absolute;
         top: 60px;
@@ -15,16 +19,19 @@ createStyle('SearchJs')._content(`
         width: 100vw;
         max-width: 500px;
     }
+    
     .Search .drop-down-box ul {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
     }
+    
     .Search .drop-down-box ul li {
         padding: 10px;
         font-size: 0.9rem;
         width: max-content;
         white-space: nowrap;
     }
+    
     @media (max-width: 768px){
         .Search .drop-down-box {
             width: 100%;
@@ -97,6 +104,7 @@ export default function Search() {
 
     let _currentOpenedDropBox = null;
     let _documentList = null;
+    let _hash = null;
 
     /**
      *
@@ -206,14 +214,14 @@ export default function Search() {
      */
     function _fetchDocumentos() {
         _documentList.setLoading();
-        fetch('/api/documentos').then(response => {
-            response.json().then(result => {
-                if (result.status === 'success') {
-                    _documentList.processDocumentos(result.data["documentos"]);
-                } else {
-                    errorAlert('Error');
-                }
-            });
+        documentosAPI.getDocumentos({}, response => {
+            if (response.status === 'success') {
+                _documentList.processDocumentos(response.data["documentos"]);
+            } else {
+                errorAlert(response.error.message);
+            }
+        }, error => {
+            errorAlert(error);
         });
     }
 
@@ -224,32 +232,44 @@ export default function Search() {
      */
     function _submit(event) {
         try {
-            const searchObj = {
-                search: '',
-            }
+            const url = new URLSearchParams();
+
+            const tags = [];
+            const years = [];
+            const emitters = [];
+
             _searchForm['tag'].forEach(option => {
                 if (option.checked) {
-                    if (searchObj.tags === undefined)
-                        searchObj.tags = [];
-                    searchObj.tags.push(option.value);
+                    tags.push(option.value);
                 }
             });
             _searchForm['year'].forEach(option => {
                 if (option.checked) {
-                    if (searchObj.years === undefined)
-                        searchObj.years = [];
-                    searchObj.years.push(option.value);
+                    years.push(option.value);
                 }
             });
             _searchForm['emitter'].forEach(option => {
                 if (option.checked) {
-                    if (searchObj.emitters === undefined)
-                        searchObj.emitters = [];
-                    searchObj.emitters.push(option.value);
+                    emitters.push(option.value);
                 }
             });
-            searchObj.search = _searchForm['search'].value;
-            console.log(searchObj);
+
+            if (_searchForm['search'].value.length > 0)
+                url.append('search', _searchForm['search'].value);
+            else return false;
+
+            if (tags.length > 0)
+                url.append('tags', tags.join(';'));
+            if (years.length > 0)
+                url.append('years', years.join(';'));
+            if (emitters.length > 0)
+                url.append('emisor', emitters.join(';'));
+
+            if (btoa(url.toString()) === _hash) return false;
+
+            _hash = btoa(url.toString());
+
+            history.pushState(null, '', '/?' + url.toString());
         } catch (error) {
             errorAlert(error);
         }
