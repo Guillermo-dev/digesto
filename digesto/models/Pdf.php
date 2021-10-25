@@ -56,7 +56,7 @@ class Pdf implements JsonSerializable {
   public static function getPdfs(): array {
     $conn = Connection::getConnection();
 
-    $query = 'SELECT pdf_id, contenido, path, FROM pdfs';
+    $query = 'SELECT pdf_id, contenido, path FROM pdfs';
     if (($rs = pg_query($conn, $query)) === false)
       throw new Exception(pg_last_error($conn));
 
@@ -88,7 +88,7 @@ class Pdf implements JsonSerializable {
     $pdf = null;
     if (($row = pg_fetch_assoc($rs)) != false) {
       $pdf = new Pdf();
-      $pdf->setId($row['permiso_id']);
+      $pdf->setId($row['pdf_id']);
       $pdf->setContenido($row['contenido']);
       $pdf->setPath($row['path']);
     }
