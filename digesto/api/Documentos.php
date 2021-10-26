@@ -17,7 +17,7 @@ abstract class Documentos {
      * @throws Exception
      */
     public static function getDocumentos(): void {
-        Response::getResponse()->appendData('documentos', Documento::getDocumentos());
+        Response::getResponse()->appendData('documentos', Documento::getDocumentos($wPublics = true));
         Response::getResponse()->setStatus('success');
     }
 
