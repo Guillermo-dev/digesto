@@ -14,6 +14,7 @@ use models\Documento;
 abstract class Documentos {
     /**
      *
+     * @throws Exception
      */
     public static function getDocumentos(): void {
         Response::getResponse()->appendData('documentos', Documento::getDocumentos());
@@ -22,6 +23,8 @@ abstract class Documentos {
 
     /**
      * @param int $id
+     *
+     * @throws Exception
      */
     public static function getDocumento(int $id = 0): void {
         Response::getResponse()->appendData('documento', Documento::getDocumentoById($id));

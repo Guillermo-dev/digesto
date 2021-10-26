@@ -5,149 +5,221 @@ namespace models;
 use Exception;
 use JsonSerializable;
 
+/**
+ * Class Pdf
+ *
+ * @package models
+ */
 class Pdf implements JsonSerializable {
 
-  private $id;
+    /**
+     * @var int
+     */
+    private $id;
 
-  private $contenido;
+    /**
+     * @var string
+     */
+    private $contenido;
 
-  private $path;
+    /**
+     * @var string
+     */
+    private $path;
 
-  public function __construct(int $id = 0, string $contenido = '', string $path = '') {
-    $this->id = $id;
-    $this->contenido = $contenido;
-    $this->path = $path;
-  }
-
-  public function getId(): int {
-    return $this->id;
-  }
-
-  public function getContenido(): int {
-    return $this->contenido;
-  }
-
-  public function getPath(): int {
-    return $this->path;
-  }
-
-  public function setId(int $id): Pdf {
-    $this->id = $id;
-    return $this;
-  }
-
-  public function setContenido(string $contenido): Pdf {
-    $this->contenido = $contenido;
-    return $this;
-  }
-
-  public function setPath(string $path): Pdf {
-    $this->path = $path;
-    return $this;
-  }
-
-  public function jsonSerialize(): array {
-    return get_object_vars($this);
-  }
-
-
-  /********************************************************/
-
-  public static function getPdfs(): array {
-    $conn = Connection::getConnection();
-
-    $query = 'SELECT pdf_id, contenido, path FROM pdfs';
-    if (($rs = pg_query($conn, $query)) === false)
-      throw new Exception(pg_last_error($conn));
-
-    $pdfs = [];
-    while (($row = pg_fetch_assoc($rs)) != false) {
-      $pdf = new Pdf();
-      $pdf->setId($row['pdf_id']);
-      $pdf->setContenido($row['contenido']);
-      $pdf->setPath($row['path']);
-      $pdfs[] = $pdf;
+    /**
+     * Pdf constructor.
+     *
+     * @param int    $id
+     * @param string $contenido
+     * @param string $path
+     */
+    public function __construct(int $id = 0, string $contenido = '', string $path = '') {
+        $this->id = $id;
+        $this->contenido = $contenido;
+        $this->path = $path;
     }
 
-    if (($error = pg_last_error($conn)) != false)
-      throw new Exception($error);
-
-    if (!pg_free_result($rs))
-      throw new Exception(pg_last_error($conn));
-
-    return $pdfs;
-  }
-
-  public static function getPdfById(int $id): ?Pdf {
-    $conn = Connection::getConnection();
-
-    $query = sprintf('SELECT pdf_id, contenido, path FROM pdfs WHERE pdf_id=%d', $id);
-    if (($rs = pg_query($conn, $query)) === false)
-      throw new Exception(pg_last_error($conn));
-
-    $pdf = null;
-    if (($row = pg_fetch_assoc($rs)) != false) {
-      $pdf = new Pdf();
-      $pdf->setId($row['pdf_id']);
-      $pdf->setContenido($row['contenido']);
-      $pdf->setPath($row['path']);
+    /**
+     * @return int
+     */
+    public function getId(): int {
+        return $this->id;
     }
 
-    if (($error = pg_last_error($conn)) != false)
-      throw new Exception($error);
+    /**
+     * @return int
+     */
+    public function getContenido(): int {
+        return $this->contenido;
+    }
 
-    if (!pg_free_result($rs))
-      throw new Exception(pg_last_error());
+    /**
+     * @return int
+     */
+    public function getPath(): int {
+        return $this->path;
+    }
 
-    return $pdf;
-  }
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId(int $id): Pdf {
+        $this->id = $id;
+        return $this;
+    }
 
-  public static function createPdf(Pdf $pdf): void {
-    $conn = Connection::getConnection();
+    /**
+     * @param string $contenido
+     *
+     * @return $this
+     */
+    public function setContenido(string $contenido): Pdf {
+        $this->contenido = $contenido;
+        return $this;
+    }
 
-    $query = sprintf(
-      "INSERT INTO pdfs (contenido, path) VALUES ('%s','%s') RETURNING Currval('pdfs_pdf_id_seq')",
-      pg_escape_string($pdf->getContenido()),
-      pg_escape_string($pdf->getPath())
-    );
+    /**
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function setPath(string $path): Pdf {
+        $this->path = $path;
+        return $this;
+    }
 
-    if (($rs = pg_query($conn, $query)) === false)
-      throw new Exception(pg_last_error($conn));
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array {
+        return get_object_vars($this);
+    }
 
-    if (($row = pg_fetch_row($rs)))
-      $pdf->setId(($row[0]));
-    else throw new Exception(pg_last_error($rs));
+    /********************************************************/
 
-    if (!pg_free_result($rs))
-      throw new Exception(pg_last_error($conn));
-  }
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public static function getPdfs(): array {
+        $conn = Connection::getConnection();
 
-  public static function updatePdf(Pdf $pdf): void {
-    $conn = Connection::getConnection();
+        $query = 'SELECT pdf_id, contenido, path FROM pdfs';
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new Exception(pg_last_error($conn));
 
-    $query = sprintf(
-      "UPDATE pdfs SET contenido='%s', path='%s' WHERE pdf_id=%d",
-      pg_escape_string($pdf->getContenido()),
-      pg_escape_string($pdf->getPath()),
-      $pdf->getId()
-    );
+        $pdfs = [];
+        while (($row = pg_fetch_assoc($rs)) != false) {
+            $pdf = new Pdf();
+            $pdf->setId($row['pdf_id']);
+            $pdf->setContenido($row['contenido']);
+            $pdf->setPath($row['path']);
+            $pdfs[] = $pdf;
+        }
 
-    if (($rs = pg_query($conn, $query)) === false)
-      throw new Exception(pg_errormessage($conn));
+        if (($error = pg_last_error($conn)) != false)
+            throw new Exception($error);
 
-    if (!pg_free_result($rs))
-      throw new Exception(pg_last_error($conn));
-  }
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error($conn));
 
-  public static function deletePdf(Pdf $pdf): void {
-    $conn = Connection::getConnection();
+        return $pdfs;
+    }
 
-    $query = sprintf("DELETE FROM pdf WHERE pdf_id=%d", $pdf->getId());
+    /**
+     * @param int $id
+     *
+     * @return Pdf|null
+     * @throws Exception
+     */
+    public static function getPdfById(int $id): ?Pdf {
+        $conn = Connection::getConnection();
 
-    if (!($rs = pg_query($conn, $query)))
-      throw new Exception(pg_last_error($conn));
+        $query = sprintf('SELECT pdf_id, contenido, path FROM pdfs WHERE pdf_id=%d', $id);
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new Exception(pg_last_error($conn));
 
-    if (!pg_free_result($rs))
-      throw new Exception(pg_last_error($conn));
-  }
+        $pdf = null;
+        if (($row = pg_fetch_assoc($rs)) != false) {
+            $pdf = new Pdf();
+            $pdf->setId($row['pdf_id']);
+            $pdf->setContenido($row['contenido']);
+            $pdf->setPath($row['path']);
+        }
+
+        if (($error = pg_last_error($conn)) != false)
+            throw new Exception($error);
+
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error());
+
+        return $pdf;
+    }
+
+    /**
+     * @param Pdf $pdf
+     *
+     * @throws Exception
+     */
+    public static function createPdf(Pdf $pdf): void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            "INSERT INTO pdfs (contenido, path) VALUES ('%s','%s') RETURNING Currval('pdfs_pdf_id_seq')",
+            pg_escape_string($pdf->getContenido()),
+            pg_escape_string($pdf->getPath())
+        );
+
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new Exception(pg_last_error($conn));
+
+        if (($row = pg_fetch_row($rs)))
+            $pdf->setId(($row[0]));
+        else throw new Exception(pg_last_error($rs));
+
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error($conn));
+    }
+
+    /**
+     * @param Pdf $pdf
+     *
+     * @throws Exception
+     */
+    public static function updatePdf(Pdf $pdf): void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            "UPDATE pdfs SET contenido='%s', path='%s' WHERE pdf_id=%d",
+            pg_escape_string($pdf->getContenido()),
+            pg_escape_string($pdf->getPath()),
+            $pdf->getId()
+        );
+
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new Exception(pg_errormessage($conn));
+
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error($conn));
+    }
+
+    /**
+     * @param Pdf $pdf
+     *
+     * @throws Exception
+     */
+    public static function deletePdf(Pdf $pdf): void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf("DELETE FROM pdf WHERE pdf_id=%d", $pdf->getId());
+
+        if (!($rs = pg_query($conn, $query)))
+            throw new Exception(pg_last_error($conn));
+
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error($conn));
+    }
 }

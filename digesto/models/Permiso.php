@@ -220,6 +220,12 @@ class Permiso implements JsonSerializable {
             throw new Exception(pg_last_error($conn));
     }
 
+    /**
+     * @param Usuario $usuario
+     *
+     * @return array
+     * @throws Exception
+     */
     public static function getPermisosByUsuario(Usuario $usuario): array {
         $conn = Connection::getConnection();
 
@@ -247,6 +253,13 @@ class Permiso implements JsonSerializable {
         return $permisos;
     }
 
+    /**
+     * @param string $permiso
+     * @param int    $usuarioId
+     *
+     * @return bool
+     * @throws Exception
+     */
     public static function hasPermiso(string $permiso, int $usuarioId): bool {
         $conn = Connection::getConnection();
 
@@ -258,9 +271,9 @@ class Permiso implements JsonSerializable {
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
 
-        $found  = false;
+        $found = false;
         if (pg_fetch_assoc($rs) != false)
-            $found  = true;
+            $found = true;
 
         if (($error = pg_last_error($conn)) != false)
             throw new Exception($error);
