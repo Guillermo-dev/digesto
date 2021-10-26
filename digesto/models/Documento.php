@@ -191,10 +191,13 @@ class Documento implements JsonSerializable {
               FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
                 INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
                 INNER JOIN tags T ON DT.tag_id = T.tag_id
-              WHERE D.titulo @@ to_tsquery('%s') AND '%s' Like '%%'||E.nombre ||'%%' AND '%s' Like '%%'||T.nombre ||'%%'  AND '%s' Like '%%'||D.fecha_emision||'%%'",
+              WHERE D.titulo @@ to_tsquery('%s') %s '%s' Like '%%'||E.nombre ||'%%' %s '%s' Like '%%'||T.nombre ||'%%'  %s '%s' Like '%%'||D.fecha_emision||'%%'",
       pg_escape_string($search),
+      ($search === '' or $emitters === []) ? 'OR' : 'AND',
       pg_escape_string(implode($emitters)),
+      $tags === [] ? 'OR' : 'AND',
       pg_escape_string(implode($tags)),
+      $years === [] ? 'OR' : 'AND',
       pg_escape_string(implode($years))
     );
     if (($rs = pg_query($conn, $query)) === false)
