@@ -249,7 +249,8 @@ export function AuthAPI() {
      */
     this.login = function(config = {}, success, error) {
         fetch('/api/auth/login' + urlParams(config["params"]), {
-            method: 'POST'
+            method: 'POST',
+            body: JSON.stringify(config.data)
         }).then(response => {
             response.json().then(success).catch(error);
         }).catch(error);

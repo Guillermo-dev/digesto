@@ -42,7 +42,7 @@ export default function GoogleSignIn() {
      */
     function _initGoogleAccess() {
         google.accounts.id.initialize({
-            client_id: "595959595959595959595959",
+            client_id: "471191857447-594hnuasrs49qe51amgma6o0hiir07de.apps.googleusercontent.com",
             callback: _handleGoogleCredentialResponse,
             cancel_on_tap_outside: false
         });
@@ -62,7 +62,7 @@ export default function GoogleSignIn() {
             }
         }, response => {
             if (response.code === 200) {
-                location.href = '/admin/profile';
+                location.href = '/admin/';
             } else {
                 errorAlert(response.error.message);
             }
