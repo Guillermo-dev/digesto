@@ -15,14 +15,17 @@ class Response implements JsonSerializable {
      * @var Response|null
      */
     private static $response = null;
+
     /**
      * @var string
      */
     private $status = '';
+
     /**
      * @var array|null
      */
     private $data = null;
+
     /**
      * @var stdClass|null
      */
@@ -94,7 +97,7 @@ class Response implements JsonSerializable {
      * @return Response
      */
     public function appendData(string $key, $value): Response {
-        if ($this->data)
+        if (!$this->data)
             $this->data = [];
         $this->data[$key] = $value;
         return $this;
