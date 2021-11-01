@@ -6,6 +6,9 @@
 if (isset($router)) {
     $router->setBasePath('/api');
 
+    $router->get('/auth/login', 'api\Auth@login');
+    $router->delete('/auth/logout', 'api\Auth@logout');
+
     $router->get('/documentos', 'api\Documentos@getDocumentos');
     $router->get('/documentos/{id}', 'api\Documentos@getDocumento');
     $router->post('/documentos', 'api\Documentos@createDocumento');
