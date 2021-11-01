@@ -1,7 +1,10 @@
-import {Component, createElement, createStyle, errorAlert} from "../global/js/util.js";
-import {DocumentosAPI} from "./Api.js";
+import {createElement, createStyle, errorAlert} from "../global/js/util.js";
+import {DocumentosAPI, EmisoresAPI, TagsAPI} from "./Api.js";
+import {Component} from "./Component.js";
 
 const documentosAPI = new DocumentosAPI();
+const emisoresAPI = new EmisoresAPI();
+const tagsAPI = new TagsAPI();
 
 createStyle('SearchJs')._content(`
     .Search button, .Search input, .Search .input-group-text {
@@ -22,14 +25,15 @@ createStyle('SearchJs')._content(`
     
     .Search .drop-down-box ul {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+        grid-template-columns: repeat(auto-fit, minmax(50px,1fr));
     }
     
     .Search .drop-down-box ul li {
         padding: 10px;
         font-size: 0.9rem;
-        width: max-content;
+        overflow: hidden;
         white-space: nowrap;
+        text-align: left;
     }
     
     @media (max-width: 768px){
@@ -60,7 +64,7 @@ export default function Search() {
             <div class="col-md-auto text-center position-relative">
                 <button type="button" name="tagBtn" class="btn w-100 text-white">
                     <b class="me-2">Etiquetas</b>
-                    <span data-js="selected-text">Todas</span>
+                    <span data-js="option-display">Todas</span>
                     <i class="ms-2 bi-chevron-down"></i>
                 </button>
                 <div class="drop-down-box p-3 shadow d-none" data-js="drop-box">
@@ -72,7 +76,7 @@ export default function Search() {
             <div class="col-md-auto text-center position-relative">
                 <button type="button" name="yearBtn" class="btn w-100 text-white">
                     <b class="me-2">Año publicacion</b>
-                    <span data-js="selected-text">Todos</span>
+                    <span data-js="option-display">Todos</span>
                     <i class="ms-2 bi-chevron-down"></i>
                 </button>
                 <div class="drop-down-box p-3 shadow d-none" data-js="drop-box">
@@ -84,7 +88,7 @@ export default function Search() {
             <div class="col-md-auto text-center position-relative">
                 <button type="button" name="emitterBtn" class="btn w-100 text-white">
                     <b class="me-2">Emisor</b>
-                    <span data-js="selected-text">Todos</span>
+                    <span data-js="option-display">Todos</span>
                     <i class="ms-2 bi-chevron-down"></i>
                 </button>
                 <div class="drop-down-box p-3 shadow d-none" data-js="drop-box">
@@ -96,15 +100,28 @@ export default function Search() {
         </div>
     </form>
 </div>`);
-
     const _lists = _this.root.querySelectorAll('[data-js="drop-box"] ul');
     const _searchForm = _this.root.querySelector('[data-js="form"]');
     const _buttons = _searchForm.querySelectorAll('button[type="button"]');
-    const _selectedText = _searchForm.querySelectorAll('[data-js="selected-text"]');
-
+    const _selectedText = _searchForm.querySelectorAll('[data-js="option-display"]');
     let _currentOpenedDropBox = null;
     let _documentList = null;
     let _hash = null;
+
+    /**
+     * Constructor
+     */
+    function _constructor() {
+        _searchForm.onsubmit = _submit;
+        Array.from(_buttons).forEach(button => {
+            button.onclick = _openDropBox;
+        });
+        document.body.addEventListener('click', function() {
+            if (_currentOpenedDropBox) _currentOpenedDropBox.classList.add('d-none');
+            _currentOpenedDropBox = null;
+        });
+        _fetchData();
+    }
 
     /**
      *
@@ -115,7 +132,7 @@ export default function Search() {
         event.cancelBubble = true;
 
         const dropBox = this.parentElement.querySelector('[data-js="drop-box"]');
-        dropBox.onclick = function (event) {
+        dropBox.onclick = function(event) {
             event.cancelBubble = true;
         }
 
@@ -132,39 +149,11 @@ export default function Search() {
 
     /**
      *
-     * @param radioNodeList
-     * @returns {number}
-     * @private
-     */
-    function _getCheckedOptions(radioNodeList) {
-        let length = 0;
-        radioNodeList.forEach(radio => {
-            if (radio.checked) length++;
-        });
-        return length;
-    }
-
-    /**
-     *
      * @param event
      * @private
      */
     function _selectOption(event) {
-        const option = event.target;
-        const length = _getCheckedOptions(_searchForm[option.name]);
-        if (option.name === "tag") {
-            if (length === 0) _selectedText[0].textContent = 'Todas';
-            else if (length === 1) _selectedText[0].textContent = option.value;
-            else _selectedText[0].textContent = `(${length} Seleccionados)`;
-        } else if (option.name === "year") {
-            if (length === 0) _selectedText[1].textContent = 'Todas';
-            else if (length === 1) _selectedText[1].textContent = option.value;
-            else _selectedText[1].textContent = `(${length} Seleccionados)`;
-        } else if (option.name === "emitter") {
-            if (length === 0) _selectedText[2].textContent = 'Todas';
-            else if (length === 1) _selectedText[2].textContent = option.value;
-            else _selectedText[2].textContent = `(${length} Seleccionados)`;
-        }
+
     }
 
     /**
@@ -172,10 +161,23 @@ export default function Search() {
      * @private
      */
     function _fetchData() {
-        _processData({
-            tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9', 'tag10', 'tag11', 'tag12'],
-            years: [2018, 2019, 2020, 2021, 2022],
-            emitters: ['Consejo', 'Rectorado']
+        tagsAPI.getTags({}, response => {
+            if (response.status === 'success') {
+                _processData(response.data);
+            } else {
+                errorAlert(response.error.message);
+            }
+        }, error => {
+            errorAlert(error);
+        });
+        emisoresAPI.getEmisores({}, response => {
+            if (response.status === 'success') {
+                _processData(response.data);
+            } else {
+                errorAlert(response.error.message);
+            }
+        }, error => {
+            errorAlert(error);
         });
     }
 
@@ -185,27 +187,32 @@ export default function Search() {
      * @private
      */
     function _processData(data) {
-        data.tags.forEach(tag => {
-            const tagEntry = createElement('li')._html(`
-                <input name="tag" type="checkbox" class="me-2" value="${tag}"> ${tag}
+        if (data["tags"] !== undefined)
+            data["tags"].forEach(tag => {
+                const tagEntry = createElement('li')._html(`
+                <input name="tag" type="checkbox" class="me-2" value="${tag["nombre"]}"> ${tag["nombre"]}
             `);
-            tagEntry.firstElementChild.onclick = _selectOption;
-            _lists[0].append(tagEntry);
-        });
-        data.years.forEach(year => {
-            const yearEntry = createElement('li')._html(`
+                tagEntry.firstElementChild.onclick = _selectOption;
+                _lists[0].append(tagEntry);
+            });
+
+        if (data["years"] !== undefined)
+            data["years"].forEach(year => {
+                const yearEntry = createElement('li')._html(`
                 <input name="year" type="checkbox" class="me-2" value="${year}"> ${year}
             `);
-            yearEntry.firstElementChild.onclick = _selectOption;
-            _lists[1].append(yearEntry);
-        });
-        data.emitters.forEach(emitter => {
-            const emitterEntry = createElement('li')._html(`
-                <input name="emitter" type="checkbox" class="me-2" value="${emitter}"> ${emitter}
+                yearEntry.firstElementChild.onclick = _selectOption;
+                _lists[1].append(yearEntry);
+            });
+
+        if (data["emisores"] !== undefined)
+            data["emisores"].forEach(emisor => {
+                const emitterEntry = createElement('li')._html(`
+                <input name="emitter" type="checkbox" class="me-2" value="${emisor["nombre"]}"> ${emisor["nombre"]}
             `);
-            emitterEntry.firstElementChild.onchange = _selectOption;
-            _lists[2].append(emitterEntry);
-        });
+                emitterEntry.firstElementChild.onchange = _selectOption;
+                _lists[2].append(emitterEntry);
+            });
     }
 
     /**
@@ -218,10 +225,10 @@ export default function Search() {
             if (response.status === 'success') {
                 _documentList.processDocumentos(response.data["documentos"]);
             } else {
-                errorAlert(response.error.message);
+                _documentList.setError();
             }
         }, error => {
-            errorAlert(error);
+            _documentList.setError();
         });
     }
 
@@ -280,25 +287,12 @@ export default function Search() {
      *
      * @param documentList
      */
-    this.setDocumentList = function (documentList) {
+    this.setDocumentList = function(documentList) {
         _documentList = documentList;
         _fetchDocumentos();
     };
 
-    /**
-     * Constructor
-     */
-    (function _constructor() {
-        _searchForm.onsubmit = _submit;
-        Array.from(_buttons).forEach(button => {
-            button.onclick = _openDropBox;
-        });
-        document.body.addEventListener('click', function () {
-            if (_currentOpenedDropBox) _currentOpenedDropBox.classList.add('d-none');
-            _currentOpenedDropBox = null;
-        });
-        _fetchData();
-    })()
+    _constructor();
 }
 
 Object.setPrototypeOf(Search.prototype, new Component());

@@ -1,4 +1,5 @@
-import {Component, createElement, createStyle} from "../global/js/util.js";
+import {createElement, createStyle} from "../global/js/util.js";
+import {Component} from "./Component.js";
 
 createStyle('DocumentListJs')._content(`
     .DocumentList:not(.css-loaded) .css-loaded,
@@ -58,48 +59,19 @@ export default function DocumentList() {
             <span class="spinner-border"></span>
         </div>
     `);
-
     const _content = _this.root.querySelector('[data-js="content"]');
     const _moreBtn = _this.root.querySelector('[data-js="more-btn"]');
-
     const _paginator = {
-        window: 2,
+        window: 5,
         length: 0,
         i: 0,
     };
 
     /**
-     *
-     * @param documento
-     * @private
+     * Constructor
      */
-    function _appendEntry(documento) {
-        const documentoEntry = createElement('div')._html(`
-            <div class="p-4 mb-3 border document">
-                <div class="row g-2 mb-2">
-                    <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"]}</p>
-                        <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
-                    </div>
-                    <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
-                </div>
-                <p class="mb-0">Descripcion</p>
-                <p class="mb-0 text-muted">${documento["descripcion"]}</p>
-                <div class="text-end">
-                    <button type="button" data-js="documentBtn" class="btn btn-primary btn-sm">
-                        <i class="bi-search me-2"></i><span>Ver documento</span>
-                    </button>
-                </div>
-            </div>
-        `);
-        documentoEntry.classList.add('d-none');
-
-        const buttons = documentoEntry.querySelectorAll('[data-js="documentBtn"]');
-        buttons[0].onclick = function () {
-            location.href = `/documentos/${documento.id}`;
-        }
-
-        _content.append(documentoEntry);
+    function _constructor() {
+        _moreBtn.onclick = _paginate;
     }
 
     /**
@@ -143,7 +115,7 @@ export default function DocumentList() {
     this.processDocumentos = function (documentos) {
         if (documentos.length > 0) {
             documentos.forEach(documento => {
-                _appendEntry(documento);
+                _content.append(new Entry(documento).root);
             });
             _this.setClassState('css-loaded');
 
@@ -154,11 +126,44 @@ export default function DocumentList() {
     };
 
     /**
-     * Constructor
+     *
+     * @param documento
+     * @constructor
      */
-    (function _constructor() {
-        _moreBtn.onclick = _paginate;
-    }());
+    function Entry(documento) {
+        const _this = this;
+        this.root = createElement('div')._class('DocumentoEntry')._html(`
+            <div class="p-4 mb-3 border document">
+                <div class="row g-2 mb-2">
+                    <div class="col">
+                        <p class="mb-0 fw-bold">${documento["titulo"]}</p>
+                        <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
+                    </div>
+                    <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
+                </div>
+                <p class="mb-0">Descripcion</p>
+                <p class="mb-0 text-muted">${documento["descripcion"]}</p>
+                <div class="text-end">
+                    <button type="button" data-js="documentBtn" class="btn btn-primary btn-sm">
+                        <i class="bi-search me-2"></i><span>Ver documento</span>
+                    </button>
+                </div>
+            </div>
+        `);
+        const buttons = _this.root.querySelectorAll('[data-js="documentBtn"]');
+
+        /**
+         * Constructor
+         */
+        (function _constructor() {
+            _this.root.classList.add('d-none');
+            buttons[0].onclick = function () {
+                location.href = `/documentos/${documento.id}`;
+            }
+        })()
+    }
+
+    _constructor();
 }
 
 Object.setPrototypeOf(DocumentList.prototype, new Component());

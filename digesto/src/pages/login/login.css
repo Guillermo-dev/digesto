@@ -1,1 +1,7 @@
 @import "../../global/css/general.css";
+
+#root main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
