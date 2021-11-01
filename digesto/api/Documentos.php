@@ -5,6 +5,7 @@ namespace api;
 use Exception;
 use helpers\Response;
 use models\Documento;
+use models\Pdf;
 
 /**
  * Class Documentos
@@ -27,7 +28,14 @@ abstract class Documentos {
      * @throws Exception
      */
     public static function getDocumento(int $id = 0): void {
-        Response::getResponse()->appendData('documento', Documento::getDocumentoById($id));
+        $documento = Documento::getDocumentoById($id);
+        if (!$documento) throw new Exception('El documento no existe', 404);
+
+        Response::getResponse()->appendData('documento', $documento);
+
+        if ($documento->getDescargable())
+            Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
+
         Response::getResponse()->setStatus('success');
     }
 
