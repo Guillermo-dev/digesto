@@ -61,7 +61,7 @@ export default function GoogleSignIn() {
                 gToken: response.credential
             }
         }, response => {
-            if (response.code === 200) {
+            if (response.status === 'success') {
                 location.href = '/admin/';
             } else {
                 errorAlert(response.error.message);
