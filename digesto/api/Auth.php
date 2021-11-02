@@ -29,11 +29,11 @@ abstract class Auth {
 
         $payload = $google_client->verifyIdToken($data->gToken);
         if (!$payload)
-            throw new Exception();
+            throw new Exception('Error inesperado, intentelo mas tarde');
 
         $usuario = Usuario::getUsuarioByEmail($payload["email"]);
         if (!$usuario)
-            throw new Exception();
+            throw new Exception('Usuario no autorizado', 404);
 
         $_SESSION['user'] = serialize($usuario);
 
