@@ -34,7 +34,8 @@ class Response implements JsonSerializable {
     /**
      * Response constructor.
      */
-    private function __construct() { }
+    private function __construct() {
+    }
 
     /**
      * @return string
