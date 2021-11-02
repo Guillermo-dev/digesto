@@ -113,7 +113,7 @@ class Emisor implements JsonSerializable {
     public static function getEmisorById(int $id): ?Emisor {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT emisor_id, nombre FROM emisores WHERE emisor=%d', $id);
+        $query = sprintf('SELECT emisor_id, nombre FROM emisores WHERE emisor_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
 
@@ -166,7 +166,7 @@ class Emisor implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE emisores SET nombre='%s' WHERE emisor=%d",
+            "UPDATE emisores SET nombre='%s' WHERE emisor_id=%d",
             pg_escape_string($emisor->getNombre()),
             $emisor->getId()
         );
