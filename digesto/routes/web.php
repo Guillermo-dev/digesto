@@ -5,6 +5,7 @@
  */
 if (isset($router)) {
     $router->get('/', 'controllers\Home@index');
+    $router->get('/documentos/{id}', 'controllers\Home@documento');
 
     $router->get('/auth/login', 'controllers\Auth@login');
     $router->get('/auth/logout', 'controllers\Auth@logout');
