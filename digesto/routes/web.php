@@ -15,5 +15,5 @@ if (isset($router)) {
     $router->get('/admin/documento/{id}', 'controllers\Admin@documento');
     $router->get('/admin/documento/', 'controllers\Admin@newDocumento');
 
-    $router->set404('controllers\NotFound@index');
+    $router->set404('controllers\Error@page404');
 }

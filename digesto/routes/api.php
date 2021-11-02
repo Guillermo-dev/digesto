@@ -1,5 +1,7 @@
 <?php
 
+use helpers\Response;
+
 /*
  * Api routes
  */
@@ -45,5 +47,9 @@ if (isset($router)) {
     $router->put('/usuarios/{id}', 'api\Usuarios@updateUsuario');
     $router->delete('/usuarios/{id}', 'api\Usuarios@deleteUsuario');
 
-    $router->set404('api\NotFound@index');
+    $router->set404(function () {
+        Response::getResponse()->setStatus('error');
+        Response::getResponse()->setError(404, 'Not found');
+        Response::getResponse()->setData(null);
+    });
 }

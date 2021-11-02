@@ -1,0 +1,15 @@
+@import "../../../node_modules/@fontsource/roboto-condensed/400.css";
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
+html, body {
+    width: 100vw;
+    min-height: 100vh;
+}
+
+body {
+    background-color: #18363d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
