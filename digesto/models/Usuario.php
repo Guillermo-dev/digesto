@@ -185,6 +185,39 @@ class Usuario implements JsonSerializable {
     }
 
     /**
+     * @param string $email
+     *
+     * @return Usuario|null
+     * @throws Exception
+     */
+    public static function getUsuarioByEmail(string $email): ?Usuario {
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            "SELECT usuario_id, email, nombre, apellido FROM usuarios WHERE email = '%s'",
+            pg_escape_string($email)
+        );
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new Exception(pg_last_error($conn));
+
+        $usuario = null;
+        if (($row = pg_fetch_assoc($rs)) != false) {
+            $usuario = new Usuario();
+            $usuario->setId($row['usuario_id']);
+            $usuario->setEmail($row['email']);
+            $usuario->setNombre($row['nombre']);
+            $usuario->setApellido($row['apellido']);
+        }
+        if (($error = pg_last_error($conn)) != false)
+            throw new Exception($error);
+
+        if (!pg_free_result($rs))
+            throw new Exception(pg_last_error());
+
+        return $usuario;
+    }
+
+    /**
      * @param Usuario $usuario
      *
      * @throws Exception
