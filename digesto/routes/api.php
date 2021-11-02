@@ -6,7 +6,7 @@
 if (isset($router)) {
     $router->setBasePath('/api');
 
-    $router->get('/auth/login', 'api\Auth@login');
+    $router->post('/auth/login', 'api\Auth@login');
     $router->delete('/auth/logout', 'api\Auth@logout');
 
     $router->get('/documentos', 'api\Documentos@getDocumentos');
