@@ -6,6 +6,7 @@ use Exception;
 use helpers\Response;
 use models\Documento;
 use models\Pdf;
+use models\Emisor;
 
 /**
  * Class Documentos
@@ -32,6 +33,8 @@ abstract class Documentos {
         if (!$documento) throw new Exception('El documento no existe', 404);
 
         Response::getResponse()->appendData('documento', $documento);
+
+        Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
 
         if ($documento->getDescargable())
             Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
