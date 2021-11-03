@@ -4,7 +4,9 @@ namespace api;
 
 use Exception;
 use helpers\Response;
+use helpers\Request;
 use models\Emisor;
+use models\Permiso;
 
 /**
  * Class Emisores
@@ -34,7 +36,23 @@ abstract class Emisores {
      * @throws Exception
      */
     public static function createEmisor(): void {
-        throw new Exception('Not implemented', 504);
+        if (!isset($_SESSION['user']))
+            throw new Exception('Forbidden', 403);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('emisores_create', $usuarioId))
+            throw new Exception('Forbidden', 403);
+
+        $emisorData = Request::getBodyAsJson();
+        if (!isset($emisorData->nombre))
+            throw new Exception('datos incompletos');
+
+        $emisor = new Emisor();
+        $emisor->setNombre($emisor->nombre);
+
+        Emisor::createEmisor($emisor);
+
+        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -42,8 +60,27 @@ abstract class Emisores {
      *
      * @throws Exception
      */
-    public static function updateEmisor(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
+    public static function updateEmisor(): void {
+        if (!isset($_SESSION['user']))
+            throw new Exception('Forbidden', 403);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('emisores_update', $usuarioId))
+            throw new Exception('Forbidden', 403);
+
+        $emisorData = Request::getBodyAsJson();
+        if (!isset($emisorData->idEmisor))
+            throw new Exception('datos incompletos');
+        if (!isset($emisorData->nombre))
+            throw new Exception('datos incompletos');
+
+        $emisor = new Emisor();
+        $emisor->setId($emisorData->emisorId);
+        $emisor->setNombre($emisor->nombre);
+
+        Emisor::updateEmisor($emisor);
+
+        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -52,6 +89,15 @@ abstract class Emisores {
      * @throws Exception
      */
     public static function deleteEmisor(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
+        if (!isset($_SESSION['user']))
+            throw new Exception('Forbidden', 403);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('emisores_delete', $usuarioId))
+            throw new Exception('Forbidden', 403);
+
+        Emisor::deleteEmisor($id);
+
+        Response::getResponse()->setStatus('success');
     }
 }

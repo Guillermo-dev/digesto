@@ -30,29 +30,4 @@ abstract class Permisos {
         Response::getResponse()->appendData('permiso', Permiso::getPermisoById($id));
         Response::getResponse()->setStatus('success');
     }
-
-    /**
-     * @throws Exception
-     */
-    public static function createPermiso(): void {
-        throw new Exception('Not implemented', 504);
-    }
-
-    /**
-     * @param int $id
-     *
-     * @throws Exception
-     */
-    public static function updatePermiso(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
-    }
-
-    /**
-     * @param int $id
-     *
-     * @throws Exception
-     */
-    public static function deletePermiso(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
-    }
 }

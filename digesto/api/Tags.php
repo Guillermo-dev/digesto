@@ -4,7 +4,9 @@ namespace api;
 
 use Exception;
 use helpers\Response;
+use helpers\Request;
 use models\Tag;
+use models\Permiso;
 
 /**
  * Class Tags
@@ -35,7 +37,24 @@ abstract class Tags {
      * @throws Exception
      */
     public static function createTag(): void {
-        throw new Exception('Not implemented', 504);
+        if (!isset($_SESSION['user']))
+            throw new Exception('Forbidden', 403);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('tags_create', $usuarioId))
+            throw new Exception('Forbidden', 403);
+
+        $tagData = Request::getBodyAsJson();
+
+        if (!isset($tagData->nombre))
+            throw new Exception('datos incompletos');
+
+        $tag = new Tag();
+        $tag->setNombre($tag->nombre);
+
+        Tag::createTag($tag);
+
+        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -43,8 +62,28 @@ abstract class Tags {
      *
      * @throws Exception
      */
-    public static function updateTag(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
+    public static function updateTag(): void {
+        if (!isset($_SESSION['user']))
+            throw new Exception('Forbidden', 403);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('ags_update', $usuarioId))
+            throw new Exception('Forbidden', 403);
+
+        $tagData = Request::getBodyAsJson();
+
+        if (!isset($tagData->tagId))
+            throw new Exception('datos incompletos');
+        if (!isset($tagData->nombre))
+            throw new Exception('datos incompletos');
+
+        $tag = new Tag();
+        $tag->setId($tag->tagId);
+        $tag->setNombre($tag->nombre);
+
+        Tag::updateTag($tag);
+
+        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -53,6 +92,15 @@ abstract class Tags {
      * @throws Exception
      */
     public static function deleteTag(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
+        if (!isset($_SESSION['user']))
+            throw new Exception('Forbidden', 403);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('tags_delete', $usuarioId))
+            throw new Exception('Forbidden', 403);
+
+        Tag::deleteTag($id);
+
+        Response::getResponse()->setStatus('success');
     }
 }

@@ -30,29 +30,4 @@ abstract class Pdfs {
         Response::getResponse()->appendData('pdf', Pdf::getPdfById($id));
         Response::getResponse()->setStatus('success');
     }
-
-    /**
-     * @throws Exception
-     */
-    public static function createPdf(): void {
-        throw new Exception('Not implemented', 504);
-    }
-
-    /**
-     * @param int $id
-     *
-     * @throws Exception
-     */
-    public static function updatePdf(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
-    }
-
-    /**
-     * @param int $id
-     *
-     * @throws Exception
-     */
-    public static function deletePdf(int $id = 0): void {
-        throw new Exception('Not implemented', 504);
-    }
 }
