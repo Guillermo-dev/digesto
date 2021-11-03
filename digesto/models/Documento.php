@@ -502,10 +502,10 @@ class Documento implements JsonSerializable {
      *
      * @throws Exception
      */
-    public static function deleteDocumento(Documento $documento): void {
+    public static function deleteDocumento(int $documento_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM documentos WHERE documento_id=%d", $documento->getId());
+        $query = sprintf("DELETE FROM documentos WHERE documento_id=%d", $documento_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new Exception(pg_last_error($conn));

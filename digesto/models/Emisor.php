@@ -183,10 +183,10 @@ class Emisor implements JsonSerializable {
      *
      * @throws Exception
      */
-    public static function deleteEmisor(Emisor $emisor): void {
+    public static function deleteEmisor(int $emisor_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM emisores WHERE emisor_id=%d", $emisor->getId());
+        $query = sprintf("DELETE FROM emisores WHERE emisor_id=%d", $emisor_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new Exception(pg_last_error($conn));

@@ -211,10 +211,10 @@ class Pdf implements JsonSerializable {
      *
      * @throws Exception
      */
-    public static function deletePdf(Pdf $pdf): void {
+    public static function deletePdf(int $pdf_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM pdf WHERE pdf_id=%d", $pdf->getId());
+        $query = sprintf("DELETE FROM pdf WHERE pdf_id=%d", $pdf_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new Exception(pg_last_error($conn));

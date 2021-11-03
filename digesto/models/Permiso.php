@@ -208,10 +208,10 @@ class Permiso implements JsonSerializable {
      *
      * @throws Exception
      */
-    public static function deletePermiso(Permiso $permiso): void {
+    public static function deletePermiso(int $permiso_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM permisos WHERE permiso_id=%d", $permiso->getId());
+        $query = sprintf("DELETE FROM permisos WHERE permiso_id=%d", $permiso_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new Exception(pg_last_error($conn));

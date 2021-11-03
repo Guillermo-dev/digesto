@@ -271,10 +271,10 @@ class Usuario implements JsonSerializable {
      *
      * @throws Exception
      */
-    public static function deleteUsuario(Usuario $usuario): void {
+    public static function deleteUsuario(int $usuario_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM usuarios WHERE usuario_id='%s'", $usuario->getId());
+        $query = sprintf("DELETE FROM usuarios WHERE usuario_id='%s'", $usuario_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new Exception(pg_last_error($conn));

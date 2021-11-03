@@ -182,10 +182,10 @@ class Tag implements JsonSerializable {
      *
      * @throws Exception
      */
-    public static function deleteTag(Tag $tag): void {
+    public static function deleteTag(int $tag_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM tags WHERE tag_id=%d", $tag->getId());
+        $query = sprintf("DELETE FROM tags WHERE tag_id=%d", $tag_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new Exception(pg_last_error($conn));
