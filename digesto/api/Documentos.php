@@ -50,7 +50,7 @@ abstract class Documentos {
      */
     public static function createDocumento(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_create', $usuarioId))
@@ -60,25 +60,25 @@ abstract class Documentos {
 
         // TODO: Validacion de datos
         if (!isset($documentoData->numeroExpediente))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->titulo))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->descripcion))
             $documentoData->descripcion = '';
         if (!isset($documentoData->tipo))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->fechaEmisio))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->descargable))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->publico))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->pdfId))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->emisorID))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->usuarioId))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
         $documento = new Documento();
         $documento->setNumeroExpediente($documentoData->numeroExpediente);
@@ -91,7 +91,7 @@ abstract class Documentos {
         $documento->setPdfId($documentoData->pdfId);
         $documento->setEmisorId($documentoData->emisorID);
         $documento->setUsuarioId($documentoData->usuarioId);
-        
+
         Documento::createDocumento($documento);
 
         Response::getResponse()->setStatus('success');
@@ -102,9 +102,9 @@ abstract class Documentos {
      *
      * @throws Exception
      */
-    public static function updateDocumento(): void {
+    public static function updateDocumento(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_update', $usuarioId))
@@ -112,31 +112,31 @@ abstract class Documentos {
 
         $documentoData = Request::getBodyAsJson();
         // TODO: Validacion de datos
-        if (!isset($documentoData->documentoID))
-            throw new Exception('datos incompletos');
+
         if (!isset($documentoData->numeroExpediente))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->titulo))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->descripcion))
             $documentoData->descripcion = '';
         if (!isset($documentoData->tipo))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->fechaEmisio))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->descargable))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->publico))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->pdfId))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->emisorID))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($documentoData->usuarioId))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
-        $documento = new Documento();
-        $documento->setId($documentoData->documentoId);
+        $documento = Documento::getDocumentoById($id);
+        if (!$documento) throw new Exception('El documento no existe', 404);
+
         $documento->setNumeroExpediente($documentoData->numeroExpediente);
         $documento->setTitulo($documentoData->titulo);
         $documento->setDescripcion($documentoData->descripcion);
@@ -160,13 +160,16 @@ abstract class Documentos {
      */
     public static function deleteDocumento(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_delete', $usuarioId))
             throw new Exception('Forbidden', 403);
 
-        Documento::deleteDocumento($id);
+        $documento = Documento::getDocumentoById($id);
+        if (!$documento) throw new Exception('El documento no existe', 404);
+
+        Documento::deleteDocumento($documento->getID());
 
         Response::getResponse()->setStatus('success');
     }

@@ -37,7 +37,7 @@ abstract class Emisores {
      */
     public static function createEmisor(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_create', $usuarioId))
@@ -45,10 +45,10 @@ abstract class Emisores {
 
         $emisorData = Request::getBodyAsJson();
         if (!isset($emisorData->nombre))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
         $emisor = new Emisor();
-        $emisor->setNombre($emisor->nombre);
+        $emisor->setNombre($emisorData->nombre);
 
         Emisor::createEmisor($emisor);
 
@@ -60,23 +60,23 @@ abstract class Emisores {
      *
      * @throws Exception
      */
-    public static function updateEmisor(): void {
+    public static function updateEmisor(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_update', $usuarioId))
             throw new Exception('Forbidden', 403);
 
         $emisorData = Request::getBodyAsJson();
-        if (!isset($emisorData->idEmisor))
-            throw new Exception('datos incompletos');
-        if (!isset($emisorData->nombre))
-            throw new Exception('datos incompletos');
 
-        $emisor = new Emisor();
-        $emisor->setId($emisorData->emisorId);
-        $emisor->setNombre($emisor->nombre);
+        if (!isset($emisorData->nombre))
+            throw new Exception('Bad Request', 400);
+
+        $emisor = Emisor::getEmisorById($id);
+        if (!$emisor) throw new Exception('El emisor no existe', 404);
+        
+        $emisor->setNombre($emisorData->nombre);
 
         Emisor::updateEmisor($emisor);
 
@@ -90,13 +90,16 @@ abstract class Emisores {
      */
     public static function deleteEmisor(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_delete', $usuarioId))
             throw new Exception('Forbidden', 403);
 
-        Emisor::deleteEmisor($id);
+        $emisor = Emisor::getEmisorById($id);
+        if (!$emisor) throw new Exception('El emisor no existe', 404);
+
+        Emisor::deleteEmisor($emisor->getId());
 
         Response::getResponse()->setStatus('success');
     }

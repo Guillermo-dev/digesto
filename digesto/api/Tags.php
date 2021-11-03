@@ -38,7 +38,7 @@ abstract class Tags {
      */
     public static function createTag(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('tags_create', $usuarioId))
@@ -47,7 +47,7 @@ abstract class Tags {
         $tagData = Request::getBodyAsJson();
 
         if (!isset($tagData->nombre))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
         $tag = new Tag();
         $tag->setNombre($tag->nombre);
@@ -62,9 +62,9 @@ abstract class Tags {
      *
      * @throws Exception
      */
-    public static function updateTag(): void {
+    public static function updateTag(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('ags_update', $usuarioId))
@@ -73,12 +73,13 @@ abstract class Tags {
         $tagData = Request::getBodyAsJson();
 
         if (!isset($tagData->tagId))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($tagData->nombre))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
-        $tag = new Tag();
-        $tag->setId($tag->tagId);
+        $tag = Tag::getTagById($id);
+        if (!$tag) throw new Exception('El tag no existe', 404);
+
         $tag->setNombre($tag->nombre);
 
         Tag::updateTag($tag);
@@ -93,13 +94,16 @@ abstract class Tags {
      */
     public static function deleteTag(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('tags_delete', $usuarioId))
             throw new Exception('Forbidden', 403);
 
-        Tag::deleteTag($id);
+        $tag = Tag::getTagById($id);
+        if (!$tag) throw new Exception('El tag no existe', 404);
+
+        Tag::deleteTag($tag->getId());
 
         Response::getResponse()->setStatus('success');
     }

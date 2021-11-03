@@ -38,7 +38,7 @@ abstract class Usuarios {
      */
     public static function createUsuario(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_create', $usuarioId))
@@ -47,11 +47,11 @@ abstract class Usuarios {
         $usuarioData = Request::getBodyAsJson();
 
         if (!isset($usuarioData->email))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($usuarioData->nombre))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($usuarioData->apellido))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
         $usuario = new Usuario();
         $usuario->setEmail($usuarioData->email);
@@ -68,9 +68,9 @@ abstract class Usuarios {
      *
      * @throws Exception
      */
-    public static function updateUsuario(): void {
+    public static function updateUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_update', $usuarioId))
@@ -78,17 +78,16 @@ abstract class Usuarios {
 
         $usuarioData = Request::getBodyAsJson();
 
-        if (!isset($usuarioData->usuarioId))
-            throw new Exception('datos incompletos');
         if (!isset($usuarioData->email))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($usuarioData->nombre))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
         if (!isset($usuarioData->apellido))
-            throw new Exception('datos incompletos');
+            throw new Exception('Bad Request', 400);
 
-        $usuario = new Usuario();
-        $usuario->setId($usuarioData->usuarioId);
+        $usuario = Usuario::getUsuarioById($id);
+        if (!$usuario) throw new Exception('El usuario no existe', 404);
+        
         $usuario->setEmail($usuarioData->email);
         $usuario->setNombre($usuarioData->nombre);
         $usuario->setApellido($usuarioData->apellido);
@@ -105,13 +104,16 @@ abstract class Usuarios {
      */
     public static function deleteUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_delete', $usuarioId))
             throw new Exception('Forbidden', 403);
 
-        Usuario::deleteUsuario($id);
+        $usuario = Usuario::getUsuarioById($id);
+        if (!$usuario) throw new Exception('El usuario no existe', 404);
+
+        Usuario::deleteUsuario($usuario->getId());
 
         Response::getResponse()->setStatus('success');
     }

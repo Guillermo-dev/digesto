@@ -22,7 +22,7 @@ abstract class Auth {
      */
     public static function login(): void {
         if (isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         $data = Request::getBodyAsJson();
         $google_client = new Google_Client(['client_id' => '471191857447-594hnuasrs49qe51amgma6o0hiir07de.apps.googleusercontent.com']);
@@ -46,7 +46,7 @@ abstract class Auth {
      */
     public static function logout(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Forbidden', 403);
+            throw new Exception('Unauthorized', 401);
 
         session_destroy();
         Response::getResponse()->setStatus('success');
