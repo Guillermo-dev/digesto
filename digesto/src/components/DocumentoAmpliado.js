@@ -1,6 +1,6 @@
 import { Component, createElement, createStyle } from "../global/js/util.js";
 
-createStyle('DocumentoAmpliadoEstilos')._content(`
+createStyle("DocumentoAmpliadoEstilos")._content(`
 
     }
     
@@ -32,7 +32,8 @@ createStyle('DocumentoAmpliadoEstilos')._content(`
 export default function DocumentoAmpliado() {
     const _this = this;
     this.name = "DocumentoAmpliado";
-    this.root = createElement('div')._class('DocumentoAmpliado')._html(`<div class="cuerpoDoc" id="cuerpoDoc">
+    this.root = createElement("div")._class("DocumentoAmpliado")
+        ._html(`<div class="cuerpoDoc" id="cuerpoDoc">
     <div class="encabezadoDoc" id="encabezadoDoc">
         <h3> Detalles del Documento </h3>
     </div>
@@ -53,16 +54,10 @@ export default function DocumentoAmpliado() {
 
     // armar el html acá
 
-
-
-
-
     /**
      * Constructor
      */
-    (function _constructor() {
-
-    }());
+    (function _constructor() {})();
 }
 
 Object.setPrototypeOf(DocumentoAmpliado.prototype, new Component());

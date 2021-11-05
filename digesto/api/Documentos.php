@@ -21,7 +21,10 @@ abstract class Documentos {
      * @throws Exception
      */
     public static function getDocumentos(): void {
-        Response::getResponse()->appendData('documentos', Documento::getDocumentos($wPublics = true));
+        if (!isset($_SESSION['user']))
+            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
+        else
+            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));
         Response::getResponse()->setStatus('success');
     }
 

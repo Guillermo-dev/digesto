@@ -299,13 +299,13 @@ class Documento implements JsonSerializable {
      * @return array
      * @throws Exception
      */
-    public static function getDocumentos(bool $wPublics): array {
+    public static function getDocumentos(bool $onlyPublics): array {
         $conn = Connection::getConnection();
 
         $query = sprintf(
             'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
         FROM documentos WHERE publico = %s',
-            $wPublics == true ? 'TRUE' : 'FLASE'
+            $onlyPublics == true ? 'TRUE' : 'FALSE'
         );
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
