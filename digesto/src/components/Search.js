@@ -338,7 +338,10 @@ export default function Search() {
 
         if (_searchForm["search"].value.length > 0)
             url.append("search", _searchForm["search"].value);
-        else return false;
+        else {
+            _fetchDocumentos();
+            return false;
+        }
 
         if (tags.length > 0) url.append("tags", tags.join(";"));
         if (years.length > 0) url.append("years", years.join(";"));
