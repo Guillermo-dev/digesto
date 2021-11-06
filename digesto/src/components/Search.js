@@ -356,7 +356,7 @@ export default function Search() {
             .then(response => {
                 if (response.status === 'success') {
                     history.pushState(null, '', `/?${url.toString()}`)
-                    _documentList.processDocumentos(response.data);
+                    _documentList.processDocumentos(response.data["documentos"]);
                 } else {
                     errorAlert(response.error.message);
                 }
