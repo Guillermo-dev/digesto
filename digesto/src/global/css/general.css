@@ -18,11 +18,11 @@ html, body {
 }
 
 #root {
-    width: inherit;
+    width: calc(100vw);
     min-height: inherit;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: max-content minmax(45px, max-content) auto minmax(100px, max-content);
+    grid-template-rows: max-content max-content auto minmax(100px, max-content);
 }
 
 #root > header .logo img:nth-child(1) {

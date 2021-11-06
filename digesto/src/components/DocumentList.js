@@ -98,21 +98,22 @@ export default function DocumentList() {
     /**
      *
      */
-    this.setLoading = function () {
+    this.setLoading = function() {
         _this.setClassState('css-loading');
     };
 
     /**
      *
      */
-    this.setError = function () {
+    this.setError = function() {
         _this.setClassState('css-error');
     };
 
     /**
      *
      */
-    this.processDocumentos = function (documentos) {
+    this.processDocumentos = function(documentos) {
+        _content.innerHTML = "";
         if (documentos.length > 0) {
             documentos.forEach(documento => {
                 _content.append(new Entry(documento).root);
@@ -157,7 +158,7 @@ export default function DocumentList() {
          */
         (function _constructor() {
             _this.root.classList.add('d-none');
-            buttons[0].onclick = function () {
+            buttons[0].onclick = function() {
                 location.href = `/documentos/${documento.id}`;
             }
         })()

@@ -12,17 +12,17 @@ export function createElement(tagName) {
      * @type {*}
      */
     const element = document.createElement(tagName);
-    element._id = function (id) {
+    element._id = function(id) {
         element.id = id;
         return element;
     }
-    element._class = function () {
+    element._class = function() {
         Array.from(arguments).forEach(argument => {
             element.classList.add(argument);
         });
         return element;
     }
-    element._html = function (html) {
+    element._html = function(html) {
         element.innerHTML = html;
         return element;
     }
@@ -39,13 +39,11 @@ export function loadStyle(style) {
 
 /**
  *
- * @param id
  * @returns {*}
  */
-export function createStyle(id) {
+export function createStyle() {
     const style = document.createElement('style');
-    style.id = id;
-    style._content = function (content) {
+    style._content = function(content) {
         style.innerHTML = content;
         document.head.append(style);
     };
