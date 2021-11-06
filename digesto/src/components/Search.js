@@ -315,13 +315,25 @@ export default function Search() {
 
             if (tags.length > 0) url.append("tags", tags.join(";"));
             if (years.length > 0) url.append("years", years.join(";"));
-            if (emitters.length > 0) url.append("emisor", emitters.join(";"));
+            if (emitters.length > 0) url.append("emitters", emitters.join(";"));
 
             if (btoa(url.toString()) === _hash) return false;
 
             _hash = btoa(url.toString());
-
-            history.pushState(null, "", "/?" + url.toString());
+            
+            fetch(`/api/documentos?${url.toString()}`)
+                .then((httpResp) => httpResp.json())
+                .then((response) => {
+                    if (response.status === "success") {
+                        history.pushState(null, "", `/?${url.toString()}`);
+                        _documentList.processDocumentos(response.data["documentos"]);
+                    } else {
+                        errorAlert(response.error.message);
+                    }
+                })
+                .catch((reason) => {
+                    errorAlert(reason);
+                });
         } catch (error) {
             errorAlert(error);
         }

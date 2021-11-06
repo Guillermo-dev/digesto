@@ -136,7 +136,7 @@ export default function DocumentList() {
             <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"]}</p>
+                        <p class="mb-0 fw-bold">${documento["publico"] ? documento["titulo"] : documento["titulo"]+ " [Privado]"}</p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
