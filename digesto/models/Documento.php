@@ -294,7 +294,7 @@ class Documento implements JsonSerializable {
     /********************************************************/
 
     /**
-     * @param bool $wPublics
+     * @param bool $onlyPublics
      *
      * @return array
      * @throws Exception
@@ -304,8 +304,8 @@ class Documento implements JsonSerializable {
 
         $query = sprintf(
             'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
-        FROM documentos WHERE publico = %s',
-            $onlyPublics == true ? 'TRUE' : 'FALSE'
+        FROM documentos WHERE publico = %s OR publico = TRUE ORDER BY  fecha_emision DESC',
+            $onlyPublics ? 'TRUE' : 'FALSE'
         );
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
@@ -341,28 +341,30 @@ class Documento implements JsonSerializable {
      * @param array  $emitters
      * @param array  $tags
      * @param array  $years
-     * @param bool   $wPublics
+     * @param bool   $onlyPublics
      *
      * @return array
      * @throws Exception
      */
-    public static function getDocumentosSearch(string $search, array $emitters, array $tags, array $years, bool $wPublics): array {
+    public static function getDocumentosSearch(string $search, string $emitters, string $tags, string $years, bool $onlyPublics): array {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "SELECT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.tipo, D.fecha_emision, D.descargable, D.publico, D.pdf_id, D.emisor_id, D.usuario_id 
-              FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
-                INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
-                INNER JOIN tags T ON DT.tag_id = T.tag_id
-              WHERE D.titulo @@ to_tsquery('%s') %s '%s' Like '%%'||E.nombre ||'%%' %s '%s' Like '%%'||T.nombre ||'%%'  %s '%s' Like '%%'||D.fecha_emision||'%%' AND D.publico = %s",
-            pg_escape_string($search),
-            ($search === '' or $emitters === []) ? 'OR' : 'AND',
-            pg_escape_string(implode($emitters)),
-            $tags === [] ? 'OR' : 'AND',
-            pg_escape_string(implode($tags)),
-            $years === [] ? 'OR' : 'AND',
-            pg_escape_string(implode($years)),
-            $wPublics == true ? 'TRUE' : 'FLASE'
+            "SELECT DISTINCT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.tipo, D.fecha_emision, D.descargable, D.publico, D.pdf_id, D.emisor_id, D.usuario_id 
+            FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
+            INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
+            INNER JOIN tags T ON DT.tag_id = T.tag_id
+            WHERE (D.publico = %s OR D.publico = TRUE) 
+                %s 
+                %s 
+                %s 
+                %s
+                ORDER BY  D.fecha_emision DESC",
+            $onlyPublics ? 'TRUE' : 'FALSE',
+            $search == '' ? '' : "AND to_tsvector(D.titulo) @@ to_tsquery('" . pg_escape_string($search) . "')",
+            $emitters == '' ? '' : "AND '" . pg_escape_string($emitters) . "' Like '%'||E.nombre ||'%'",
+            $tags == '' ? '' :  "AND '" . pg_escape_string($tags) . "' Like '%'||T.nombre ||'%'",
+            $years == '' ? '' : "AND '" . pg_escape_string($years) . "' Like '%'||D.fecha_emision||'%'",
         );
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
