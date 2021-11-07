@@ -149,7 +149,7 @@ export default function AdminDocumentos() {
                 <p class="mb-0">Descripcion</p>
                 <p class="mb-0 text-muted">${documento["descripcion"]}</p>
                 <div class="text-end">
-                    <button type="button" data-js="documentBtn" class="btn btn-warning btn-sm">
+                    <button type="button" data-js="documentBtn" class="btn btn-warning btn-sm text-white">
                         <i class="bi-pencil me-2"></i><span>Editar</span>
                     </button>
                     <button type="button" data-js="documentBtn" class="btn btn-danger btn-sm">

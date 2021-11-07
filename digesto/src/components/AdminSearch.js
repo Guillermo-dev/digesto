@@ -83,7 +83,7 @@ export default function AdminSearch() {
             <form data-js="form">
                 <div class="input-group search-group">
                     <input type="text" class="form-control p-2" placeholder="Buscar por titulo, numero" name="search" autocomplete="off">
-                    <button type="submit" name="submitSearchBtn" class="bi-search btn btn-secondary"></button>
+                    <button type="submit" name="submitSearchBtn" class="bi-search btn btn-primary"></button>
                 </div>
             </form>
         </div>
@@ -161,13 +161,12 @@ export default function AdminSearch() {
                         </div>
                     </div>
                     <div class="col-md-auto text-center">
-                        <button type="submit" class="btn btn-secondary w-100 fw-bold text-white">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold" title="Filtrar">
                             <i class="bi-filter-left me-1"></i>
-                            <span>Filtrar</span>
                         </button>
                     </div>
                     <div class="col-md-auto mt-2 mt-md-0 ms-md-2">
-                        <button type="button" name="loginBtn" class="btn btn-warning w-100 bi-power" title="Cerrar sesión"></button>
+                        <button type="button" name="loginBtn" class="btn btn-primary w-100 bi-power" title="Cerrar sesión"></button>
                     </div>
                 </div>
             </form>

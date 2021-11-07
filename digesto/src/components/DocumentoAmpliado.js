@@ -1,4 +1,5 @@
-import { Component, createElement, createStyle } from "../global/js/util.js";
+import {createElement, createStyle } from "../global/js/util.js";
+import {Component} from "./Component.js";
 
 createStyle("DocumentoAmpliadoEstilos")._content(`
 
