@@ -5,7 +5,7 @@ use helpers\Response;
 
 include_once 'vendor/autoload.php';
 
-include_once 'config/error-handler.php';
+include_once 'config/config.php';
 
 $router = new Router();
 
