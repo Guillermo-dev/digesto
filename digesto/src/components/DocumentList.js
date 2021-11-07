@@ -19,6 +19,10 @@ createStyle('DocumentListJs')._content(`
         box-shadow: 0 4px 4px 1px #18363d33;
     }
     
+    .DocumentList .document.private {
+        opacity:0.5;
+    }
+    
     .DocumentList .more-btn {
         background-color: #f6f6f6;
         cursor: pointer;
@@ -134,10 +138,10 @@ export default function DocumentList() {
     function Entry(documento) {
         const _this = this;
         this.root = createElement('div')._class('DocumentoEntry')._html(`
-            <div class="p-4 mb-3 border document">
+            <div class="p-4 mb-3 border document ${documento['publico'] ? '' : 'private'}">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["publico"] ? documento["titulo"] : documento["titulo"]+ " [Privado]"}</p>
+                        <p class="mb-0 fw-bold">${documento["publico"] ? documento["titulo"] : documento["titulo"] + " [Privado]"}</p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
