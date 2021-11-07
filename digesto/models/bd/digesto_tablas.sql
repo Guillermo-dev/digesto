@@ -14,7 +14,9 @@ CREATE TABLE usuarios (
 CREATE TABLE usuarios_permisos (
 	usuario_id INTEGER NOT NULL,
 	permiso_id INTEGER NOT NULL,
-	CONSTRAINT usuario_fk FOREIGN KEY (usuario_id) REFERENCES usuarios(usuario_id),
+	CONSTRAINT usuario_fk FOREIGN KEY (usuario_id) REFERENCES usuarios(usuario_id)
+	ON UPDATE CASCADE
+    ON DELETE CASCADE,
 	CONSTRAINT permiso_fk FOREIGN KEY (permiso_id) REFERENCES permisos(permiso_id),
 	CONSTRAINT usuarios_permisos_pk PRIMARY KEY (usuario_id, permiso_id)
 );
@@ -55,7 +57,11 @@ CREATE TABLE documentos (
 CREATE TABLE documentos_tags (
 	documento_id INTEGER NOT NULL,
 	tag_id INTEGER NOT NULL,
-	CONSTRAINT documento_fk FOREIGN KEY (documento_id) REFERENCES documentos(documento_id),
-	CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES tags(tag_id),
+	CONSTRAINT documento_fk FOREIGN KEY (documento_id) REFERENCES documentos(documento_id)
+	ON UPDATE CASCADE
+    ON DELETE CASCADE,
+	CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+	ON UPDATE CASCADE
+    ON DELETE CASCADE,
 	CONSTRAINT documentos_tags_pk PRIMARY KEY (documento_id, tag_id)
 );

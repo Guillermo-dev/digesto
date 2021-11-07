@@ -29,15 +29,16 @@ VALUES ('Normativa'),
        ('Informatica'),
        ('Bla bla bla');
 
-INSERT INTO documentos_tags VALUES (1 ,1);
-INSERT INTO documentos_tags VALUES (1 ,2);
-INSERT INTO documentos_tags VALUES (2 ,1);
-INSERT INTO documentos_tags VALUES (3 ,1);
-INSERT INTO documentos_tags VALUES (4 ,1);
-INSERT INTO documentos_tags VALUES (5 ,1);
-INSERT INTO documentos_tags VALUES (6 ,1);
-INSERT INTO documentos_tags VALUES (7 ,1);
-INSERT INTO documentos_tags VALUES (8 ,1);
+INSERT INTO documentos_tags (usuario_id, tag_id) 
+VALUES (1 ,1),
+	   (1 ,2),
+	   (2 ,1),
+	   (3 ,1),
+   	   (4 ,1),
+	   (5 ,1),
+	   (6 ,1),
+	   (7 ,1),
+	   (8 ,1);
 
 INSERT INTO permisos (nombre, descripcion)
 VALUES ('usuarios_create', ''),
@@ -52,3 +53,17 @@ VALUES ('usuarios_create', ''),
        ('emisores_create', ''),
        ('emisores_update', ''),
        ('emisores_delete', '');
+   
+INSERT INTO usuarios_permisos (usuario_id, permiso_id)
+VALUES (3,1),
+       (3,2),
+       (3,3),
+       (3,4),
+       (3,5),
+       (3,6),
+       (3,7),
+       (3,8),
+       (3,9),
+       (3,10),
+       (3,11),
+       (3,12);
