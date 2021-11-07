@@ -361,11 +361,11 @@ class Documento implements JsonSerializable {
                 %s
                 ORDER BY  D.fecha_emision DESC",
             $onlyPublics ? 'TRUE' : 'FALSE',
-            $search == '' ? '' : "AND (to_tsvector(D.titulo) @@ to_tsquery('" . pg_escape_string($search) . "')",
-            $search == '' ? '' : "OR to_tsvector(D.numero_expediente) @@ to_tsquery('" . pg_escape_string($search) . "'))",
-            $emitters == '' ? '' : "AND '" . pg_escape_string($emitters) . "' Like '%'||E.nombre ||'%'",
-            $tags == '' ? '' :  "AND '" . pg_escape_string($tags) . "' Like '%'||T.nombre ||'%'",
-            $years == '' ? '' : "AND '" . pg_escape_string($years) . "' Like '%'||D.fecha_emision||'%'",
+            $search == '' ? '' : "AND  ('%'||UPPER(D.titulo)||'%' LIKE UPPER('%" . pg_escape_string($search) . "%')",
+            $search == '' ? '' : "OR '%'|| UPPER(D.numero_expediente) || '%' LIKE '%" . pg_escape_string($search) . "%')",
+            $emitters == '' ? '' : "AND '%'||E.nombre ||'%' LIKE '%" . pg_escape_string($emitters) . "%' ",
+            $tags == '' ? '' :  "AND  '%'||T.nombre ||'%'LIKE '%" . pg_escape_string($tags) . "%'",
+            $years == '' ? '' : "AND  '%'||D.fecha_emision||'%' LIKE '%" . pg_escape_string($years) . "%'",
         );
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));

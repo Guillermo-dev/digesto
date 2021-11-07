@@ -29,7 +29,7 @@ VALUES ('Normativa'),
        ('Informatica'),
        ('Bla bla bla');
 
-INSERT INTO documentos_tags (usuario_id, tag_id) 
+INSERT INTO documentos_tags (documento_id, tag_id) 
 VALUES (1 ,1),
 	   (1 ,2),
 	   (2 ,1),

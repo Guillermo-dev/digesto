@@ -23,8 +23,7 @@ abstract class Documentos {
     public static function getDocumentos(): void {
         if (!isset($_SESSION['user']))
             if (isset($_GET['search']) or isset($_GET['emitters']) or isset($_GET['tags']) or isset($_GET['years'])) {
-                if ($search = isset($_GET['search']))
-                    $_GET['search'] != ' ' ? str_replace([' '], '&', $_GET['search']) : '';
+                $search = isset($_GET['search']) ? $_GET['search'] : '';
                 $emitters = isset($_GET['emitters']) ? $_GET['emitters'] : '';
                 $tags =  isset($_GET['tags']) ? $_GET['tags'] : '';
                 $years = isset($_GET['years']) ? $_GET['years'] : '';
@@ -33,7 +32,7 @@ abstract class Documentos {
                 Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
         else
             if (isset($_GET['search']) or isset($_GET['emitters']) or isset($_GET['tags']) or isset($_GET['years'])) {
-            $search = isset($_GET['search']) ? str_replace(' ', ' & ', $_GET['search']) : '';
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
             $emitters = isset($_GET['emitters']) ? $_GET['emitters'] : '';
             $tags =  isset($_GET['tags']) ? $_GET['tags'] : '';
             $years = isset($_GET['years']) ? $_GET['years'] : '';
