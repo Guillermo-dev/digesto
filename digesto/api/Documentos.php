@@ -22,23 +22,24 @@ abstract class Documentos {
      */
     public static function getDocumentos(): void {
         if (!isset($_SESSION['user']))
+
             if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
                 $search = isset($_GET['search']) ? $_GET['search'] : '';
                 $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
-                $etiquetas =  isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
+                $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
                 $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
                 Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = true));
             } else
                 Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
         else
             if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
-            $search = isset($_GET['search']) ? $_GET['search'] : '';
-            $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
-            $etiquetas =  isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
-            $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
-            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = false));
-        } else
-            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));
+                $search = isset($_GET['search']) ? $_GET['search'] : '';
+                $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
+                $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
+                $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+                Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = false));
+            } else
+                Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));
 
         Response::getResponse()->setStatus('success');
     }

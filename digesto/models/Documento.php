@@ -337,6 +337,15 @@ class Documento implements JsonSerializable {
     }
 
     /**
+     * @param string $algo
+     *
+     * @return string
+     */
+    private static function lloro(string $algo): string {
+        return '(\'' . implode('\',\'', explode(';', pg_escape_string($algo))) . '\')';
+    }
+
+    /**
      * @param string $search
      * @param array  $emitters
      * @param array  $tags
@@ -359,14 +368,16 @@ class Documento implements JsonSerializable {
                 %s 
                 %s 
                 %s
+                %s
                 ORDER BY  D.fecha_emision DESC",
             $onlyPublics ? 'TRUE' : 'FALSE',
-            $search == '' ? '' : "AND  ('%'||UPPER(D.titulo)||'%' LIKE UPPER('%" . pg_escape_string($search) . "%')",
-            $search == '' ? '' : "OR '%'|| UPPER(D.numero_expediente) || '%' LIKE '%" . pg_escape_string($search) . "%')",
-            $emitters == '' ? '' : "AND '%'||E.nombre ||'%' LIKE '%" . pg_escape_string($emitters) . "%' ",
-            $tags == '' ? '' :  "AND  '%'||T.nombre ||'%'LIKE '%" . pg_escape_string($tags) . "%'",
-            $years == '' ? '' : "AND  '%'||D.fecha_emision||'%' LIKE '%" . pg_escape_string($years) . "%'",
+            $search == '' ? '' : "AND (UPPER(D.titulo) LIKE UPPER('%" . pg_escape_string($search) . "%')",
+            $search == '' ? '' : "OR UPPER(D.numero_expediente) LIKE '%" . pg_escape_string($search) . "%')",
+            $emitters == '' ? '' : "AND E.nombre IN " . self::lloro($emitters),
+            $tags == '' ? '' : "AND T.nombre IN " . self::lloro($tags),
+            $years == '' ? '' : "AND CAST(EXTRACT(YEAR FROM D.fecha_emision) AS varchar) IN " . self::lloro($years),
         );
+
         if (($rs = pg_query($conn, $query)) === false)
             throw new Exception(pg_last_error($conn));
 

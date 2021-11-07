@@ -16,7 +16,7 @@ try {
     $router->run();
 } catch (Throwable $e) {
     Response::getResponse()->setStatus('error');
-    Response::getResponse()->setError($e->getCode(), $e->getMessage());
+    Response::getResponse()->setError($e->getCode(), $e);
     Response::getResponse()->setData(null);
 }
 
