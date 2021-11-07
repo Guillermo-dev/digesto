@@ -22,21 +22,21 @@ abstract class Documentos {
      */
     public static function getDocumentos(): void {
         if (!isset($_SESSION['user']))
-            if (isset($_GET['search']) or isset($_GET['emitters']) or isset($_GET['tags']) or isset($_GET['years'])) {
+            if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
                 $search = isset($_GET['search']) ? $_GET['search'] : '';
-                $emitters = isset($_GET['emitters']) ? $_GET['emitters'] : '';
-                $tags =  isset($_GET['tags']) ? $_GET['tags'] : '';
-                $years = isset($_GET['years']) ? $_GET['years'] : '';
-                Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emitters, $tags, $years, $onlyPublics = true));
+                $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
+                $etiquetas =  isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
+                $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+                Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = true));
             } else
                 Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
         else
-            if (isset($_GET['search']) or isset($_GET['emitters']) or isset($_GET['tags']) or isset($_GET['years'])) {
+            if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
             $search = isset($_GET['search']) ? $_GET['search'] : '';
-            $emitters = isset($_GET['emitters']) ? $_GET['emitters'] : '';
-            $tags =  isset($_GET['tags']) ? $_GET['tags'] : '';
-            $years = isset($_GET['years']) ? $_GET['years'] : '';
-            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emitters, $tags, $years, $onlyPublics = false));
+            $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
+            $etiquetas =  isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
+            $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = false));
         } else
             Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));
 
