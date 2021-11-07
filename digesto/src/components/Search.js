@@ -26,11 +26,6 @@ createStyle()._content(`
         color: #A4A4A4;
     }
 
-    .Search .search-group span {
-        color: #406269;
-        border-left: none;
-    }
-
     .Search .drop-down-box {
         position: absolute;
         top: 70px;
@@ -52,6 +47,8 @@ createStyle()._content(`
 
     .Search .drop-down-box > div {
         background-color: #ffffff;
+        max-height: 500px;
+        overflow-y: auto;
     }
 
     .Search .drop-down-box ul {
@@ -87,15 +84,17 @@ export default function Search() {
     const _this = this;
     this.name = "Search";
     this.root = createElement("div")._class("Search")._html(`<div class="container p-3 px-2 position-relative">
-    <form data-js="form">
-        <div class="row g-0">
-            <div class="col-md-auto">
+    <div class="row g-0">
+        <div class="col-md-auto">
+            <form data-js="form">
                 <div class="input-group search-group">
                     <input type="text" class="form-control p-2" placeholder="Buscar por titulo, numero" name="search" autocomplete="off">
-                    <span class="bi-search input-group-text"></span>
+                    <button type="submit" name="submitSearchBtn" class="bi-search btn btn-secondary"></button>
                 </div>
-            </div>
-            <div class="col-md">
+            </form>
+        </div>
+        <div class="col-md">
+            <form data-js="form">
                 <div class="row g-0 justify-content-end">
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="tagBtn" class="btn w-100 text-white">
@@ -140,20 +139,23 @@ export default function Search() {
                         </div>
                     </div>
                     <div class="col-md-auto text-center">
-                        <button type="submit" name="" class="btn w-100 fw-bold text-white">
+                        <button type="submit" class="btn btn-secondary w-100 fw-bold text-white">
                             <i class="bi-filter-left me-1"></i>
                             <span>Filtrar</span>
                         </button>
                     </div>
+                    <div class="col-md-auto mt-2 mt-md-0 ms-md-2">
+                        <button type="button" name="loginBtn" class="btn btn-primary w-100 bi-person-fill"></button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>`);
 
+    const _forms = _this.root.querySelectorAll('[data-js="form"]');
     const _lists = _this.root.querySelectorAll('[data-js="drop-box"] ul');
-    const _searchForm = _this.root.querySelector('[data-js="form"]');
-    const _buttons = _searchForm.querySelectorAll('button[type="button"]');
+    const _buttons = _forms[1].querySelectorAll('button[type="button"]');
 
     let _currentOpenedDropBox = null;
     let _documentList = null;
@@ -163,22 +165,33 @@ export default function Search() {
      * Constructor
      */
     function _constructor() {
-        _searchForm.onsubmit = (event) => {
-            try {
-                _onSubmit.call(_searchForm, event);
-            } catch (error) {
-                errorAlert(error);
-            }
-            return false;
-        };
-        Array.from(_buttons).forEach((button) => {
-            button.onclick = _onOpenDropBox;
-        });
         document.body.addEventListener("click", function() {
             if (_currentOpenedDropBox)
                 _currentOpenedDropBox.classList.remove("visible");
             _currentOpenedDropBox = null;
         });
+        Array.from(_buttons).forEach((button) => {
+            button.onclick = _onOpenDropBox;
+        });
+        _forms[0].onsubmit = (event) => {
+            try {
+                _onSubmitSearch.call(_forms[0], event);
+            } catch (error) {
+                errorAlert(error);
+            }
+            return false;
+        };
+        _forms[1].onsubmit = (event) => {
+            try {
+                _onSubmitFilter.call(_forms[1], event);
+            } catch (error) {
+                errorAlert(error);
+            }
+            return false;
+        };
+        _forms[1]['loginBtn'].onclick = () => {
+            location.href = "/auth/login";
+        }
         _fetchFilterData();
         _fillYears();
     }
@@ -188,7 +201,7 @@ export default function Search() {
      */
     function _fillYears() {
         const currentYear = new Date().getFullYear();
-        for (let year = 2016; year <= currentYear; year++) {
+        for (let year = currentYear; year >= 2016; year--) {
             _lists[1].append(_createFilterOption('anios', year));
         }
     }
@@ -313,49 +326,78 @@ export default function Search() {
      * @param event
      * @private
      */
-    function _onSubmit(event) {
+    function _onSubmitSearch(event) {
         const url = new URLSearchParams();
 
-        const tags = [];
-        const years = [];
-        const emitters = [];
-
-        _searchForm["etiquetas"].forEach((option) => {
-            if (option.checked) {
-                tags.push(option.value);
-            }
-        });
-        _searchForm["anios"].forEach((option) => {
-            if (option.checked) {
-                years.push(option.value);
-            }
-        });
-        _searchForm["emisores"].forEach((option) => {
-            if (option.checked) {
-                emitters.push(option.value);
-            }
-        });
-
-        if (_searchForm["search"].value.length > 0)
-            url.append("search", _searchForm["search"].value);
+        if (_forms[0]["search"].value.length > 0)
+            url.append("search", _forms[0]["search"].value);
         else {
             _fetchDocumentos();
             return false;
         }
-
-        if (tags.length > 0) url.append("tags", tags.join(";"));
-        if (years.length > 0) url.append("years", years.join(";"));
-        if (emitters.length > 0) url.append("emisor", emitters.join(";"));
-
-        if (btoa(url.toString()) === _hash) return false;
-
-        _hash = btoa(url.toString());
 
         fetch(`/api/documentos?${url.toString()}`)
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.status === 'success') {
                     history.pushState(null, '', `/?${url.toString()}`)
+                    _documentList.processDocumentos(response.data["documentos"]);
+                } else {
+                    errorAlert(response.error.message);
+                }
+            })
+            .catch(reason => {
+                errorAlert(reason);
+            });
+    }
+
+    /**
+     *
+     * @param event
+     * @returns {boolean}
+     * @private
+     */
+    function _onSubmitFilter(event) {
+        const url = new URLSearchParams();
+
+        const etiquetas = [];
+        const anios = [];
+        const emisores = [];
+
+        _forms[1]["etiquetas"].forEach((option) => {
+            if (option.checked) {
+                etiquetas.push(option.value);
+            }
+        });
+        _forms[1]["anios"].forEach((option) => {
+            if (option.checked) {
+                anios.push(option.value);
+            }
+        });
+        _forms[1]["emisores"].forEach((option) => {
+            if (option.checked) {
+                emisores.push(option.value);
+            }
+        });
+
+        if (etiquetas.length > 0)
+            url.append("etiquetas", etiquetas.join(";"));
+
+        if (anios.length > 0)
+            url.append("anios", anios.join(";"));
+
+        if (emisores.length > 0)
+            url.append("emisores", emisores.join(";"));
+
+        let _url = '';
+        if (url.toString().length > 0)
+            _url = `?${url.toString()}`;
+
+        fetch(`/api/documentos${_url}`)
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.status === 'success') {
+                    history.pushState(null, '', `/${_url}`)
                     _documentList.processDocumentos(response.data["documentos"]);
                 } else {
                     errorAlert(response.error.message);
