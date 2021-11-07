@@ -1,35 +1,36 @@
 import {createElement, createStyle} from "../global/js/util.js";
 import {Component} from "./Component.js";
 
-createStyle('DocumentListJs')._content(`
-    .DocumentList:not(.css-loaded) .css-loaded,
-    .DocumentList:not(.css-loading) .css-loading,
-    .DocumentList:not(.css-no-entries) .css-no-entries,
-    .DocumentList:not(.css-error) .css-error,
-    .DocumentList:not(.css-more-btn) .css-more-btn {
+// language=CSS
+createStyle()._content(`
+    .Documentos:not(.css-loaded) .css-loaded,
+    .Documentos:not(.css-loading) .css-loading,
+    .Documentos:not(.css-no-entries) .css-no-entries,
+    .Documentos:not(.css-error) .css-error,
+    .Documentos:not(.css-more-btn) .css-more-btn {
         display: none !important;
     }
-    
-    .DocumentList {
+
+    .Documentos {
         padding: 30px 0;
         height: 100%;
     }
-    
-    .DocumentList .document {
+
+    .Documentos .document {
         box-shadow: 0 4px 4px 1px #18363d33;
     }
-    
-    .DocumentList .document.private {
-        opacity:0.5;
+
+    .Documentos .document.private {
+        opacity: 0.5;
     }
-    
-    .DocumentList .more-btn {
+
+    .Documentos .more-btn {
         background-color: #f6f6f6;
         cursor: pointer;
         transition: background-color .5s ease-in-out;
     }
-    
-    .DocumentList .more-btn:hover {
+
+    .Documentos .more-btn:hover {
         background-color: #e6e8ea;
     }
 `);
@@ -38,10 +39,9 @@ createStyle('DocumentListJs')._content(`
  *
  * @constructor
  */
-export default function DocumentList() {
+export default function Documentos() {
     const _this = this;
-    this.name = "DocumentList";
-    this.root = createElement('div')._class('DocumentList')._html(`
+    this.root = createElement('div')._class('Documentos')._html(`
         <!--Loaded-->
         <div class="container css-loaded">
             <div class="" data-js="content"><!----></div>
@@ -120,7 +120,7 @@ export default function DocumentList() {
         _content.innerHTML = "";
         if (documentos.length > 0) {
             documentos.forEach(documento => {
-                _content.append(new Entry(documento).root);
+                _content.append(new DocumentoEntry(documento).root);
             });
             _this.setClassState('css-loaded');
 
@@ -135,7 +135,7 @@ export default function DocumentList() {
      * @param documento
      * @constructor
      */
-    function Entry(documento) {
+    function DocumentoEntry(documento) {
         const _this = this;
         this.root = createElement('div')._class('DocumentoEntry')._html(`
             <div class="p-4 mb-3 border document ${documento['publico'] ? '' : 'private'}">
@@ -168,7 +168,8 @@ export default function DocumentList() {
         })()
     }
 
+    //Invoke
     _constructor();
 }
 
-Object.setPrototypeOf(DocumentList.prototype, new Component());
+Object.setPrototypeOf(Documentos.prototype, new Component());

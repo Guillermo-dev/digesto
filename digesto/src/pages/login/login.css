@@ -5,3 +5,11 @@
     justify-content: center;
     align-items: center;
 }
+
+#root nav {
+    min-height: 45px;
+}
+
+#root main {
+    min-height: 300px;
+}

@@ -3,25 +3,25 @@ import {Component} from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
-    .Search button, .Search input, .Search .input-group-text {
+    .AdminSearch button, .AdminSearch input, .AdminSearch .input-group-text {
         font-size: 0.9rem !important;
     }
 
-    .Search .search-group input, .Search .search-group span {
+    .AdminSearch .search-group input, .AdminSearch .search-group span {
         background-color: #00242a;
         border-color: #263d42;
         color: white;
     }
 
-    .Search .search-group input {
+    .AdminSearch .search-group input {
         border-right: none
     }
 
-    .Search .search-group input::placeholder {
+    .AdminSearch .search-group input::placeholder {
         color: #A4A4A4;
     }
 
-    .Search .drop-down-box {
+    .AdminSearch .drop-down-box {
         position: absolute;
         top: 70px;
         right: 0;
@@ -34,24 +34,24 @@ createStyle()._content(`
         transition: opacity .2s ease-in-out 0s, transform 0s step-end .2s;
     }
 
-    .Search .drop-down-box.visible {
+    .AdminSearch .drop-down-box.visible {
         opacity: 1;
         transform: scale(1);
         transition: opacity .2s ease-in-out 0s, transform 0s step-end 0s;
     }
 
-    .Search .drop-down-box > div {
+    .AdminSearch .drop-down-box > div {
         background-color: #ffffff;
         max-height: 500px;
         overflow-y: auto;
     }
 
-    .Search .drop-down-box ul {
+    .AdminSearch .drop-down-box ul {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
     }
 
-    .Search .drop-down-box ul li {
+    .AdminSearch .drop-down-box ul li {
         padding: 10px;
         font-size: 0.9rem;
         overflow: hidden;
@@ -59,13 +59,13 @@ createStyle()._content(`
     }
 
     @media (max-width: 768px) {
-        .Search .drop-down-box {
+        .AdminSearch .drop-down-box {
             width: 100%;
             max-width: 100%;
             top: 30px;
         }
 
-        .Search .list-wrapper {
+        .AdminSearch .list-wrapper {
             position: relative;
         }
     }
@@ -75,10 +75,9 @@ createStyle()._content(`
  *
  * @constructor
  */
-export default function Search() {
+export default function AdminSearch() {
     const _this = this;
-    this.name = "Search";
-    this.root = createElement("div")._class("Search")._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("AdminSearch")._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md-auto">
             <form data-js="form">
@@ -133,6 +132,34 @@ export default function Search() {
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-auto text-center list-wrapper">
+                        <button type="button" name="emitterBtn" class="btn w-100 text-white">
+                            <b class="me-2">Descargables</b>
+                            <span>Todos</span>
+                            <i class="ms-2 bi-chevron-down"></i>
+                        </button>
+                        <div class="drop-down-box p-2" data-js="drop-box">
+                            <div class="p-2 shadow">
+                                <ul class="list-unstyled m-0 p-0">
+                                    <!--dynamic loading-->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-auto text-center list-wrapper">
+                        <button type="button" name="emitterBtn" class="btn w-100 text-white">
+                            <b class="me-2">Publicos</b>
+                            <span>Todos</span>
+                            <i class="ms-2 bi-chevron-down"></i>
+                        </button>
+                        <div class="drop-down-box p-2" data-js="drop-box">
+                            <div class="p-2 shadow">
+                                <ul class="list-unstyled m-0 p-0">
+                                    <!--dynamic loading-->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-auto text-center">
                         <button type="submit" class="btn btn-secondary w-100 fw-bold text-white">
                             <i class="bi-filter-left me-1"></i>
@@ -140,7 +167,7 @@ export default function Search() {
                         </button>
                     </div>
                     <div class="col-md-auto mt-2 mt-md-0 ms-md-2">
-                        <button type="button" name="loginBtn" class="btn btn-primary w-100 bi-person-fill"></button>
+                        <button type="button" name="loginBtn" class="btn btn-warning w-100 bi-power" title="Cerrar sesión"></button>
                     </div>
                 </div>
             </form>
@@ -184,7 +211,7 @@ export default function Search() {
             return false;
         };
         _forms[1]['loginBtn'].onclick = () => {
-            location.href = "/auth/login";
+            location.href = "/auth/logout";
         }
         _fetchEtiquetas();
         _fetchEmisores();
@@ -442,4 +469,4 @@ export default function Search() {
     _constructor();
 }
 
-Object.setPrototypeOf(Search.prototype, new Component());
+Object.setPrototypeOf(AdminSearch.prototype, new Component());

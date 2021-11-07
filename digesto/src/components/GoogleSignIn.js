@@ -1,15 +1,8 @@
 import {createElement, createStyle, errorAlert} from "../global/js/util.js";
 import {Component} from "./Component.js";
-import {AuthAPI} from "./Api.js";
-
-/**
- *
- * @type {AuthAPI}
- */
-const authAPI = new AuthAPI();
 
 // language=CSS
-createStyle('')._content(`
+createStyle()._content(`
     .GoogleSignIn {
         margin: auto;
         max-width: max-content;
@@ -56,17 +49,24 @@ export default function GoogleSignIn() {
      * @private
      */
     function _handleGoogleCredentialResponse(response) {
-        authAPI.login({
-            data: {
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 gToken: response.credential
-            }
-        }, response => {
-            if (response.status === 'success') {
-                location.href = '/admin/';
-            } else {
-                errorAlert(response.error.message);
-            }
-        }, reason => {
+            })
+        })
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.status === 'success') {
+                    location.href = '/admin';
+                } else {
+                    errorAlert(response.error.message);
+                }
+            })
+            .catch(reason => {
             errorAlert(reason);
         });
     }
