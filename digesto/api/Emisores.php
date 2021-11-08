@@ -31,7 +31,6 @@ abstract class Emisores {
         Response::getResponse()->setStatus('success');
     }
 
-
     /**
      * @throws Exception
      */

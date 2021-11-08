@@ -23,10 +23,10 @@ abstract class Documentos {
      */
     public static function getPublicsDocumentos(): void {
         if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
-            $search = isset($_GET['search']) ? $_GET['search'] : '';
-            $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
-            $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
-            $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+            $search = $_GET['search'] ?? '';
+            $emisores = $_GET['emisores'] ?? '';
+            $etiquetas = $_GET['etiquetas'] ?? '';
+            $anios = $_GET['anios'] ?? '';
             Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = true));
         } else
             Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
@@ -34,15 +34,18 @@ abstract class Documentos {
         Response::getResponse()->setStatus('success');
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getAllDocumentos(): void {
         if (!isset($_SESSION['user']))
             throw new Exception('Unauthorized', 401);
 
         if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
-            $search = isset($_GET['search']) ? $_GET['search'] : '';
-            $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
-            $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
-            $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+            $search = $_GET['search'] ?? '';
+            $emisores = $_GET['emisores'] ?? '';
+            $etiquetas = $_GET['etiquetas'] ?? '';
+            $anios = $_GET['anios'] ?? '';
             Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = false));
         } else
             Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));

@@ -11,7 +11,8 @@ if (isset($router)) {
     $router->post('/auth/login', 'api\Auth@login');
     $router->delete('/auth/logout', 'api\Auth@logout');
 
-    $router->get('/documentos', 'api\Documentos@getDocumentos');
+    $router->get('/documentos/publicos', 'api\Documentos@getPublicsDocumentos');
+    $router->get('/documentos', 'api\Documentos@getAllDocumentos');
     $router->get('/documentos/{id}', 'api\Documentos@getDocumento');
     $router->post('/documentos', 'api\Documentos@createDocumento');
     $router->put('/documentos/{id}', 'api\Documentos@updateDocumento');
