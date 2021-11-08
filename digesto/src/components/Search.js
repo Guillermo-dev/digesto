@@ -213,10 +213,12 @@ export default function Search() {
                 if (response.status === 'success') {
                     _documentosComponent.processDocumentos(response.data['documentos']);
                 } else {
+                    _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
             .catch(reason => {
+                _documentosComponent.setError();
                 errorAlert(reason);
             });
     }

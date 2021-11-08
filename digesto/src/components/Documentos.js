@@ -20,10 +20,6 @@ createStyle()._content(`
         box-shadow: 0 4px 4px 1px #18363d33;
     }
 
-    .Documentos .document.private {
-        opacity: 0.5;
-    }
-
     .Documentos .more-btn {
         background-color: #f6f6f6;
         cursor: pointer;
@@ -46,7 +42,7 @@ export default function Documentos() {
         <div class="container css-loaded">
             <div class="" data-js="content"><!----></div>
             <div class="container p-3 text-center more-btn css-more-btn text-secondary" data-js="more-btn">
-                <i class="bi-plus-lg me-3"></i>Mostrar mas resultados
+                <i class="bi-search me-3"></i>Mostrar mas resultados
             </div>
         </div>
         <!--No entries-->
@@ -63,6 +59,7 @@ export default function Documentos() {
             <span class="spinner-border"></span>
         </div>
     `);
+
     const _content = _this.root.querySelector('[data-js="content"]');
     const _moreBtn = _this.root.querySelector('[data-js="more-btn"]');
     const _paginator = {
@@ -138,10 +135,10 @@ export default function Documentos() {
     function DocumentoEntry(documento) {
         const _this = this;
         this.root = createElement('div')._class('DocumentoEntry')._html(`
-            <div class="p-4 mb-3 border document ${documento['publico'] ? '' : 'private'}">
+            <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["publico"] ? documento["titulo"] : documento["titulo"] + " [Privado]"}</p>
+                        <p class="mb-0 fw-bold">${documento["titulo"]}</p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
@@ -160,12 +157,15 @@ export default function Documentos() {
         /**
          * Constructor
          */
-        (function _constructor() {
+        function _constructor() {
             _this.root.classList.add('d-none');
             buttons[0].onclick = function() {
                 location.href = `/documentos/${documento.id}`;
             }
-        })()
+        }
+
+        //Invoke
+        _constructor();
     }
 
     //Invoke
