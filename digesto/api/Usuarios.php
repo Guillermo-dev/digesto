@@ -147,18 +147,17 @@ abstract class Usuarios {
 
     /**
      * @param int $usuarioId
-     * @param int $id
      *
      * @throws ApiException
-     * @throws ModalException
      * @throws JsonException
+     * @throws ModalException
      */
     public static function assignPermisos(int $usuarioId = 0): void {
         if (!isset($_SESSION['user']))
             throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
-        $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('usuarios_update', $usuarioId))
+        $loggedUserId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('usuarios_update', $loggedUserId))
             throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $requestData = Request::getBodyAsJson();
@@ -175,11 +174,10 @@ abstract class Usuarios {
 
     /**
      * @param int $usuarioId
-     * @param int $id
      *
      * @throws ApiException
-     * @throws ModalException
      * @throws JsonException
+     * @throws ModalException
      */
     public static function removePermisos(int $usuarioId = 0): void {
         if (!isset($_SESSION['user']))

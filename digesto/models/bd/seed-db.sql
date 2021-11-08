@@ -39,31 +39,3 @@ VALUES (1 ,1),
 	   (6 ,1),
 	   (7 ,1),
 	   (8 ,1);
-
-INSERT INTO permisos (nombre, descripcion)
-VALUES ('usuarios_create', ''),
-       ('usuarios_update', ''),
-       ('usuarios_delete', ''),
-       ('documentos_create', ''),
-       ('documentos_update', ''),
-       ('documentos_delete', ''),
-       ('tags_create', ''),
-       ('tags_update', ''),
-       ('tags_delete', ''),
-       ('emisores_create', ''),
-       ('emisores_update', ''),
-       ('emisores_delete', '');
-   
-INSERT INTO usuarios_permisos (usuario_id, permiso_id)
-VALUES (3,1),
-       (3,2),
-       (3,3),
-       (3,4),
-       (3,5),
-       (3,6),
-       (3,7),
-       (3,8),
-       (3,9),
-       (3,10),
-       (3,11),
-       (3,12);
