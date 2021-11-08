@@ -337,7 +337,7 @@ export default function Search() {
             return false;
         }
 
-        fetch(`/api/documentos?${url.toString()}`)
+        fetch(`/api/documentos/publicos?${url.toString()}`)
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.status === 'success') {
@@ -394,7 +394,7 @@ export default function Search() {
         if (url.toString().length > 0)
             _url = `?${url.toString()}`;
 
-        fetch(`/api/documentos${_url}`)
+        fetch(`/api/documentos/publicos${_url}`)
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.status === 'success') {
