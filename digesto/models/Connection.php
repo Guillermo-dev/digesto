@@ -38,7 +38,18 @@ abstract class Connection {
             self::$conn = pg_connect(self::getConnectionString());
             if (self::$conn === false)
                 throw new ModalException('Cannot connect to the database');
+            pg_set_error_verbosity(self::$conn, PGSQL_ERRORS_VERBOSE);
         }
         return self::$conn;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getErrorCode(): string {
+        if (!self::$conn) return '';
+        $matches = [];
+        preg_match('/ERROR: +(\d+)/', pg_last_error(self::$conn), $matches);
+        return $matches[1];
     }
 }

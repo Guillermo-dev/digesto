@@ -276,8 +276,9 @@ class Usuario implements JsonSerializable {
 
         $query = sprintf("DELETE FROM usuarios WHERE usuario_id='%s'", $usuario_id);
 
-        if (!($rs = pg_query($conn, $query)))
-            throw new ModalException(pg_last_error($conn));
+        $rs = @pg_query($conn, $query);
+        if ($rs === false)
+            throw new ModalException(pg_last_error($conn), Connection::getErrorCode());
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
