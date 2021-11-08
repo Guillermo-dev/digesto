@@ -46,8 +46,7 @@ if (isset($router)) {
     $router->delete('/usuarios/(\d+)', 'api\Usuarios@deleteUsuario');
 
     $router->get('/usuarios/(\d+)/permisos', 'api\Usuarios@getPermisos');
-    $router->post('/usuarios/(\d+)/permisos', 'api\Usuarios@assignPermisos');
-    $router->delete('/usuarios/(\d+)/permisos', 'api\Usuarios@removePermisos');
+    $router->put('/usuarios/(\d+)/permisos', 'api\Usuarios@updatePermisos');
 
     $router->set404(function () {
         Response::getResponse()->setCode(Response::NOT_FOUND);

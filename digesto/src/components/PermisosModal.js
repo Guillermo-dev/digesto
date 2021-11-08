@@ -136,53 +136,40 @@ export default function PermisosModal() {
                 assignList.push(entry._self.getPermiso().id);
         });
 
-        if (assignList.length > 0)
-            fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({permisos: assignList})
+        fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({assign: assignList, remove: removeList})
+        })
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    successAlert('Los permisos fueron se actualizaron con exito');
+                    Array.from(_content.children).forEach(entry => {
+                        if (entry._self.initialState && !entry._self.finalState)
+                            entry._self.initialState = false;
+                        else if (!entry._self.initialState && entry._self.finalState)
+                            entry._self.initialState = true;
+                    });
+                    modalBox.close();
+                    _clearComponent();
+                } else {
+                    errorAlert(response.error.message);
+                }
             })
-                .then(httpResp => httpResp.json())
-                .then(response => {
-                    if (response.code === 200) {
-                        successAlert('Los permisos fueron <b>asignados</b> con exito');
-                        Array.from(_content.children).forEach(entry => {
-                            if (!entry._self.initialState && entry._self.finalState)
-                                entry._self.initialState = true;
-                        });
-                    } else {
-                        errorAlert(response.error.message);
-                    }
-                })
-                .catch(reason => {
-                    errorAlert(reason);
-                });
+            .catch(reason => {
+                errorAlert(reason);
+            });
+    }
 
-        if (removeList.length > 0)
-            fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({permisos: removeList})
-            })
-                .then(httpResp => httpResp.json())
-                .then(response => {
-                    if (response.code === 200) {
-                        successAlert('Los permisos fueron <b>removidos</b> con exito');
-                        Array.from(_content.children).forEach(entry => {
-                            if (entry._self.initialState && !entry._self.finalState)
-                                entry._self.initialState = false;
-                        });
-                    } else {
-                        errorAlert(response.error.message);
-                    }
-                })
-                .catch(reason => {
-                    errorAlert(reason);
-                });
+    /**
+     *
+     * @private
+     */
+    function _clearComponent() {
+        _config = {};
     }
 
     /**
