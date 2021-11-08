@@ -354,6 +354,7 @@ export default function AdminSearch() {
      */
     function _onSubmitSearch(event) {
         const url = new URLSearchParams();
+        _documentosComponent.setLoading();
 
         if (_forms[0]["search"].value.length > 0)
             url.append("search", _forms[0]["search"].value);
@@ -370,10 +371,12 @@ export default function AdminSearch() {
                     history.pushState(null, '', `/admin?${url.toString()}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
+                    _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
             .catch(reason => {
+                _documentosComponent.setError();
                 errorAlert(reason);
             });
     }
@@ -386,6 +389,7 @@ export default function AdminSearch() {
      */
     function _onSubmitFilter(event) {
         const url = new URLSearchParams();
+        _documentosComponent.setLoading();
 
         const etiquetas = [];
         const anios = [];
@@ -427,10 +431,12 @@ export default function AdminSearch() {
                     history.pushState(null, '', `/admin${_url}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
+                    _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
             .catch(reason => {
+                _documentosComponent.setError();
                 errorAlert(reason);
             });
     }
