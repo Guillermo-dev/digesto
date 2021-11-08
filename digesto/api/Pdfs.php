@@ -3,8 +3,8 @@
 namespace api;
 
 use Exception;
-use helpers\Response;
 use models\Pdf;
+use api\util\Response;
 
 /**
  * Class Pdfs
@@ -18,7 +18,6 @@ abstract class Pdfs {
      */
     public static function getPdfs(): void {
         Response::getResponse()->appendData('pdfs', Pdf::getPdfs());
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -28,6 +27,5 @@ abstract class Pdfs {
      */
     public static function getPdf(int $id = 0): void {
         Response::getResponse()->appendData('pdf', Pdf::getPdfById($id));
-        Response::getResponse()->setStatus('success');
     }
 }

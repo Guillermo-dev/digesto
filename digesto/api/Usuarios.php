@@ -3,10 +3,11 @@
 namespace api;
 
 use Exception;
-use helpers\Response;
-use helpers\Request;
 use models\Usuario;
 use models\Permiso;
+use api\util\Request;
+use api\util\Response;
+use api\exceptions\ApiException;
 
 /**
  * Class Usuarios
@@ -20,7 +21,6 @@ abstract class Usuarios {
      */
     public static function getUsuarios(): void {
         Response::getResponse()->appendData('usuarios', Usuario::getUsuarios());
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -30,7 +30,6 @@ abstract class Usuarios {
      */
     public static function getUsuario(int $id = 0): void {
         Response::getResponse()->appendData('usuario', Usuario::getUsuarioById($id));
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -38,29 +37,29 @@ abstract class Usuarios {
      */
     public static function createUsuario(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Unauthorized', 401);
+            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_create', $usuarioId))
-            throw new Exception('Forbidden', 403);
+            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
 
         $usuarioData = Request::getBodyAsJson();
 
-        if (!isset($usuarioData->email))
-            throw new Exception('Bad Request', 400);
-        if (!isset($usuarioData->nombre))
-            throw new Exception('Bad Request', 400);
-        if (!isset($usuarioData->apellido))
-            throw new Exception('Bad Request', 400);
-
         $usuario = new Usuario();
-        $usuario->setEmail($usuarioData->email);
-        $usuario->setNombre($usuarioData->nombre);
-        $usuario->setApellido($usuarioData->apellido);
+
+        if (isset($usuarioData->email))
+            $usuario->setEmail($usuarioData->email);
+        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+
+        if (!isset($usuarioData->nombre))
+            $usuario->setNombre($usuarioData->nombre);
+        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+
+        if (!isset($usuarioData->apellido))
+            $usuario->setApellido($usuarioData->apellido);
+        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
 
         Usuario::createUsuario($usuario);
-
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -70,31 +69,28 @@ abstract class Usuarios {
      */
     public static function updateUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Unauthorized', 401);
+            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_update', $usuarioId))
-            throw new Exception('Forbidden', 403);
+            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
 
         $usuarioData = Request::getBodyAsJson();
 
-        if (!isset($usuarioData->email))
-            throw new Exception('Bad Request', 400);
-        if (!isset($usuarioData->nombre))
-            throw new Exception('Bad Request', 400);
-        if (!isset($usuarioData->apellido))
-            throw new Exception('Bad Request', 400);
-
         $usuario = Usuario::getUsuarioById($id);
-        if (!$usuario) throw new Exception('El usuario no existe', 404);
-        
-        $usuario->setEmail($usuarioData->email);
-        $usuario->setNombre($usuarioData->nombre);
-        $usuario->setApellido($usuarioData->apellido);
+        if (!$usuario)
+            throw new ApiException('El usuario no existe', Response::RESPONSE_NOT_FOUND);
+
+        if (isset($usuarioData->email))
+            $usuario->setEmail($usuarioData->email);
+
+        if (isset($usuarioData->nombre))
+            $usuario->setNombre($usuarioData->nombre);
+
+        if (isset($usuarioData->apellido))
+            $usuario->setApellido($usuarioData->apellido);
 
         Usuario::updateUsuario($usuario);
-
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -104,17 +100,16 @@ abstract class Usuarios {
      */
     public static function deleteUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Unauthorized', 401);
+            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_delete', $usuarioId))
-            throw new Exception('Forbidden', 403);
+            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
 
         $usuario = Usuario::getUsuarioById($id);
-        if (!$usuario) throw new Exception('El usuario no existe', 404);
+        if (!$usuario)
+            throw new ApiException('El usuario no existe', Response::RESPONSE_NOT_FOUND);
 
         Usuario::deleteUsuario($usuario->getId());
-
-        Response::getResponse()->setStatus('success');
     }
 }

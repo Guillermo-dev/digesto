@@ -1,7 +1,7 @@
 <?php
 
+use api\util\Response;
 use Bramus\Router\Router;
-use helpers\Response;
 
 include_once 'vendor/autoload.php';
 
@@ -15,10 +15,9 @@ try {
     session_start();
     $router->run();
 } catch (Throwable $e) {
-    Response::getResponse()->setStatus('error');
-    Response::getResponse()->setError($e->getCode(), $e->getMessage());
+    Response::getResponse()->setCode($e->getCode());
+    Response::getResponse()->setError($e->getMessage(), $e->getCode());
     Response::getResponse()->setData(null);
 }
 
-header('Content-Type: application/json; charset=UTF-8');
-echo json_encode(Response::getResponse());
+Response::getResponse()->send();

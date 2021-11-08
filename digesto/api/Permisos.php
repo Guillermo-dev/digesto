@@ -3,8 +3,8 @@
 namespace api;
 
 use Exception;
-use helpers\Response;
 use models\Permiso;
+use api\util\Response;
 
 /**
  * Class Permisos
@@ -18,7 +18,6 @@ abstract class Permisos {
      */
     public static function getPermisos(): void {
         Response::getResponse()->appendData('permisos', Permiso::getPermisos());
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -28,6 +27,5 @@ abstract class Permisos {
      */
     public static function getPermiso(int $id = 0): void {
         Response::getResponse()->appendData('permiso', Permiso::getPermisoById($id));
-        Response::getResponse()->setStatus('success');
     }
 }

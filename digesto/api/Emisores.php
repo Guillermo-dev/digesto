@@ -3,10 +3,11 @@
 namespace api;
 
 use Exception;
-use helpers\Response;
-use helpers\Request;
 use models\Emisor;
 use models\Permiso;
+use api\util\Request;
+use api\util\Response;
+use api\exceptions\ApiException;
 
 /**
  * Class Emisores
@@ -20,7 +21,6 @@ abstract class Emisores {
      */
     public static function getEmisores(): void {
         Response::getResponse()->appendData('emisores', Emisor::getEmisores());
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -28,7 +28,6 @@ abstract class Emisores {
      */
     public static function getEmisor(int $id = 0): void {
         Response::getResponse()->appendData('emisor', Emisor::getEmisorById($id));
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -36,22 +35,23 @@ abstract class Emisores {
      */
     public static function createEmisor(): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Unauthorized', 401);
+            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_create', $usuarioId))
-            throw new Exception('Forbidden', 403);
+            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
 
         $emisorData = Request::getBodyAsJson();
         if (!isset($emisorData->nombre))
-            throw new Exception('Bad Request', 400);
+            throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
 
         $emisor = new Emisor();
-        $emisor->setNombre($emisorData->nombre);
+
+        if (isset($emisorData->nombre))
+            $emisor->setNombre($emisorData->nombre);
+        else throw new ApiException('Bad request', Response::RESPONSE_BAD_REQUEST);
 
         Emisor::createEmisor($emisor);
-
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -61,25 +61,23 @@ abstract class Emisores {
      */
     public static function updateEmisor(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Unauthorized', 401);
+            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_update', $usuarioId))
-            throw new Exception('Forbidden', 403);
+            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
 
         $emisorData = Request::getBodyAsJson();
 
-        if (!isset($emisorData->nombre))
-            throw new Exception('Bad Request', 400);
-
         $emisor = Emisor::getEmisorById($id);
-        if (!$emisor) throw new Exception('El emisor no existe', 404);
-        
-        $emisor->setNombre($emisorData->nombre);
+        if (!$emisor)
+            throw new ApiException('El emisor no existe', Response::RESPONSE_NOT_FOUND);
+
+        if (isset($emisorData->nombre))
+            $emisor->setNombre($emisorData->nombre);
+        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
 
         Emisor::updateEmisor($emisor);
-
-        Response::getResponse()->setStatus('success');
     }
 
     /**
@@ -89,17 +87,16 @@ abstract class Emisores {
      */
     public static function deleteEmisor(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new Exception('Unauthorized', 401);
+            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_delete', $usuarioId))
-            throw new Exception('Forbidden', 403);
+            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
 
         $emisor = Emisor::getEmisorById($id);
-        if (!$emisor) throw new Exception('El emisor no existe', 404);
+        if (!$emisor)
+            throw new ApiException('El emisor no existe', Response::RESPONSE_NOT_FOUND);
 
         Emisor::deleteEmisor($emisor->getId());
-
-        Response::getResponse()->setStatus('success');
     }
 }

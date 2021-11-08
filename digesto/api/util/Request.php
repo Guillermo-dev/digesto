@@ -1,6 +1,6 @@
 <?php
 
-namespace helpers;
+namespace api\util;
 
 use JsonException;
 use stdClass;
@@ -8,9 +8,14 @@ use stdClass;
 /**
  * Class Request
  *
- * @package helpers
+ * @package api\util
  */
-abstract class Request {
+class Request {
+    /**
+     * Request constructor.
+     */
+    private function __construct() { }
+
     /**
      * @return stdClass
      * @throws JsonException
