@@ -207,7 +207,7 @@ export default function Search() {
      */
     function _fetchDocumentos() {
         _documentosComponent.setLoading();
-        fetch('/api/documentos')
+        fetch('/api/documentos/publicos')
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.status === 'success') {
