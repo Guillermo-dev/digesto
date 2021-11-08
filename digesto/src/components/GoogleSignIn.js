@@ -60,7 +60,7 @@ export default function GoogleSignIn() {
         })
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     location.href = '/admin';
                 } else {
                     errorAlert(response.error.message);

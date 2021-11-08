@@ -237,7 +237,7 @@ export default function AdminSearch() {
         fetch('/api/documentos')
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     _documentosComponent.processDocumentos(response.data['documentos']);
                 } else {
                     errorAlert(response.error.message);
@@ -256,7 +256,7 @@ export default function AdminSearch() {
         fetch('/api/tags')
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
@@ -275,7 +275,7 @@ export default function AdminSearch() {
         fetch('/api/emisores')
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
@@ -366,7 +366,7 @@ export default function AdminSearch() {
         fetch(`/api/documentos?${url.toString()}`)
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     history.pushState(null, '', `/admin?${url.toString()}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
@@ -423,7 +423,7 @@ export default function AdminSearch() {
         fetch(`/api/documentos${_url}`)
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     history.pushState(null, '', `/admin${_url}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {

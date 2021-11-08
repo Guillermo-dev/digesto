@@ -220,7 +220,7 @@ export default function AdminDocumentos() {
                 if (result.isConfirmed) fetch(`/api/documentos/${documento.id}`, {method: 'DELETE'})
                     .then(httpResp => httpResp.json())
                     .then(response => {
-                        if (response.status === 'success') {
+                        if (response.code === 200) {
                             _this.root.remove();
                         } else {
                             errorAlert(response.error.message);
@@ -290,7 +290,7 @@ export default function AdminDocumentos() {
             })
                 .then(httpResp => httpResp.json())
                 .then(response => {
-                    if (response.status === 'success') {
+                    if (response.code === 200) {
                         fn();
                     } else {
                         errorAlert(response.error.message);

@@ -207,10 +207,10 @@ export default function Search() {
      */
     function _fetchDocumentos() {
         _documentosComponent.setLoading();
-        fetch('/api/documentos/publicos')
+        fetch('/api/documentos')
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     _documentosComponent.processDocumentos(response.data['documentos']);
                 } else {
                     _documentosComponent.setError();
@@ -231,7 +231,7 @@ export default function Search() {
         fetch('/api/tags')
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
@@ -250,7 +250,7 @@ export default function Search() {
         fetch('/api/emisores')
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
@@ -337,10 +337,10 @@ export default function Search() {
             return false;
         }
 
-        fetch(`/api/documentos/publicos?${url.toString()}`)
+        fetch(`/api/documentos?${url.toString()}`)
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     history.pushState(null, '', `/?${url.toString()}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
@@ -394,10 +394,10 @@ export default function Search() {
         if (url.toString().length > 0)
             _url = `?${url.toString()}`;
 
-        fetch(`/api/documentos/publicos${_url}`)
+        fetch(`/api/documentos${_url}`)
             .then(httpResp => httpResp.json())
             .then(response => {
-                if (response.status === 'success') {
+                if (response.code === 200) {
                     history.pushState(null, '', `/${_url}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
