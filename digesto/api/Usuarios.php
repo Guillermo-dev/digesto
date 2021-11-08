@@ -4,6 +4,7 @@ namespace api;
 
 use Exception;
 use JsonException;
+use models\Connection;
 use models\exceptions\ModalException;
 use models\Usuario;
 use models\Permiso;
@@ -162,20 +163,26 @@ abstract class Usuarios {
 
         $requestData = Request::getBodyAsJson();
 
-        if (!isset($requestData->assign) || !is_array($requestData->assign))
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        if (!isset($requestData->remove) || !is_array($requestData->remove))
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
         $usuario = Usuario::getUsuarioById($usuarioId);
         if (!$usuario)
             throw new ApiException('El usuario no existe', Response::NOT_FOUND);
 
-        if (count($requestData->assign) > 0)
-            Permiso::assignPermisoToUsuario($usuario, $requestData->assign);
+        Connection::begin();
 
-        if (count($requestData->remove) > 0)
-            Permiso::removePermisoFromUsuario($usuario, $requestData->remove);
+        if (isset($requestData->assign)) {
+            if (!is_array($requestData->assign))
+                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+            if (count($requestData->assign) > 0)
+                Permiso::assignPermisoToUsuario($usuario, $requestData->assign);
+        }
+
+        if (isset($requestData->remove)) {
+            if (!is_array($requestData->remove))
+                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+            if (count($requestData->remove) > 0)
+                Permiso::removePermisoFromUsuario($usuario, $requestData->remove);
+        }
+
+        Connection::commit();
     }
 }

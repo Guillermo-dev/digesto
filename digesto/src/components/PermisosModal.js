@@ -1,4 +1,4 @@
-import {createElement, createStyle, errorAlert, successAlert} from "../global/js/util.js";
+import {createElement, createStyle, errorAlert, successAlert, warningAlert} from "../global/js/util.js";
 import {Component} from "./Component.js";
 import {modalBox} from "./ModalBox.js";
 
@@ -136,17 +136,29 @@ export default function PermisosModal() {
                 assignList.push(entry._self.getPermiso().id);
         });
 
+        if (assignList.length === 0 && removeList.length === 0) {
+            warningAlert('No se realizaron cambios en los permisos');
+            return;
+        }
+
+        let requestData = {};
+
+        if (assignList.length > 0)
+            requestData.assign = assignList;
+        if (requestData.length > 0)
+            requestData.remove = removeList;
+
         fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({assign: assignList, remove: removeList})
+            body: JSON.stringify(requestData)
         })
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.code === 200) {
-                    successAlert('Los permisos fueron se actualizaron con exito');
+                    successAlert('Los permisos se actualizaron con exito');
                     Array.from(_content.children).forEach(entry => {
                         if (entry._self.initialState && !entry._self.finalState)
                             entry._self.initialState = false;

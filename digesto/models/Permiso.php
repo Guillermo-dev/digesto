@@ -294,9 +294,6 @@ class Permiso implements JsonSerializable {
     public static function assignPermisoToUsuario(Usuario $usuario, array $permisos): void {
         $conn = Connection::getConnection();
 
-        if (pg_query($conn, 'BEGIN') === false)
-            throw new ModalException(pg_last_error($conn));
-
         if (pg_prepare($conn, '', "INSERT INTO usuarios_permisos (usuario_id, permiso_id) VALUES ($1,$2)") === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -307,9 +304,6 @@ class Permiso implements JsonSerializable {
             if (!pg_free_result($rs))
                 throw new ModalException(pg_last_error($conn));
         }
-
-        if (pg_query($conn, 'COMMIT') === false)
-            throw new ModalException(pg_last_error($conn));
     }
 
     /**
@@ -321,9 +315,6 @@ class Permiso implements JsonSerializable {
     public static function removePermisoFromUsuario(Usuario $usuario, array $permisos): void {
         $conn = Connection::getConnection();
 
-        if (pg_query($conn, 'BEGIN') === false)
-            throw new ModalException(pg_last_error($conn));
-
         if (pg_prepare($conn, '', "DELETE FROM usuarios_permisos WHERE usuario_id=$1 AND permiso_id=$2") === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -334,8 +325,5 @@ class Permiso implements JsonSerializable {
             if (!pg_free_result($rs))
                 throw new ModalException(pg_last_error($conn));
         }
-
-        if (pg_query($conn, 'COMMIT') === false)
-            throw new ModalException(pg_last_error($conn));
     }
 }

@@ -52,4 +52,22 @@ abstract class Connection {
         preg_match('/ERROR: +(\d+)/', pg_last_error(self::$conn), $matches);
         return $matches[1];
     }
+
+    /**
+     *
+     * @throws ModalException
+     */
+    public static function begin(): void {
+        if (pg_query(self::$conn, 'BEGIN') === false)
+            throw new ModalException(pg_last_error(self::$conn));
+    }
+
+    /**
+     *
+     * @throws ModalException
+     */
+    public static function commit(): void {
+        if (pg_query(self::$conn, 'COMMIT') === false)
+            throw new ModalException(pg_last_error(self::$conn));
+    }
 }

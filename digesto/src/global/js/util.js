@@ -62,6 +62,15 @@ export function successAlert(message) {
  *
  * @param message
  */
+export function warningAlert(message) {
+    window.iziToast.warning({message: message.toString()});
+}
+
+
+/**
+ *
+ * @param message
+ */
 export function errorAlert(message) {
     window.iziToast.error({message: message.toString()});
 }
