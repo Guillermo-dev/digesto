@@ -1,4 +1,4 @@
-import {createElement, createStyle, errorAlert} from "../global/js/util.js";
+import {createElement, createStyle, errorAlert, successAlert} from "../global/js/util.js";
 import {Component} from "./Component.js";
 import {modalBox} from "./ModalBox.js";
 
@@ -17,7 +17,7 @@ createStyle()._content(`
 
     .PermisosModal .PermisoEntry i:before {
         font-family: "bootstrap-icons", serif;
-        content: "\\f5d7";
+        content: "\\f5d5";
         font-size: 1.2rem;
     }
 
@@ -46,30 +46,22 @@ export default function PermisosModal() {
             <div class="mb-4 css-loaded permisos" data-js="content">
                 <!--permisos-->
             </div>
-            <div class="row g-2">
-                <div class="col-sm">
-                    <button type="button" class="btn btn-success p-2 w-100" data-js="button">
-                        <span>Aceptar</span>
-                    </button>
-                </div>
-                <div class="col-sm">
-                    <button type="button" class="btn btn-secondary p-2 w-100" data-js="button">
-                        <span>Cancelar</span>
-                    </button>
-                </div>
-            </div>
+            <button type="button" class="btn btn-secondary p-2 w-100" data-js="button">
+                <span>Cerrar</span>
+            </button>
         </div>
     `);
     const _content = _this.root.querySelector('[data-js="content"]');
     const _buttons = _this.root.querySelectorAll('[data-js="button"]');
+    let _config = {};
 
     /**
      * Constructor
      */
     function _constructor() {
-        _fetchPermisos();
-        _buttons[0].onclick = _onSubmit;
-        _buttons[1].onclick = _onCancel;
+        _buttons[0].onclick = ()=>{
+            modalBox.close();
+        };
     }
 
     /**
@@ -77,11 +69,11 @@ export default function PermisosModal() {
      * @private
      */
     function _fetchPermisos() {
-        fetch(`/api/permisos`)
+        fetch(`/api/usuarios/${_config['usuario'].id}/permisos`)
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.code === 200) {
-                    _processPermisos(response.data['permisos']);
+                    _processData(response.data);
                 } else {
                     errorAlert(response.error.message);
                 }
@@ -93,29 +85,19 @@ export default function PermisosModal() {
 
     /**
      *
-     * @param permisos
+     * @param data
      * @private
      */
-    function _processPermisos(permisos) {
-        permisos.forEach(permiso => {
-            _content.append(new PermisoEntry(permiso).root);
+    function _processData(data) {
+        _content.innerHTML = "";
+        data['permisos'].forEach(permiso => {
+            const permisoEntry = new PermisoEntry(permiso);
+            const found = data['permisosActivos'].find(permisoActivo => {
+                return permisoActivo['nombre'] === permiso['nombre'];
+            })
+            if (found) permisoEntry.select();
+            _content.append(permisoEntry.root);
         });
-    }
-
-    /**
-     *
-     * @private
-     */
-    function _onSubmit(){
-
-    }
-
-    /**
-     *
-     * @private
-     */
-    function _onCancel(){
-        modalBox.close();
     }
 
     /**
@@ -149,9 +131,59 @@ export default function PermisosModal() {
          * @private
          */
         function _onSelect() {
-            if (_this.root.classList.contains('selected')) {
-                _this.root.classList.remove('selected');
-            } else _this.root.classList.add('selected');
+            if (_this.root.classList.contains('selected')) _removePermiso();
+            else _assignPermiso();
+        }
+
+        /**
+         *
+         * @private
+         */
+        function _assignPermiso() {
+            fetch(`/api/usuarios/${_config['usuario'].id}/permisos/${permiso.id}`, {
+                method: 'POST'
+            })
+                .then(httpResp => httpResp.json())
+                .then(response => {
+                    if (response.code === 200) {
+                        successAlert('El permiso se <b>asigno</b> con exito');
+                        _this.root.classList.add('selected');
+                    } else {
+                        errorAlert(response.error.message);
+                    }
+                })
+                .catch(reason => {
+                    errorAlert(reason);
+                });
+        }
+
+        /**
+         *
+         * @private
+         */
+        function _removePermiso() {
+            fetch(`/api/usuarios/${_config['usuario'].id}/permisos/${permiso.id}`, {
+                method: 'DELETE'
+            })
+                .then(httpResp => httpResp.json())
+                .then(response => {
+                    if (response.code === 200) {
+                        successAlert('El permiso se <b>removio</b> con exito');
+                        _this.root.classList.remove('selected');
+                    } else {
+                        errorAlert(response.error.message);
+                    }
+                })
+                .catch(reason => {
+                    errorAlert(reason);
+                });
+        }
+
+        /**
+         *
+         */
+        this.select = function() {
+            _this.root.classList.add('selected');
         }
 
         //Invoke
@@ -171,6 +203,15 @@ export default function PermisosModal() {
      */
     this.close = function() {
         modalBox.close();
+    }
+
+    /**
+     *
+     * @param config
+     */
+    this.setConfig = function(config) {
+        _config = config;
+        _fetchPermisos();
     }
 
     //Invoke

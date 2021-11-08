@@ -22,7 +22,7 @@ abstract class Auth {
      */
     public static function login(): void {
         if (isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $data = Request::getBodyAsJson();
         $google_client = new Google_Client(['client_id' => '471191857447-594hnuasrs49qe51amgma6o0hiir07de.apps.googleusercontent.com']);
@@ -33,7 +33,7 @@ abstract class Auth {
 
         $usuario = Usuario::getUsuarioByEmail($payload["email"]);
         if (!$usuario)
-            throw new ApiException('Usuario no autorizado', Response::RESPONSE_NOT_FOUND);
+            throw new ApiException('Usuario no autorizado', Response::NOT_FOUND);
 
         $_SESSION['user'] = serialize($usuario);
     }
@@ -44,7 +44,7 @@ abstract class Auth {
      */
     public static function logout(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
         session_destroy();
     }
 }

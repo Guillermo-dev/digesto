@@ -14,7 +14,7 @@ include_once 'routes/api.php';
 try {
     session_start();
     $router->run();
-} catch (Throwable $e) {
+} catch (Throwable | Exception $e) {
     Response::getResponse()->setCode($e->getCode());
     Response::getResponse()->setError($e->getMessage(), $e->getCode());
     Response::getResponse()->setData(null);

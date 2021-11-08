@@ -2,8 +2,8 @@
 
 namespace models;
 
-use Exception;
 use JsonSerializable;
+use models\exceptions\ModalException;
 
 /**
  * Class Usuario
@@ -126,14 +126,14 @@ class Usuario implements JsonSerializable {
 
     /**
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getUsuarios(): array {
         $conn = Connection::getConnection();
 
         $query = 'SELECT usuario_id, email, nombre, apellido FROM usuarios';
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $usuarios = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -146,10 +146,10 @@ class Usuario implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $usuarios;
     }
@@ -158,14 +158,14 @@ class Usuario implements JsonSerializable {
      * @param int $id
      *
      * @return Usuario|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getUsuarioById(int $id): ?Usuario {
         $conn = Connection::getConnection();
 
         $query = sprintf('SELECT usuario_id, email, nombre, apellido FROM usuarios WHERE usuario_id = %d', $id);
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $usuario = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -176,10 +176,10 @@ class Usuario implements JsonSerializable {
             $usuario->setApellido($row['apellido']);
         }
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $usuario;
     }
@@ -188,7 +188,7 @@ class Usuario implements JsonSerializable {
      * @param string $email
      *
      * @return Usuario|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getUsuarioByEmail(string $email): ?Usuario {
         $conn = Connection::getConnection();
@@ -198,7 +198,7 @@ class Usuario implements JsonSerializable {
             pg_escape_string($email)
         );
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $usuario = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -209,10 +209,10 @@ class Usuario implements JsonSerializable {
             $usuario->setApellido($row['apellido']);
         }
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $usuario;
     }
@@ -220,7 +220,7 @@ class Usuario implements JsonSerializable {
     /**
      * @param Usuario $usuario
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function createUsuario(Usuario $usuario): void {
         $conn = Connection::getConnection();
@@ -233,20 +233,20 @@ class Usuario implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
             $usuario->setId(($row[0]));
-        else throw new Exception(pg_last_error($rs));
+        else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Usuario $usuario
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function updateUsuario(Usuario $usuario): void {
         $conn = Connection::getConnection();
@@ -260,16 +260,16 @@ class Usuario implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_errormessage($conn));
+            throw new ModalException(pg_errormessage($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
-     * @param Usuario $usuario
+     * @param int $usuario_id
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function deleteUsuario(int $usuario_id): void {
         $conn = Connection::getConnection();
@@ -277,9 +277,9 @@ class Usuario implements JsonSerializable {
         $query = sprintf("DELETE FROM usuarios WHERE usuario_id='%s'", $usuario_id);
 
         if (!($rs = pg_query($conn, $query)))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 }

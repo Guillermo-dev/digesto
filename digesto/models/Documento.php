@@ -2,8 +2,8 @@
 
 namespace models;
 
-use Exception;
 use JsonSerializable;
+use models\exceptions\ModalException;
 
 /**
  * Class Documento
@@ -297,7 +297,7 @@ class Documento implements JsonSerializable {
      * @param bool $onlyPublics
      *
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getDocumentos(bool $onlyPublics): array {
         $conn = Connection::getConnection();
@@ -308,7 +308,7 @@ class Documento implements JsonSerializable {
             $onlyPublics ? 'TRUE' : 'FALSE'
         );
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $documentos = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -328,10 +328,10 @@ class Documento implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $documentos;
     }
@@ -347,13 +347,13 @@ class Documento implements JsonSerializable {
 
     /**
      * @param string $search
-     * @param array  $emitters
-     * @param array  $tags
-     * @param array  $years
+     * @param string $emitters
+     * @param string $tags
+     * @param string $years
      * @param bool   $onlyPublics
      *
      * @return array
-     * @throws Exception
+     * @throws exceptions\ModalException
      */
     public static function getDocumentosSearch(string $search, string $emitters, string $tags, string $years, bool $onlyPublics): array {
         $conn = Connection::getConnection();
@@ -379,7 +379,7 @@ class Documento implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $documentos = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -399,10 +399,10 @@ class Documento implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $documentos;
     }
@@ -411,7 +411,7 @@ class Documento implements JsonSerializable {
      * @param int $id
      *
      * @return Documento|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getDocumentoById(int $id): ?Documento {
         $conn = Connection::getConnection();
@@ -419,7 +419,7 @@ class Documento implements JsonSerializable {
         $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
     FROM documentos WHERE documento_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $documento = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -438,10 +438,10 @@ class Documento implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $documento;
     }
@@ -449,7 +449,7 @@ class Documento implements JsonSerializable {
     /**
      * @param Documento $documento
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function createDocumento(Documento $documento): void {
         $conn = Connection::getConnection();
@@ -470,20 +470,20 @@ class Documento implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
             $documento->setId(($row[0]));
-        else throw new Exception(pg_last_error($rs));
+        else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Documento $documento
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function updateDocumento(Documento $documento): void {
         $conn = Connection::getConnection();
@@ -505,16 +505,16 @@ class Documento implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_errormessage($conn));
+            throw new ModalException(pg_errormessage($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
-     * @param Documento $documento
+     * @param int $documento_id
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function deleteDocumento(int $documento_id): void {
         $conn = Connection::getConnection();
@@ -522,9 +522,9 @@ class Documento implements JsonSerializable {
         $query = sprintf("DELETE FROM documentos WHERE documento_id=%d", $documento_id);
 
         if (!($rs = pg_query($conn, $query)))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 }

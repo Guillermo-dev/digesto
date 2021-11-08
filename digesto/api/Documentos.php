@@ -61,11 +61,11 @@ abstract class Documentos {
     public static function getDocumento(int $id = 0): void {
         $documento = Documento::getDocumentoById($id);
         if (!$documento)
-            throw new ApiException('El documento no existe', Response::RESPONSE_NOT_FOUND);
+            throw new ApiException('El documento no existe', Response::NOT_FOUND);
 
         if (!$documento->getPublico())
             if (!isset($_SESSION['user']))
-                throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+                throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         Response::getResponse()->appendData('documento', $documento);
         Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
@@ -81,11 +81,11 @@ abstract class Documentos {
      */
     public static function createDocumento(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_create', $usuarioId))
-            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $documentoData = Request::getBodyAsJson();
 
@@ -93,22 +93,22 @@ abstract class Documentos {
 
         if (isset($documentoData->numeroExpediente))
             $documento->setNumeroExpediente($documentoData->numeroExpediente);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         if (isset($documentoData->titulo))
             $documento->setTitulo($documentoData->titulo);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         if (isset($documentoData->descripcion))
             $documento->setDescripcion($documentoData->descripcion);
 
         if (isset($documentoData->tipo))
             $documento->setTipo($documentoData->tipo);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         if (isset($documentoData->fechaEmisio))
             $documento->setFechaEmision($documentoData->fechaEmisio);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         if (isset($documentoData->descargable))
             $documento->setDescargable($documentoData->descargable);
@@ -120,11 +120,11 @@ abstract class Documentos {
 
         if (isset($documentoData->pdfId))
             $documento->setPdfId($documentoData->pdfId);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         if (isset($documentoData->emisorID))
             $documento->setEmisorId($documentoData->emisorID);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         $documento->setUsuarioId($usuarioId);
 
@@ -138,17 +138,17 @@ abstract class Documentos {
      */
     public static function updateDocumento(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_update', $usuarioId))
-            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $documentoData = Request::getBodyAsJson();
 
         $documento = Documento::getDocumentoById($id);
         if (!$documento)
-            throw new ApiException('El documento no existe', Response::RESPONSE_NOT_FOUND);
+            throw new ApiException('El documento no existe', Response::NOT_FOUND);
 
         if (isset($documentoData->numeroExpediente))
             $documento->setNumeroExpediente($documentoData->numeroExpediente);
@@ -187,15 +187,15 @@ abstract class Documentos {
      */
     public static function deleteDocumento(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_delete', $usuarioId))
-            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $documento = Documento::getDocumentoById($id);
         if (!$documento)
-            throw new ApiException('El documento no existe', Response::RESPONSE_NOT_FOUND);
+            throw new ApiException('El documento no existe', Response::NOT_FOUND);
 
         Documento::deleteDocumento($documento->getID());
     }

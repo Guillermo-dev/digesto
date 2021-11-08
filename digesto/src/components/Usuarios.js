@@ -124,6 +124,9 @@ export default function Usuarios() {
          * @private
          */
         function _onClickPermisos() {
+            _permisosModal.setConfig({
+                usuario: usuario
+            })
             _permisosModal.open();
         }
 

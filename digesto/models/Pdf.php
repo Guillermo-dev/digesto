@@ -2,8 +2,8 @@
 
 namespace models;
 
-use Exception;
 use JsonSerializable;
+use models\exceptions\ModalException;
 
 /**
  * Class Pdf
@@ -102,14 +102,14 @@ class Pdf implements JsonSerializable {
 
     /**
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getPdfs(): array {
         $conn = Connection::getConnection();
 
         $query = 'SELECT pdf_id, contenido, path FROM pdfs';
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $pdfs = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -121,10 +121,10 @@ class Pdf implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $pdfs;
     }
@@ -133,14 +133,14 @@ class Pdf implements JsonSerializable {
      * @param int $id
      *
      * @return Pdf|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getPdfById(int $id): ?Pdf {
         $conn = Connection::getConnection();
 
         $query = sprintf('SELECT pdf_id, contenido, path FROM pdfs WHERE pdf_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $pdf = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -151,10 +151,10 @@ class Pdf implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $pdf;
     }
@@ -162,7 +162,7 @@ class Pdf implements JsonSerializable {
     /**
      * @param Pdf $pdf
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function createPdf(Pdf $pdf): void {
         $conn = Connection::getConnection();
@@ -174,20 +174,20 @@ class Pdf implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
             $pdf->setId(($row[0]));
-        else throw new Exception(pg_last_error($rs));
+        else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Pdf $pdf
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function updatePdf(Pdf $pdf): void {
         $conn = Connection::getConnection();
@@ -200,16 +200,16 @@ class Pdf implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_errormessage($conn));
+            throw new ModalException(pg_errormessage($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
-     * @param Pdf $pdf
+     * @param int $pdf_id
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function deletePdf(int $pdf_id): void {
         $conn = Connection::getConnection();
@@ -217,9 +217,9 @@ class Pdf implements JsonSerializable {
         $query = sprintf("DELETE FROM pdf WHERE pdf_id=%d", $pdf_id);
 
         if (!($rs = pg_query($conn, $query)))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 }

@@ -35,21 +35,21 @@ abstract class Emisores {
      */
     public static function createEmisor(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_create', $usuarioId))
-            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $emisorData = Request::getBodyAsJson();
         if (!isset($emisorData->nombre))
-            throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+            throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         $emisor = new Emisor();
 
         if (isset($emisorData->nombre))
             $emisor->setNombre($emisorData->nombre);
-        else throw new ApiException('Bad request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad request', Response::BAD_REQUEST);
 
         Emisor::createEmisor($emisor);
     }
@@ -61,21 +61,21 @@ abstract class Emisores {
      */
     public static function updateEmisor(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_update', $usuarioId))
-            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $emisorData = Request::getBodyAsJson();
 
         $emisor = Emisor::getEmisorById($id);
         if (!$emisor)
-            throw new ApiException('El emisor no existe', Response::RESPONSE_NOT_FOUND);
+            throw new ApiException('El emisor no existe', Response::NOT_FOUND);
 
         if (isset($emisorData->nombre))
             $emisor->setNombre($emisorData->nombre);
-        else throw new ApiException('Bad Request', Response::RESPONSE_BAD_REQUEST);
+        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         Emisor::updateEmisor($emisor);
     }
@@ -87,15 +87,15 @@ abstract class Emisores {
      */
     public static function deleteEmisor(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::RESPONSE_UNAUTHORIZED);
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('emisores_delete', $usuarioId))
-            throw new ApiException('Forbidden', Response::RESPONSE_FORBIDDEN);
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $emisor = Emisor::getEmisorById($id);
         if (!$emisor)
-            throw new ApiException('El emisor no existe', Response::RESPONSE_NOT_FOUND);
+            throw new ApiException('El emisor no existe', Response::NOT_FOUND);
 
         Emisor::deleteEmisor($emisor->getId());
     }

@@ -2,8 +2,8 @@
 
 namespace models;
 
-use Exception;
 use JsonSerializable;
+use models\exceptions\ModalException;
 
 /**
  * Class Tag
@@ -78,14 +78,14 @@ class Tag implements JsonSerializable {
 
     /**
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getTags(): array {
         $conn = Connection::getConnection();
 
         $query = 'SELECT tag_id, nombre FROM tags';
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $tags = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -96,10 +96,10 @@ class Tag implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $tags;
     }
@@ -108,14 +108,14 @@ class Tag implements JsonSerializable {
      * @param int $id
      *
      * @return Tag|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getTagById(int $id): ?Tag {
         $conn = Connection::getConnection();
 
         $query = sprintf('SELECT tag_id, nombre FROM tags WHERE tag_id = %d', $id);
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $tag = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -124,10 +124,10 @@ class Tag implements JsonSerializable {
             $tag->setNombre($row['nombre']);
         }
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $tag;
     }
@@ -135,7 +135,7 @@ class Tag implements JsonSerializable {
     /**
      * @param Tag $tag
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function createTag(Tag $tag): void {
         $conn = Connection::getConnection();
@@ -146,20 +146,20 @@ class Tag implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
             $tag->setId(($row[0]));
-        else throw new Exception(pg_last_error($rs));
+        else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Tag $tag
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function updateTag(Tag $tag): void {
         $conn = Connection::getConnection();
@@ -171,16 +171,16 @@ class Tag implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_errormessage($conn));
+            throw new ModalException(pg_errormessage($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
-     * @param Tag $tag
+     * @param int $tag_id
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function deleteTag(int $tag_id): void {
         $conn = Connection::getConnection();
@@ -188,17 +188,17 @@ class Tag implements JsonSerializable {
         $query = sprintf("DELETE FROM tags WHERE tag_id=%d", $tag_id);
 
         if (!($rs = pg_query($conn, $query)))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Documento $documento
      *
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getTagsByDocumento(Documento $documento): array {
         $conn = Connection::getConnection();
@@ -207,7 +207,7 @@ class Tag implements JsonSerializable {
         FROM tags T INNER JOIN documentos_tags D ON D.tag_id = T.tag_id
         WHERE D.documento_id = %d", $documento->getId());
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $tags = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -218,10 +218,10 @@ class Tag implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $tags;
     }

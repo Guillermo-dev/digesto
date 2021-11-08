@@ -2,8 +2,8 @@
 
 namespace models;
 
-use Exception;
 use JsonSerializable;
+use models\exceptions\ModalException;
 
 /**
  * Class Emisor
@@ -78,14 +78,14 @@ class Emisor implements JsonSerializable {
 
     /**
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getEmisores(): array {
         $conn = Connection::getConnection();
 
         $query = 'SELECT emisor_id, nombre FROM emisores';
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $emisores = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -96,10 +96,10 @@ class Emisor implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $emisores;
     }
@@ -108,14 +108,14 @@ class Emisor implements JsonSerializable {
      * @param int $id
      *
      * @return Emisor|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getEmisorById(int $id): ?Emisor {
         $conn = Connection::getConnection();
 
         $query = sprintf('SELECT emisor_id, nombre FROM emisores WHERE emisor_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $emisor = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -125,10 +125,10 @@ class Emisor implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $emisor;
     }
@@ -136,7 +136,7 @@ class Emisor implements JsonSerializable {
     /**
      * @param Emisor $emisor
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function createEmisor(Emisor $emisor): void {
         $conn = Connection::getConnection();
@@ -147,20 +147,20 @@ class Emisor implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
             $emisor->setId(($row[0]));
-        else throw new Exception(pg_last_error($rs));
+        else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Emisor $emisor
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function updateEmisor(Emisor $emisor): void {
         $conn = Connection::getConnection();
@@ -172,16 +172,16 @@ class Emisor implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_errormessage($conn));
+            throw new ModalException(pg_errormessage($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
-     * @param Emisor $emisor
+     * @param int $emisor_id
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function deleteEmisor(int $emisor_id): void {
         $conn = Connection::getConnection();
@@ -189,9 +189,9 @@ class Emisor implements JsonSerializable {
         $query = sprintf("DELETE FROM emisores WHERE emisor_id=%d", $emisor_id);
 
         if (!($rs = pg_query($conn, $query)))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 }

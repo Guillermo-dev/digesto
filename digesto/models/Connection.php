@@ -2,7 +2,7 @@
 
 namespace models;
 
-use Exception;
+use models\exceptions\ModalException;
 
 /**
  * Class Connection
@@ -31,13 +31,13 @@ abstract class Connection {
 
     /**
      * @return resource
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getConnection() {
         if (self::$conn === null) {
             self::$conn = pg_connect(self::getConnectionString());
             if (self::$conn === false)
-                throw new Exception('Cannot connect to the database');
+                throw new ModalException('Cannot connect to the database');
         }
         return self::$conn;
     }

@@ -2,8 +2,8 @@
 
 namespace models;
 
-use Exception;
 use JsonSerializable;
+use models\exceptions\ModalException;
 
 /**
  * Class Permiso
@@ -99,14 +99,14 @@ class Permiso implements JsonSerializable {
 
     /**
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getPermisos(): array {
         $conn = Connection::getConnection();
 
         $query = 'SELECT permiso_id, nombre, descripcion FROM permisos';
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $permisos = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -118,10 +118,10 @@ class Permiso implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $permisos;
     }
@@ -130,14 +130,14 @@ class Permiso implements JsonSerializable {
      * @param int $id
      *
      * @return Permiso|null
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getPermisoById(int $id): ?Permiso {
         $conn = Connection::getConnection();
 
         $query = sprintf('SELECT permiso_id, nombre, descripcion FROM permisos WHERE permiso_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $permiso = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
@@ -148,10 +148,10 @@ class Permiso implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error());
+            throw new ModalException(pg_last_error());
 
         return $permiso;
     }
@@ -159,7 +159,7 @@ class Permiso implements JsonSerializable {
     /**
      * @param Permiso $permiso
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function createPermiso(Permiso $permiso): void {
         $conn = Connection::getConnection();
@@ -171,20 +171,20 @@ class Permiso implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
             $permiso->setId(($row[0]));
-        else throw new Exception(pg_last_error($rs));
+        else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Permiso $permiso
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function updatePermiso(Permiso $permiso): void {
         $conn = Connection::getConnection();
@@ -197,16 +197,16 @@ class Permiso implements JsonSerializable {
         );
 
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_errormessage($conn));
+            throw new ModalException(pg_errormessage($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
-     * @param Permiso $permiso
+     * @param int $permiso_id
      *
-     * @throws Exception
+     * @throws ModalException
      */
     public static function deletePermiso(int $permiso_id): void {
         $conn = Connection::getConnection();
@@ -214,17 +214,17 @@ class Permiso implements JsonSerializable {
         $query = sprintf("DELETE FROM permisos WHERE permiso_id=%d", $permiso_id);
 
         if (!($rs = pg_query($conn, $query)))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Usuario $usuario
      *
      * @return array
-     * @throws Exception
+     * @throws ModalException
      */
     public static function getPermisosByUsuario(Usuario $usuario): array {
         $conn = Connection::getConnection();
@@ -232,8 +232,9 @@ class Permiso implements JsonSerializable {
         $query = sprintf("SELECT P.permiso_id, P.nombre, P.descripcion 
         FROM permisos P INNER JOIN usuarios_permisos U ON U.permiso_id = P.permiso_id
         WHERE U.usuario_id = %d", $usuario->getId());
+
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $permisos = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
@@ -245,10 +246,10 @@ class Permiso implements JsonSerializable {
         }
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $permisos;
     }
@@ -258,7 +259,7 @@ class Permiso implements JsonSerializable {
      * @param int    $usuarioId
      *
      * @return bool
-     * @throws Exception
+     * @throws ModalException
      */
     public static function hasPermiso(string $permiso, int $usuarioId): bool {
         $conn = Connection::getConnection();
@@ -269,18 +270,58 @@ class Permiso implements JsonSerializable {
             $permiso
         );
         if (($rs = pg_query($conn, $query)) === false)
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         $found = false;
         if (pg_fetch_assoc($rs) != false)
             $found = true;
 
         if (($error = pg_last_error($conn)) != false)
-            throw new Exception($error);
+            throw new ModalException($error);
 
         if (!pg_free_result($rs))
-            throw new Exception(pg_last_error($conn));
+            throw new ModalException(pg_last_error($conn));
 
         return $found;
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @param Permiso $permiso
+     *
+     * @throws ModalException
+     */
+    public static function assignPermisoToUsuario(Usuario $usuario, Permiso $permiso): void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf("INSERT INTO usuarios_permisos (usuario_id, permiso_id) VALUES (%d,%d)",
+            $usuario->getId(), $permiso->getId()
+        );
+
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error($conn));
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @param Permiso $permiso
+     *
+     * @throws ModalException
+     */
+    public static function removePermisoFromUsuario(Usuario $usuario, Permiso $permiso): void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf("DELETE FROM usuarios_permisos WHERE usuario_id=%d AND permiso_id=%d",
+            $usuario->getId(), $permiso->getId()
+        );
+
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error($conn));
     }
 }
