@@ -46,20 +46,36 @@ export default function PermisosModal() {
             <div class="mb-4 css-loaded permisos" data-js="content">
                 <!--permisos-->
             </div>
-            <button type="button" class="btn btn-secondary p-2 w-100" data-js="button">
-                <span>Cerrar</span>
-            </button>
+            <form data-js="form">
+                <div class="row g-2">
+                    <div class="col">
+                        <button type="submit" name="submitBtn" class="btn btn-success p-2 w-100" data-js="button">
+                            <span>Aceptar</span>
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" name="cancelBtn" class="btn btn-secondary p-2 w-100" data-js="button">
+                            <span>Cerrar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     `);
     const _content = _this.root.querySelector('[data-js="content"]');
-    const _buttons = _this.root.querySelectorAll('[data-js="button"]');
+    const _form = _this.root.querySelector('[data-js="form"]');
     let _config = {};
 
     /**
      * Constructor
      */
     function _constructor() {
-        _buttons[0].onclick = ()=>{
+        _form['submitBtn'].onclick = (event) => {
+            event.preventDefault();
+            _onSubmit.call(_form, event);
+            return false;
+        };
+        _form['cancelBtn'].onclick = () => {
             modalBox.close();
         };
     }
@@ -95,59 +111,47 @@ export default function PermisosModal() {
             const found = data['permisosActivos'].find(permisoActivo => {
                 return permisoActivo['nombre'] === permiso['nombre'];
             })
-            if (found) permisoEntry.select();
+            if (found) {
+                permisoEntry.initialState = true;
+                permisoEntry.select();
+            }
             _content.append(permisoEntry.root);
+            permisoEntry.root._self = permisoEntry;
         });
     }
 
     /**
      *
-     * @param permiso
-     * @constructor
+     * @param event
+     * @private
      */
-    function PermisoEntry(permiso) {
-        const _this = this;
-        this.root = createElement('div')._class('PermisoEntry')._html(`<div class="permission p-3 mb-2">
-    <div class="row g-0">
-        <div class="col">
-            <p class="mb-0 mt-0 fw-bold">${permiso['nombre']}</p>
-            <p class="mb-0 mt-0 d-block">${permiso['descripcion']}</p>
-        </div>
-        <div class="col-auto">
-            <i class="switch"></i>
-        </div>
-    </div>
-</div>`);
+    function _onSubmit(event) {
+        const assignList = [];
+        const removeList = [];
 
-        /**
-         * Constructor
-         */
-        function _constructor() {
-            _this.root.onclick = _onSelect;
-        }
+        Array.from(_content.children).forEach(entry => {
+            if (entry._self.initialState && !entry._self.finalState)
+                removeList.push(entry._self.getPermiso().id);
+            else if (!entry._self.initialState && entry._self.finalState)
+                assignList.push(entry._self.getPermiso().id);
+        });
 
-        /**
-         *
-         * @private
-         */
-        function _onSelect() {
-            if (_this.root.classList.contains('selected')) _removePermiso();
-            else _assignPermiso();
-        }
-
-        /**
-         *
-         * @private
-         */
-        function _assignPermiso() {
-            fetch(`/api/usuarios/${_config['usuario'].id}/permisos/${permiso.id}`, {
-                method: 'POST'
+        if (assignList.length > 0)
+            fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({permisos: assignList})
             })
                 .then(httpResp => httpResp.json())
                 .then(response => {
                     if (response.code === 200) {
-                        successAlert('El permiso se <b>asigno</b> con exito');
-                        _this.root.classList.add('selected');
+                        successAlert('Los permisos fueron <b>asignados</b> con exito');
+                        Array.from(_content.children).forEach(entry => {
+                            if (!entry._self.initialState && entry._self.finalState)
+                                entry._self.initialState = true;
+                        });
                     } else {
                         errorAlert(response.error.message);
                     }
@@ -155,21 +159,23 @@ export default function PermisosModal() {
                 .catch(reason => {
                     errorAlert(reason);
                 });
-        }
 
-        /**
-         *
-         * @private
-         */
-        function _removePermiso() {
-            fetch(`/api/usuarios/${_config['usuario'].id}/permisos/${permiso.id}`, {
-                method: 'DELETE'
+        if (removeList.length > 0)
+            fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({permisos: removeList})
             })
                 .then(httpResp => httpResp.json())
                 .then(response => {
                     if (response.code === 200) {
-                        successAlert('El permiso se <b>removio</b> con exito');
-                        _this.root.classList.remove('selected');
+                        successAlert('Los permisos fueron <b>removidos</b> con exito');
+                        Array.from(_content.children).forEach(entry => {
+                            if (entry._self.initialState && !entry._self.finalState)
+                                entry._self.initialState = false;
+                        });
                     } else {
                         errorAlert(response.error.message);
                     }
@@ -177,17 +183,6 @@ export default function PermisosModal() {
                 .catch(reason => {
                     errorAlert(reason);
                 });
-        }
-
-        /**
-         *
-         */
-        this.select = function() {
-            _this.root.classList.add('selected');
-        }
-
-        //Invoke
-        _constructor();
     }
 
     /**
@@ -212,6 +207,68 @@ export default function PermisosModal() {
     this.setConfig = function(config) {
         _config = config;
         _fetchPermisos();
+    }
+
+    /**
+     *
+     * @param permiso
+     * @constructor
+     */
+    function PermisoEntry(permiso) {
+        const _this = this;
+        this.root = createElement('div')._class('PermisoEntry')._html(`<div class="permission p-3 mb-2">
+    <div class="row g-0">
+        <div class="col">
+            <p class="mb-0 mt-0 fw-bold">${permiso['nombre']}</p>
+            <p class="mb-0 mt-0 d-block">${permiso['descripcion']}</p>
+        </div>
+        <div class="col-auto">
+            <i class="switch"></i>
+        </div>
+    </div>
+</div>`);
+        this.initialState = false;
+        this.finalState = false;
+
+        /**
+         * Constructor
+         */
+        function _constructor() {
+            _this.root.onclick = _onSelect;
+        }
+
+        /**
+         *
+         * @private
+         */
+        function _onSelect() {
+            if (_this.root.classList.contains('selected')) {
+                _this.root.classList.remove('selected');
+                _this.finalState = false;
+            } else {
+                _this.root.classList.add('selected');
+                _this.finalState = true;
+            }
+        }
+
+        /**
+         *
+         */
+        this.select = function() {
+            _this.root.classList.add('selected');
+            _this.finalState = true;
+        }
+
+        /**
+         *
+         * @returns {*}
+         */
+        this.getPermiso = function() {
+            return permiso;
+        }
+
+        //Invoke
+        _constructor();
     }
 
     //Invoke

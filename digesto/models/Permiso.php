@@ -287,41 +287,55 @@ class Permiso implements JsonSerializable {
 
     /**
      * @param Usuario $usuario
-     * @param Permiso $permiso
+     * @param array   $permisos
      *
      * @throws ModalException
      */
-    public static function assignPermisoToUsuario(Usuario $usuario, Permiso $permiso): void {
+    public static function assignPermisoToUsuario(Usuario $usuario, array $permisos): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("INSERT INTO usuarios_permisos (usuario_id, permiso_id) VALUES (%d,%d)",
-            $usuario->getId(), $permiso->getId()
-        );
-
-        if (($rs = pg_query($conn, $query)) === false)
+        if (pg_query($conn, 'BEGIN') === false)
             throw new ModalException(pg_last_error($conn));
 
-        if (!pg_free_result($rs))
+        if (pg_prepare($conn, '', "INSERT INTO usuarios_permisos (usuario_id, permiso_id) VALUES ($1,$2)") === false)
+            throw new ModalException(pg_last_error($conn));
+
+        foreach ($permisos as $permiso) {
+            if (($rs = pg_execute($conn, '', [$usuario->getId(), $permiso])) === false)
+                throw new ModalException(pg_last_error($conn));
+
+            if (!pg_free_result($rs))
+                throw new ModalException(pg_last_error($conn));
+        }
+
+        if (pg_query($conn, 'COMMIT') === false)
             throw new ModalException(pg_last_error($conn));
     }
 
     /**
      * @param Usuario $usuario
-     * @param Permiso $permiso
+     * @param array   $permisos
      *
      * @throws ModalException
      */
-    public static function removePermisoFromUsuario(Usuario $usuario, Permiso $permiso): void {
+    public static function removePermisoFromUsuario(Usuario $usuario, array $permisos): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM usuarios_permisos WHERE usuario_id=%d AND permiso_id=%d",
-            $usuario->getId(), $permiso->getId()
-        );
-
-        if (($rs = pg_query($conn, $query)) === false)
+        if (pg_query($conn, 'BEGIN') === false)
             throw new ModalException(pg_last_error($conn));
 
-        if (!pg_free_result($rs))
+        if (pg_prepare($conn, '', "DELETE FROM usuarios_permisos WHERE usuario_id=$1 AND permiso_id=$2") === false)
+            throw new ModalException(pg_last_error($conn));
+
+        foreach ($permisos as $permiso) {
+            if (($rs = pg_execute($conn, '', [$usuario->getId(), $permiso])) === false)
+                throw new ModalException(pg_last_error($conn));
+
+            if (!pg_free_result($rs))
+                throw new ModalException(pg_last_error($conn));
+        }
+
+        if (pg_query($conn, 'COMMIT') === false)
             throw new ModalException(pg_last_error($conn));
     }
 }

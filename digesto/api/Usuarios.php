@@ -151,8 +151,9 @@ abstract class Usuarios {
      *
      * @throws ApiException
      * @throws ModalException
+     * @throws JsonException
      */
-    public static function assignPermiso(int $usuarioId = 0, int $id = 0): void {
+    public static function assignPermisos(int $usuarioId = 0): void {
         if (!isset($_SESSION['user']))
             throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
@@ -160,15 +161,16 @@ abstract class Usuarios {
         if (!Permiso::hasPermiso('usuarios_update', $usuarioId))
             throw new ApiException('Forbidden', Response::FORBIDDEN);
 
+        $requestData = Request::getBodyAsJson();
+
+        if (!isset($requestData->permisos) || !is_array($requestData->permisos) || count($requestData->permisos) === 0)
+            throw new ApiException('Bad Request', Response::BAD_REQUEST);
+
         $usuario = Usuario::getUsuarioById($usuarioId);
         if (!$usuario)
             throw new ApiException('El usuario no existe', Response::NOT_FOUND);
 
-        $permiso = Permiso::getPermisoById($id);
-        if (!$permiso)
-            throw new ApiException('El permiso no existe', Response::NOT_FOUND);
-
-        Permiso::assignPermisoToUsuario($usuario, $permiso);
+        Permiso::assignPermisoToUsuario($usuario, $requestData->permisos);
     }
 
     /**
@@ -177,8 +179,9 @@ abstract class Usuarios {
      *
      * @throws ApiException
      * @throws ModalException
+     * @throws JsonException
      */
-    public static function removePermiso(int $usuarioId = 0, int $id = 0): void {
+    public static function removePermisos(int $usuarioId = 0): void {
         if (!isset($_SESSION['user']))
             throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
@@ -186,14 +189,15 @@ abstract class Usuarios {
         if (!Permiso::hasPermiso('usuarios_update', $usuarioId))
             throw new ApiException('Forbidden', Response::FORBIDDEN);
 
+        $requestData = Request::getBodyAsJson();
+
+        if (!isset($requestData->permisos) || !is_array($requestData->permisos) || count($requestData->permisos) === 0)
+            throw new ApiException('Bad Request', Response::BAD_REQUEST);
+
         $usuario = Usuario::getUsuarioById($usuarioId);
         if (!$usuario)
             throw new ApiException('El usuario no existe', Response::NOT_FOUND);
 
-        $permiso = Permiso::getPermisoById($id);
-        if (!$permiso)
-            throw new ApiException('El permiso no existe', Response::NOT_FOUND);
-
-        Permiso::removePermisoFromUsuario($usuario, $permiso);
+        Permiso::removePermisoFromUsuario($usuario, $requestData->permisos);
     }
 }
