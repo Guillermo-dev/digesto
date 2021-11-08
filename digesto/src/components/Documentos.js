@@ -16,7 +16,7 @@ createStyle()._content(`
         height: 100%;
     }
 
-    .Documentos .document {
+    .Documentos .DocumentoEntry {
         box-shadow: 0 4px 4px 1px #18363d33;
     }
 
@@ -59,7 +59,6 @@ export default function Documentos() {
             <span class="spinner-border"></span>
         </div>
     `);
-
     const _content = _this.root.querySelector('[data-js="content"]');
     const _moreBtn = _this.root.querySelector('[data-js="more-btn"]');
     const _paginator = {
@@ -146,13 +145,13 @@ export default function Documentos() {
                 <p class="mb-0">Descripcion</p>
                 <p class="mb-0 text-muted">${documento["descripcion"]}</p>
                 <div class="text-end">
-                    <button type="button" data-js="documentBtn" class="btn btn-primary btn-sm">
+                    <button type="button" data-js="button" class="btn btn-primary btn-sm">
                         <i class="bi-search me-2"></i><span>Ver documento</span>
                     </button>
                 </div>
             </div>
         `);
-        const buttons = _this.root.querySelectorAll('[data-js="documentBtn"]');
+        const buttons = _this.root.querySelectorAll('[data-js="button"]');
 
         /**
          * Constructor

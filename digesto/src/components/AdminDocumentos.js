@@ -173,22 +173,22 @@ export default function AdminDocumentos() {
                 <p class="mb-0">Descripcion</p>
                 <p class="mb-4 mb-sm-2 text-muted">${documento["descripcion"]}</p>
                 <div class="text-end">
-                    <button type="button" data-js="documentBtn" class="btn btn-sm btn-warning">
+                    <button type="button" data-js="button" class="btn btn-sm btn-warning">
                         <i class="bi-eye-fill" title="Hacer publico"></i>
                         <i class="bi-eye-slash-fill" title="Hacer privado"></i>
                     </button>
-                    <button type="button" data-js="documentBtn" class="btn btn-sm btn-warning">
+                    <button type="button" data-js="button" class="btn btn-sm btn-warning">
                         <i class="bi-pencil me-1"></i>
                         <span>Editar</span>
                     </button>
-                    <button type="button" data-js="documentBtn" class="btn btn-sm btn-danger">
+                    <button type="button" data-js="button" class="btn btn-sm btn-danger">
                         <i class="bi-trash me-1"></i>
                         <span>Eliminar</span>
                     </button>
                 </div>
             </div>
         `);
-        const _buttons = _this.root.querySelectorAll('[data-js="documentBtn"]');
+        const _buttons = _this.root.querySelectorAll('[data-js="button"]');
 
         /**
          * Constructor

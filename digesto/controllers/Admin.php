@@ -31,7 +31,7 @@ abstract class Admin {
      */
     public static function usuarios(): void {
         self::middleware();
-        echo file_get_contents('src/pages/admin-users/admin-users.html');
+        echo file_get_contents('src/pages/admin-usuarios/admin-usuarios.html');
     }
 
     /**
@@ -40,13 +40,5 @@ abstract class Admin {
     public static function documento(): void {
         self::middleware();
         echo file_get_contents('src/pages/admin-document/admin-document.html');
-    }
-
-    /**
-     *
-     */
-    public static function newDocumento(): void {
-        self::middleware();
-        echo file_get_contents('src/pages/admin-new-document/admin-new-document.html');
     }
 }
