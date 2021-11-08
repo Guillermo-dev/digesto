@@ -9,6 +9,7 @@ use models\Documento;
 use models\Pdf;
 use models\Emisor;
 use models\Permiso;
+use models\Tag;
 
 /**
  * Class Documentos
@@ -20,26 +21,31 @@ abstract class Documentos {
      *
      * @throws Exception
      */
-    public static function getDocumentos(): void {
-        if (!isset($_SESSION['user']))
+    public static function getPublicsDocumentos(): void {
+        if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
+            $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
+            $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
+            $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = true));
+        } else
+            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
 
-            if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
-                $search = isset($_GET['search']) ? $_GET['search'] : '';
-                $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
-                $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
-                $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
-                Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = true));
-            } else
-                Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = true));
-        else
-            if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
-                $search = isset($_GET['search']) ? $_GET['search'] : '';
-                $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
-                $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
-                $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
-                Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = false));
-            } else
-                Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));
+        Response::getResponse()->setStatus('success');
+    }
+
+    public static function getAllDocumentos(): void {
+        if (!isset($_SESSION['user']))
+            throw new Exception('Unauthorized', 401);
+
+        if (isset($_GET['search']) or isset($_GET['emisores']) or isset($_GET['etiquetas']) or isset($_GET['anios'])) {
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
+            $emisores = isset($_GET['emisores']) ? $_GET['emisores'] : '';
+            $etiquetas = isset($_GET['etiquetas']) ? $_GET['etiquetas'] : '';
+            $anios = isset($_GET['anios']) ? $_GET['anios'] : '';
+            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($search, $emisores, $etiquetas, $anios, $onlyPublics = false));
+        } else
+            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublics = false));
 
         Response::getResponse()->setStatus('success');
     }
@@ -53,9 +59,15 @@ abstract class Documentos {
         $documento = Documento::getDocumentoById($id);
         if (!$documento) throw new Exception('El documento no existe', 404);
 
+        if (!$documento->getPublico())
+            if (!isset($_SESSION['user']))
+                throw new Exception('Unauthorized', 401);
+
         Response::getResponse()->appendData('documento', $documento);
 
         Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
+
+        Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
 
         if ($documento->getDescargable())
             Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
