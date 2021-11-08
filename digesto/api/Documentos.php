@@ -130,42 +130,39 @@ abstract class Documentos {
             throw new Exception('Forbidden', 403);
 
         $documentoData = Request::getBodyAsJson();
-        // TODO: Validacion de datos
-
-        if (!isset($documentoData->numeroExpediente))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->titulo))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->descripcion))
-            $documentoData->descripcion = '';
-        if (!isset($documentoData->tipo))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->fechaEmisio))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->descargable))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->publico))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->pdfId))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->emisorID))
-            throw new Exception('Bad Request', 400);
-        if (!isset($documentoData->usuarioId))
-            throw new Exception('Bad Request', 400);
 
         $documento = Documento::getDocumentoById($id);
         if (!$documento) throw new Exception('El documento no existe', 404);
 
-        $documento->setNumeroExpediente($documentoData->numeroExpediente);
-        $documento->setTitulo($documentoData->titulo);
-        $documento->setDescripcion($documentoData->descripcion);
-        $documento->setTipo($documentoData->tipo);
-        $documento->setFechaEmision($documentoData->fechaEmisio);
-        $documento->setDescargable($documentoData->descargable);
-        $documento->setPublico($documentoData->publico);
-        $documento->setPdfId($documentoData->pdfId);
-        $documento->setEmisorId($documentoData->emisorID);
-        $documento->setUsuarioId($documentoData->usuarioId);
+        if (isset($documentoData->numeroExpediente))
+            $documento->setNumeroExpediente($documentoData->numeroExpediente);
+
+        if (isset($documentoData->titulo))
+            $documento->setTitulo($documentoData->titulo);
+
+        if (isset($documentoData->descripcion))
+            $documento->setDescripcion($documentoData->descripcion);
+
+        if (isset($documentoData->tipo))
+            $documento->setTipo($documentoData->tipo);
+
+        if (isset($documentoData->fechaEmisio))
+            $documento->setFechaEmision($documentoData->fechaEmisio);
+
+        if (isset($documentoData->descargable))
+            $documento->setDescargable($documentoData->descargable);
+
+        if (isset($documentoData->publico))
+            $documento->setPublico($documentoData->publico);
+
+        if (isset($documentoData->pdfId))
+            $documento->setPdfId($documentoData->pdfId);
+
+        if (isset($documentoData->emisorID))
+            $documento->setEmisorId($documentoData->emisorID);
+
+        if (isset($documentoData->usuarioId))
+            $documento->setUsuarioId($documentoData->usuarioId);
 
         Documento::updateDocumento($documento);
 
