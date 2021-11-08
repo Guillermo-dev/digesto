@@ -1,4 +1,4 @@
-import {createElement, createStyle} from "../global/js/util.js";
+import {createElement, createStyle, errorAlert, successAlert} from "../global/js/util.js";
 import {Component} from "./Component.js";
 
 // language=CSS
@@ -16,12 +16,24 @@ createStyle()._content(`
         height: 100%;
     }
 
-    .AdminDocumentos .document {
+    .AdminDocumentos .DocumentoEntry {
         box-shadow: 0 4px 4px 1px #18363d33;
     }
 
-    .AdminDocumentos .document.private {
+    .AdminDocumentos .DocumentoEntry:not(.private) i[class~="bi-eye-fill"] {
+        display: none;
+    }
+
+    .AdminDocumentos .DocumentoEntry:not(.private) span[class~="badge"] {
+        display: none;
+    }
+
+    .AdminDocumentos .DocumentoEntry.private {
         opacity: 0.5;
+    }
+
+    .AdminDocumentos .DocumentoEntry.private i[class~="bi-eye-slash-fill"] {
+        display: none;
     }
 
     .AdminDocumentos .more-btn {
@@ -42,11 +54,19 @@ createStyle()._content(`
 export default function AdminDocumentos() {
     const _this = this;
     this.root = createElement('div')._class('AdminDocumentos')._html(`
+        <!--New-->
+        <div class="container">
+            <div class="container p-3 text-center more-btn text-secondary mb-2" data-js="new-btn">
+                <i class="bi-plus-lg me-3"></i>Agregar nuevo documento
+            </div>
+        </div>
         <!--Loaded-->
         <div class="container css-loaded">
-            <div class="" data-js="content"><!----></div>
+            <div data-js="content">
+                <!---->
+            </div>
             <div class="container p-3 text-center more-btn css-more-btn text-secondary" data-js="more-btn">
-                <i class="bi-plus-lg me-3"></i>Mostrar mas resultados
+                <i class="bi-search me-3"></i>Mostrar mas resultados
             </div>
         </div>
         <!--No entries-->
@@ -64,6 +84,7 @@ export default function AdminDocumentos() {
         </div>
     `);
     const _content = _this.root.querySelector('[data-js="content"]');
+    const _newBtn = _this.root.querySelector('[data-js="new-btn"]');
     const _moreBtn = _this.root.querySelector('[data-js="more-btn"]');
     const _paginator = {
         window: 5,
@@ -75,6 +96,9 @@ export default function AdminDocumentos() {
      * Constructor
      */
     function _constructor() {
+        _newBtn.onclick = () => {
+            location.href = '/admin/documentos/new';
+        }
         _moreBtn.onclick = _paginate;
     }
 
@@ -138,40 +162,147 @@ export default function AdminDocumentos() {
     function DocumentoEntry(documento) {
         const _this = this;
         this.root = createElement('div')._class('DocumentoEntry')._html(`
-            <div class="p-4 mb-3 border document ${documento['publico'] ? '' : 'private'}">
+            <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["publico"] ? documento["titulo"] : documento["titulo"] + " [Privado]"}</p>
+                        <p class="mb-0 fw-bold">${documento["titulo"]} <span class="badge bg-secondary ms-1">Privado</span></p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
                 </div>
                 <p class="mb-0">Descripcion</p>
-                <p class="mb-0 text-muted">${documento["descripcion"]}</p>
+                <p class="mb-4 mb-sm-2 text-muted">${documento["descripcion"]}</p>
                 <div class="text-end">
-                    <button type="button" data-js="documentBtn" class="btn btn-warning btn-sm text-white">
-                        <i class="bi-pencil me-2"></i><span>Editar</span>
+                    <button type="button" data-js="documentBtn" class="btn btn-sm btn-warning">
+                        <i class="bi-eye-fill" title="Hacer publico"></i>
+                        <i class="bi-eye-slash-fill" title="Hacer privado"></i>
                     </button>
-                    <button type="button" data-js="documentBtn" class="btn btn-danger btn-sm">
-                        <i class="bi-trash me-2"></i><span>Eliminar</span>
+                    <button type="button" data-js="documentBtn" class="btn btn-sm btn-warning">
+                        <i class="bi-pencil me-1"></i>
+                        <span>Editar</span>
+                    </button>
+                    <button type="button" data-js="documentBtn" class="btn btn-sm btn-danger">
+                        <i class="bi-trash me-1"></i>
+                        <span>Eliminar</span>
                     </button>
                 </div>
             </div>
         `);
-        const buttons = _this.root.querySelectorAll('[data-js="documentBtn"]');
+        const _buttons = _this.root.querySelectorAll('[data-js="documentBtn"]');
 
         /**
          * Constructor
          */
-        (function _constructor() {
+        function _constructor() {
+            if (!documento['publico']) _this.root.classList.add('private');
             _this.root.classList.add('d-none');
-            buttons[0].onclick = function() {
-                window.Sweetalert2.fire('Aguanta que no llegue ahí!!');
+            _buttons[0].onclick = _onChangeVisibility;
+            _buttons[1].onclick = function() {
+                location.href = `/admin/documentos/${documento.id}`;
             }
-            buttons[1].onclick = function() {
-                window.Sweetalert2.fire('Proximamente, en los mejores digestos!!');
+            _buttons[2].onclick = _onDelete
+        }
+
+        /**
+         *
+         * @private
+         */
+        function _onDelete() {
+            window.Sweetalert2.fire({
+                icon: 'question',
+                title: '¿Eliminar documento?',
+                text: 'Esta accion no se podra deshacer',
+                cancelButtonText: 'No, lo pensaré',
+                confirmButtonText: 'Si, estoy seguro!',
+                showCancelButton: true,
+                showCloseButton: true,
+            }).then(result => {
+                if (result.isConfirmed) fetch(`/api/documentos/${documento.id}`, {method: 'DELETE'})
+                    .then(httpResp => httpResp.json())
+                    .then(response => {
+                        if (response.status === 'success') {
+                            _this.root.remove();
+                        } else {
+                            errorAlert(response.error.message);
+                        }
+                    })
+                    .catch(reason => {
+                        errorAlert(reason);
+                    })
+            });
+        }
+
+        /**
+         *
+         * @private
+         */
+        function _onChangeVisibility() {
+            if (documento['publico']) {
+                window.Sweetalert2.fire({
+                    icon: 'question',
+                    title: '¿Cambiar visibilidad?',
+                    html: 'Vas a cambiar la visibilidad del documento a <b>Privado</b>',
+                    cancelButtonText: 'No, lo pensaré',
+                    confirmButtonText: 'Si, estoy seguro!',
+                    showCancelButton: true,
+                    showCloseButton: true,
+                }).then(result => {
+                    if (result.isConfirmed) _changeVisibility(false, () => {
+                        successAlert('Cambiaste la visibilidad del documento a <b>Privado</b>');
+                        _this.root.classList.add('private');
+                        documento['publico'] = false;
+                    })
+                });
+            } else {
+                window.Sweetalert2.fire({
+                    icon: 'question',
+                    title: '¿Cambiar visibilidad?',
+                    html: 'Vas a cambiar la visibilidad del documento a <b>Publico<b>',
+                    cancelButtonText: 'No, lo pensaré',
+                    confirmButtonText: 'Si, estoy seguro!',
+                    showCancelButton: true,
+                    showCloseButton: true,
+                }).then(result => {
+                    if (result.isConfirmed) _changeVisibility(true, () => {
+                        successAlert('Cambiaste la visibilidad del documento a <b>Publico</b>');
+                        _this.root.classList.remove('private');
+                        documento['publico'] = true;
+                    })
+                });
             }
-        })()
+        }
+
+        /**
+         *
+         * @param publico
+         * @param fn
+         * @private
+         */
+        function _changeVisibility(publico, fn) {
+            fetch(`/api/documentos/${documento.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    publico: publico
+                })
+            })
+                .then(httpResp => httpResp.json())
+                .then(response => {
+                    if (response.status === 'success') {
+                        fn();
+                    } else {
+                        errorAlert(response.error.message);
+                    }
+                })
+                .catch(reason => {
+                    errorAlert(reason);
+                })
+        }
+
+        //Invoke
+        _constructor()
     }
 
     //Invoke

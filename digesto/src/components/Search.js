@@ -136,6 +136,7 @@ export default function Search() {
                     <div class="col-md-auto text-center">
                         <button type="submit" class="btn btn-primary w-100 fw-bold" title="Filtrar">
                             <i class="bi-filter-left me-1"></i>
+                            <span>Filtrar</span>
                         </button>
                     </div>
                     <div class="col-md-auto mt-2 mt-md-0 ms-md-2">

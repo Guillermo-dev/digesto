@@ -163,6 +163,7 @@ export default function AdminSearch() {
                     <div class="col-md-auto text-center">
                         <button type="submit" class="btn btn-primary w-100 fw-bold" title="Filtrar">
                             <i class="bi-filter-left me-1"></i>
+                            <span>Filtrar</span>
                         </button>
                     </div>
                     <div class="col-md-auto mt-2 mt-md-0 ms-md-2">
@@ -357,6 +358,7 @@ export default function AdminSearch() {
         if (_forms[0]["search"].value.length > 0)
             url.append("search", _forms[0]["search"].value);
         else {
+            history.pushState(null, '', `/admin`)
             _fetchDocumentos();
             return false;
         }
@@ -365,7 +367,7 @@ export default function AdminSearch() {
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.status === 'success') {
-                    history.pushState(null, '', `/?${url.toString()}`)
+                    history.pushState(null, '', `/admin?${url.toString()}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
                     errorAlert(response.error.message);
@@ -422,7 +424,7 @@ export default function AdminSearch() {
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.status === 'success') {
-                    history.pushState(null, '', `/${_url}`)
+                    history.pushState(null, '', `/admin${_url}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
                     errorAlert(response.error.message);

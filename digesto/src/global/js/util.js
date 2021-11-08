@@ -55,7 +55,7 @@ export function createStyle() {
  * @param message
  */
 export function successAlert(message) {
-    window.iziToast.error({message: message.toString()});
+    window.iziToast.success({message: message.toString()});
 }
 
 /**

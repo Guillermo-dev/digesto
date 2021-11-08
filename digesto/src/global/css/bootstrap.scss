@@ -4,7 +4,6 @@
 
 $custom-colors: (
         "primary":#2f636f,
-        "warning":#B09812
 );
 
 $theme-colors: map-merge($theme-colors, $custom-colors);
