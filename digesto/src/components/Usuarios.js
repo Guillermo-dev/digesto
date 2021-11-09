@@ -22,11 +22,43 @@ createStyle()._content(`
 
 /**
  *
+ * @returns {*}
+ */
+function goBackButton() {
+    const element = createElement('div')._html(`
+        <div class="container p-2">
+            <button class="btn btn-primary btn-sm"><i class="bi-house me-2"></i>Volver</button>
+        </div>    
+    `);
+    element.firstElementChild.onclick = () => {
+        location.href="/admin"
+    }
+    return element;
+}
+
+/**
+ *
  * @constructor
  */
 export default function Usuarios() {
     const _this = this;
     this.root = createElement('div')._class('Usuarios')._html(`
+        <!--New-->
+        <div class="container mb-4">
+            <div class="p-4 bg-light">
+                <h5 class="text-muted"><i class="bi-person-fill me-2"></i>Agregar usuario</h5>
+                <form data-js="form" class="row g-2">
+                    <div class="col">
+                        <input type="email" name="email" class="form-control p-2" placeholder="Email" required>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-success btn-sm p-2">
+                            <span><i class="bi-plus-lg me-2"></i> Agregar</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <!--Loaded-->
         <div class="container css-loaded">
             <div data-js="content"><!----></div>
@@ -41,13 +73,46 @@ export default function Usuarios() {
         </div>
     `);
     const _content = _this.root.querySelector('[data-js="content"]');
+    const _ext = document.getElementById('UsuariosExt');
+    const _form = _this.root.querySelector('[data-js="form"]');
     const _permisosModal = new PermisosModal();
 
     /**
      * Constructor
      */
     function _constructor() {
+        _form.onsubmit = (event) => {
+            event.preventDefault();
+            _onSubmit.call(_form, event);
+            return false;
+        }
+        _ext.append(goBackButton());
         _fetchUsuarios();
+    }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _onSubmit(event) {
+        fetch('/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email: _form['email'].value})
+        }).then(httpResp => httpResp.json()).then(response => {
+            if (response.code === 200) {
+                window['iziToast'].success({message: 'El usuario se agrego con exito'});
+                _fetchUsuarios();
+                _form.reset();
+            } else {
+                window['iziToast'].error({message: response.error.message});
+            }
+        }).catch(reason => {
+            window['iziToast'].error({message: reason});
+        });
     }
 
     /**
@@ -56,6 +121,7 @@ export default function Usuarios() {
      */
     function _fetchUsuarios() {
         _this.setClassState('css-loading');
+        _content.innerHTML = "";
         fetch(`/api/usuarios`)
             .then(httpResp => httpResp.json())
             .then(response => {
@@ -92,7 +158,7 @@ export default function Usuarios() {
     function UsuarioEntry(usuario) {
         const _this = this;
         this.root = createElement('div')._class('UsuarioEntry')._html(`
-            <div class="p-4 mb-3 border document">
+            <div class="p-4 mb-3 border">
                 <div class="row g-2">
                     <div class="col-sm">
                         <p class="mb-0 fw-bold">${usuario["nombre"]} ${usuario["apellido"]}</p>
@@ -148,6 +214,7 @@ export default function Usuarios() {
                     .then(httpResp => httpResp.json())
                     .then(response => {
                         if (response.code === 200) {
+                            window['iziToast'].success({message: 'El usuario se elimino con exito'});
                             _this.root.remove();
                         } else {
                             errorAlert(response.error.message);

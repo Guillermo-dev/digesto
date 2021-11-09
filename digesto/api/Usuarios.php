@@ -63,14 +63,6 @@ abstract class Usuarios {
             $usuario->setEmail($usuarioData->email);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($usuarioData->nombre))
-            $usuario->setNombre($usuarioData->nombre);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        if (isset($usuarioData->apellido))
-            $usuario->setApellido($usuarioData->apellido);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
         Usuario::createUsuario($usuario);
     }
 
