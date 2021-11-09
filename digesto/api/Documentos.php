@@ -46,11 +46,13 @@ abstract class Documentos {
             $filtered = true;
         }
 
-        if (isset($_SESSION['user']))
+        if (isset($_SESSION['user']) && isset($_GET['visible']))
             $onlyPublic = false;
 
-        if ($filtered) Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic));
-        else Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublic));
+        if ($filtered)
+            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic));
+        else
+            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublic));
     }
 
     /**

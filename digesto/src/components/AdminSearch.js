@@ -234,7 +234,7 @@ export default function AdminSearch() {
      */
     function _fetchDocumentos() {
         _documentosComponent.setLoading();
-        fetch('/api/documentos')
+        fetch('/api/documentos?visible=')
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.code === 200) {
@@ -354,6 +354,7 @@ export default function AdminSearch() {
      */
     function _onSubmitSearch(event) {
         const url = new URLSearchParams();
+        url.append('visible', '');
         _documentosComponent.setLoading();
 
         if (_forms[0]["search"].value.length > 0)
@@ -389,6 +390,7 @@ export default function AdminSearch() {
      */
     function _onSubmitFilter(event) {
         const url = new URLSearchParams();
+        url.append('visible', '');
         _documentosComponent.setLoading();
 
         const etiquetas = [];
