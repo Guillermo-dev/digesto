@@ -145,7 +145,7 @@ export default function PermisosModal() {
 
         if (assignList.length > 0)
             requestData.assign = assignList;
-        if (requestData.length > 0)
+        if (removeList.length > 0)
             requestData.remove = removeList;
 
         fetch(`/api/usuarios/${_config.usuario.id}/permisos`, {
