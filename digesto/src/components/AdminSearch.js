@@ -1,5 +1,5 @@
-import {createElement, createStyle, errorAlert} from "../global/js/util.js";
-import {Component} from "./Component.js";
+import { createElement, createStyle, errorAlert } from "../global/js/util.js";
+import { Component } from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -77,7 +77,8 @@ createStyle()._content(`
  */
 export default function AdminSearch() {
     const _this = this;
-    this.root = createElement("div")._class("AdminSearch")._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("AdminSearch")
+        ._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md-auto">
             <form data-js="form">
@@ -133,21 +134,7 @@ export default function AdminSearch() {
                         </div>
                     </div>
                     <div class="col-md-auto text-center list-wrapper">
-                        <button type="button" name="emitterBtn" class="btn w-100 text-white">
-                            <b class="me-2">Descargables</b>
-                            <span>Todos</span>
-                            <i class="ms-2 bi-chevron-down"></i>
-                        </button>
-                        <div class="drop-down-box p-2" data-js="drop-box">
-                            <div class="p-2 shadow">
-                                <ul class="list-unstyled m-0 p-0">
-                                    <!--dynamic loading-->
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-auto text-center list-wrapper">
-                        <button type="button" name="emitterBtn" class="btn w-100 text-white">
+                        <button type="button" name="publicBtn" class="btn w-100 text-white">
                             <b class="me-2">Publicos</b>
                             <span>Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
@@ -186,7 +173,7 @@ export default function AdminSearch() {
      * Constructor
      */
     function _constructor() {
-        document.body.addEventListener("click", function() {
+        document.body.addEventListener("click", function () {
             if (_currentOpenedDropBox)
                 _currentOpenedDropBox.classList.remove("visible");
             _currentOpenedDropBox = null;
@@ -210,12 +197,13 @@ export default function AdminSearch() {
             }
             return false;
         };
-        _forms[1]['loginBtn'].onclick = () => {
+        _forms[1]["loginBtn"].onclick = () => {
             location.href = "/auth/logout";
-        }
+        };
         _fetchEtiquetas();
         _fetchEmisores();
         _fillYears();
+        _fillPublicos();
     }
 
     /**
@@ -224,8 +212,16 @@ export default function AdminSearch() {
     function _fillYears() {
         const currentYear = new Date().getFullYear();
         for (let year = currentYear; year >= 2016; year--) {
-            _lists[1].append(_createFilterOption('anios', year));
+            _lists[1].append(_createFilterOption("anios", year));
         }
+    }
+
+    /**
+     *
+     */
+    function _fillPublicos() {
+        _lists[3].append(_createFilterOption("publics", "Ver todos"));
+        _lists[3].append(_createFilterOption("publics", "Ver privados"));
     }
 
     /**
@@ -234,16 +230,18 @@ export default function AdminSearch() {
      */
     function _fetchDocumentos() {
         _documentosComponent.setLoading();
-        fetch('/api/documentos?visible=')
-            .then(httpResp => httpResp.json())
-            .then(response => {
+        fetch("/api/documentos?visible=")
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
-                    _documentosComponent.processDocumentos(response.data['documentos']);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason);
             });
     }
@@ -253,18 +251,18 @@ export default function AdminSearch() {
      * @private
      */
     function _fetchEtiquetas() {
-        fetch('/api/tags')
-            .then(httpResp => httpResp.json())
-            .then(response => {
+        fetch("/api/tags")
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason);
-            })
+            });
     }
 
     /**
@@ -272,18 +270,18 @@ export default function AdminSearch() {
      * @private
      */
     function _fetchEmisores() {
-        fetch('/api/emisores')
-            .then(httpResp => httpResp.json())
-            .then(response => {
+        fetch("/api/emisores")
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason);
-            })
+            });
     }
 
     /**
@@ -294,12 +292,16 @@ export default function AdminSearch() {
     function _processFilterData(data) {
         if (data["tags"] !== undefined)
             data["tags"].forEach((tag) => {
-                _lists[0].append(_createFilterOption('etiquetas', tag['nombre']));
+                _lists[0].append(
+                    _createFilterOption("etiquetas", tag["nombre"])
+                );
             });
 
         if (data["emisores"] !== undefined)
             data["emisores"].forEach((emisor) => {
-                _lists[2].append(_createFilterOption('emisores', emisor['nombre']));
+                _lists[2].append(
+                    _createFilterOption("emisores", emisor["nombre"])
+                );
             });
     }
 
@@ -311,8 +313,10 @@ export default function AdminSearch() {
     function _onOpenDropBox(event) {
         event.cancelBubble = true;
 
-        const dropBox = this.parentElement.querySelector('[data-js="drop-box"]');
-        dropBox.onclick = function(event) {
+        const dropBox = this.parentElement.querySelector(
+            '[data-js="drop-box"]'
+        );
+        dropBox.onclick = function (event) {
             event.cancelBubble = true;
         };
 
@@ -335,9 +339,11 @@ export default function AdminSearch() {
     function _onSelectOption(event) {
         const list = this.parentElement.parentElement;
         const button = list.parentElement.parentElement.previousElementSibling;
-        const checkedInputs = Array.from(list.querySelectorAll('input')).filter(input => {
-            return input.checked
-        });
+        const checkedInputs = Array.from(list.querySelectorAll("input")).filter(
+            (input) => {
+                return input.checked;
+            }
+        );
         if (checkedInputs.length === 0) {
             button.children[1].textContent = "Todos";
         } else if (checkedInputs.length === 1) {
@@ -354,29 +360,31 @@ export default function AdminSearch() {
      */
     function _onSubmitSearch(event) {
         const url = new URLSearchParams();
-        url.append('visible', '');
+        url.append("visible", "");
         _documentosComponent.setLoading();
 
         if (_forms[0]["search"].value.length > 0)
             url.append("search", _forms[0]["search"].value);
         else {
-            history.pushState(null, '', `/admin`)
+            history.pushState(null, "", `/admin`);
             _fetchDocumentos();
             return false;
         }
 
         fetch(`/api/documentos?${url.toString()}`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
-                    history.pushState(null, '', `/admin?${url.toString()}`)
-                    _documentosComponent.processDocumentos(response.data["documentos"]);
+                    history.pushState(null, "", `/admin?${url.toString()}`);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -390,7 +398,7 @@ export default function AdminSearch() {
      */
     function _onSubmitFilter(event) {
         const url = new URLSearchParams();
-        url.append('visible', '');
+        url.append("visible", "");
         _documentosComponent.setLoading();
 
         const etiquetas = [];
@@ -413,31 +421,29 @@ export default function AdminSearch() {
             }
         });
 
-        if (etiquetas.length > 0)
-            url.append("etiquetas", etiquetas.join(";"));
+        if (etiquetas.length > 0) url.append("etiquetas", etiquetas.join(";"));
 
-        if (anios.length > 0)
-            url.append("anios", anios.join(";"));
+        if (anios.length > 0) url.append("anios", anios.join(";"));
 
-        if (emisores.length > 0)
-            url.append("emisores", emisores.join(";"));
+        if (emisores.length > 0) url.append("emisores", emisores.join(";"));
 
-        let _url = '';
-        if (url.toString().length > 0)
-            _url = `?${url.toString()}`;
+        let _url = "";
+        if (url.toString().length > 0) _url = `?${url.toString()}`;
 
         fetch(`/api/documentos${_url}`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
-                    history.pushState(null, '', `/admin${_url}`)
-                    _documentosComponent.processDocumentos(response.data["documentos"]);
+                    history.pushState(null, "", `/admin${_url}`);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -451,7 +457,7 @@ export default function AdminSearch() {
      * @private
      */
     function _createFilterOption(name, value) {
-        const element = createElement('li')._html(`
+        const element = createElement("li")._html(`
         <div class="row g-0 flex-nowrap">
             <div class="col-auto">
                 <input id="${value}" name="${name}" type="checkbox" class="me-2" value="${value}">
@@ -469,7 +475,7 @@ export default function AdminSearch() {
      *
      * @param documentosComponent
      */
-    this.setDocumentosComponent = function(documentosComponent) {
+    this.setDocumentosComponent = function (documentosComponent) {
         _documentosComponent = documentosComponent;
         _fetchDocumentos();
     };

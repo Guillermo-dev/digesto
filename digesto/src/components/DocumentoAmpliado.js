@@ -9,7 +9,7 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
 }
 
 .cuerpoDoc {
-    padding: 20px 10px 10px 30px;
+    padding: 20px 0px 0px 0px;
     width: auto;
     margin: auto;
     overflow: hidden;   
@@ -99,6 +99,7 @@ export default function DocumentoAmpliado() {
     }
 
     function _processDocumento(documento, emisor, tags) {
+        console.log(tags);
         _content.append(
             (_this.root = createElement("div")._class("UsuarioEntry")._html(`
         <div class="cuerpoDoc" id="cuerpoDoc">
@@ -138,24 +139,26 @@ export default function DocumentoAmpliado() {
                     </div>
                 </div>
             </div>
+            ${
+                documento.descargable
+                    ? ` 
                 <div class="vistaDoc " id="vistaDoc ">
-                    <iframe src="../../global/images/AleBombones.pdf${
-                        documento.descargable ? "#toolbar=0" : ""
-                    }" class="frame" frameborder="5" width="100%" height="680px" > 
-                    </iframe>
-                </div>
+                    <iframe src="../../global/images/AleBombones.pdf" class="frame" frameborder="5" width="100%" height="680px" > </iframe>
+                </div> `
+                    : ` DOCUMENTO NO DISPONIBLE`
+            }
         </div>
         `))
         );
-        const _tagsList = _this.root.querySelectorAll('[data-js="tags"]');
+        const _tagsList = _this.root.querySelector('[data-js="tags"]');
         tags.forEach((tag) => {
             _tagsList.append(_createTagElement(tag.nombre));
         });
     }
 
     function _createTagElement(nombre) {
-        const element = createElement("div").html(
-            `<p data-js="infoBD">${nombre}</p>`
+        const element = createElement("div")._html(
+            `<p data-js="infoBD">${nombre}</p>` // TODO: HACER CSS PAO DE TAGS
         );
         return element;
     }
