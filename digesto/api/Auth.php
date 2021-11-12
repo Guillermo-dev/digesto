@@ -35,6 +35,10 @@ abstract class Auth {
         if (!$usuario)
             throw new ApiException('Usuario no autorizado', Response::NOT_FOUND);
 
+        $usuario->setNombre($payload['name']);
+
+        Usuario::updateUsuario($usuario);
+
         $_SESSION['user'] = serialize($usuario);
     }
 
