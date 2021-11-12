@@ -97,7 +97,7 @@ export default function AdminDocumentos() {
      */
     function _constructor() {
         _newBtn.onclick = () => {
-            location.href = '/admin/documentos/new';
+            location.href = '/admin/documento/';
         }
         _moreBtn.onclick = _paginate;
     }

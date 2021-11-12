@@ -1,5 +1,5 @@
-import { createElement, createStyle, errorAlert } from "../global/js/util.js";
-import { Component } from "./Component.js";
+import {createElement, createStyle, errorAlert} from "../global/js/util.js";
+import {Component} from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -14,7 +14,8 @@ createStyle()._content(`
     }
 
     .Search .search-group input {
-        border-right: none
+        border-right: none;
+        max-width: 250px;
     }
 
     .Search .search-group input::placeholder {
@@ -59,6 +60,10 @@ createStyle()._content(`
     }
 
     @media (max-width: 768px) {
+        .Search .search-group input {
+            max-width: unset;
+        }
+        
         .Search .drop-down-box {
             width: 100%;
             max-width: 100%;
@@ -80,7 +85,7 @@ export default function Search() {
     this.name = "Search";
     this.root = createElement("div")._class("Search")._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
-        <div class="col-md-auto">
+        <div class="col-md">
             <form data-js="form">
                 <div class="input-group search-group">
                     <input type="text" class="form-control p-2" placeholder="Buscar por titulo, numero" name="search" autocomplete="off">
@@ -140,7 +145,7 @@ export default function Search() {
                         </button>
                     </div>
                     <div class="col-md-auto mt-2 mt-md-0 ms-md-2">
-                        <button type="button" name="loginBtn" class="btn btn-primary w-100 bi-person-fill"></button>
+                        <button type="button" name="loginBtn" class="btn btn-warning w-100 bi-person-fill"></button>
                     </div>
                 </div>
             </form>

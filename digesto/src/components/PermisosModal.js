@@ -218,7 +218,6 @@ export default function PermisosModal() {
         this.root = createElement('div')._class('PermisoEntry')._html(`<div class="permission p-3 mb-2">
     <div class="row g-0">
         <div class="col">
-            <p class="mb-0 mt-0 fw-bold">${permiso['nombre']}</p>
             <p class="mb-0 mt-0 d-block">${permiso['descripcion']}</p>
         </div>
         <div class="col-auto">

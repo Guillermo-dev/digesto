@@ -41,4 +41,12 @@ abstract class Admin {
         self::middleware();
         echo file_get_contents('src/pages/admin-document/admin-document.html');
     }
+
+    /**
+     *
+     */
+    public static function newDocumento(): void {
+        self::middleware();
+        echo file_get_contents('src/pages/admin-new-documento/admin-new-documento.html');
+    }
 }
