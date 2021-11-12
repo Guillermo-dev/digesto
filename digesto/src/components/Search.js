@@ -1,5 +1,5 @@
-import {createElement, createStyle, errorAlert} from "../global/js/util.js";
-import {Component} from "./Component.js";
+import { createElement, createStyle, errorAlert } from "../global/js/util.js";
+import { Component } from "./Component.js";
 
 // language=CSS
 createStyle()._content(`

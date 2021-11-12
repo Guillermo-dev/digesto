@@ -4,25 +4,25 @@ import { Component } from "./Component.js";
 createStyle("DocumentoAmpliadoEstilos")._content(`
 
 .cuerpoDoc {
-    padding: 60px 0;
-    width: 90%;
-    max-width: 1000px;
+    padding: 20px 10px 10px 30px;
+    width: auto;
     margin: auto;
-    overflow: hidden;
+    overflow: hidden;   
 }
 
 .encabezadoDoc {
-    background-color: grey;
-    color: whitesmoke;
+    background-color: rgb(204, 202, 202);
+    color: black;
     width: auto;
     height: 40px;
-    padding: 10px;
+    vertical-align: middle;
+    padding: 5px 0 5px 10px;  
 }
 
 .informacionDoc {
-    background-color: bisque;
     width: auto;
-    padding: 10px 20px 10px 20px;
+    padding: 20px 10px 10px 20px;
+    background-color: rgb(240, 240, 240);   
 }
 
 .pContenedor {
@@ -34,8 +34,8 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
 }
 
 .vistaDoc {
-    background-color: bisque;
-    padding: 10px 20px 10px 20px;
+    background-color: rgb(240, 240, 240);
+    padding: 10px 10px 10px 10px;
 }
  
 `);
@@ -52,7 +52,7 @@ export default function DocumentoAmpliado() {
     this.root = createElement('div')._class('DocumentoAmpliado')._html(` 
     <div class="cuerpoDoc" id="cuerpoDoc">
         <div class="encabezadoDoc" id="encabezadoDoc">
-            <h3> Detalles del Documento </h3>
+            <h3> Detalles del Documento</h3>
         </div>
         <div class="informacionDoc" id="informacionDoc">
             <div class="pContenedor">
