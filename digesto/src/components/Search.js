@@ -63,7 +63,7 @@ createStyle()._content(`
         .Search .search-group input {
             max-width: unset;
         }
-        
+
         .Search .drop-down-box {
             width: 100%;
             max-width: 100%;
@@ -173,19 +173,13 @@ export default function Search() {
             button.onclick = _onOpenDropBox;
         });
         _forms[0].onsubmit = (event) => {
-            try {
-                _onSubmitSearch.call(_forms[0], event);
-            } catch (error) {
-                errorAlert(error);
-            }
+            event.preventDefault();
+            _onSubmitSearch.call(_forms[0], event);
             return false;
         };
         _forms[1].onsubmit = (event) => {
-            try {
-                _onSubmitFilter.call(_forms[1], event);
-            } catch (error) {
-                errorAlert(error);
-            }
+            event.preventDefault();
+            _onSubmitFilter.call(_forms[1], event);
             return false;
         };
         _forms[1]['loginBtn'].onclick = () => {
@@ -334,7 +328,6 @@ export default function Search() {
      */
     function _onSubmitSearch(event) {
         const url = new URLSearchParams();
-        _documentosComponent.setLoading();
 
         if (_forms[0]["search"].value.length > 0)
             url.append("search", _forms[0]["search"].value);
@@ -343,6 +336,11 @@ export default function Search() {
             return false;
         }
 
+        if (!_documentosComponent) {
+            location.href = `/?${url.toString()}`;
+        }
+
+        _documentosComponent.setLoading();
         fetch(`/api/documentos?${url.toString()}`)
             .then(httpResp => httpResp.json())
             .then(response => {
@@ -368,7 +366,6 @@ export default function Search() {
      */
     function _onSubmitFilter(event) {
         const url = new URLSearchParams();
-        _documentosComponent.setLoading();
 
         const etiquetas = [];
         const anios = [];
@@ -403,11 +400,39 @@ export default function Search() {
         if (url.toString().length > 0)
             _url = `?${url.toString()}`;
 
+        if (!_documentosComponent) {
+            location.href = `/?${url.toString()}`;
+        }
+
+        _documentosComponent.setLoading();
         fetch(`/api/documentos${_url}`)
             .then(httpResp => httpResp.json())
             .then(response => {
                 if (response.code === 200) {
                     history.pushState(null, '', `/${_url}`)
+                    _documentosComponent.processDocumentos(response.data["documentos"]);
+                } else {
+                    _documentosComponent.setError();
+                    errorAlert(response.error.message);
+                }
+            })
+            .catch(reason => {
+                _documentosComponent.setError();
+                errorAlert(reason);
+            });
+    }
+
+    /**
+     *
+     * @param url
+     * @private
+     */
+    function _onFetchSpecial(url) {
+        fetch(`/api/documentos${url}`)
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    history.pushState(null, '', `/${url.toString()}`)
                     _documentosComponent.processDocumentos(response.data["documentos"]);
                 } else {
                     _documentosComponent.setError();
@@ -448,7 +473,11 @@ export default function Search() {
      */
     this.setDocumentosComponent = function(documentosComponent) {
         _documentosComponent = documentosComponent;
-        _fetchDocumentos();
+        if (location.search.length === 0) {
+            _fetchDocumentos();
+        } else {
+            _onFetchSpecial(location.search);
+        }
     };
 
     //Invoke
