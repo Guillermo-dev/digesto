@@ -89,39 +89,37 @@ abstract class Documentos {
         if (!Permiso::hasPermiso('documentos_create', $usuarioId))
             throw new ApiException('Forbidden', Response::FORBIDDEN);
 
-        $documentoData = Request::getBodyAsJson();
-
         $documento = new Documento();
 
-        if (isset($documentoData->$_GET['numeroExpediente']))
-            $documento->setNumeroExpediente($documentoData->numeroExpediente);
+        if (isset($_GET['numeroExpediente']))
+            $documento->setNumeroExpediente($_GET['numeroExpediente']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($documentoData->$_GET['titulo']))
-            $documento->setTitulo($documentoData->titulo);
+        if (isset($_GET['titulo']))
+            $documento->setTitulo($_GET['titulo']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($documentoData->$_GET['descripcion']))
-            $documento->setDescripcion($documentoData->descripcion);
+        if (isset($_GET['descripcion']))
+            $documento->setDescripcion($_GET['descripcion']);
 
-        if (isset($documentoData->$_GET['tipo']))
-            $documento->setTipo($documentoData->tipo);
+        if (isset($_GET['tipo']))
+            $documento->setTipo($_GET['tipo']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($documentoData->$_GET['fechaEmisio']))
-            $documento->setFechaEmision($documentoData->fechaEmisio);
+        if (isset($_GET['fechaEmisio']))
+            $documento->setFechaEmision($_GET['fechaEmisio']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($documentoData->$_GET['descargable']))
-            $documento->setDescargable($documentoData->descargable);
+        if (isset($_GET['descargable']))
+            $documento->setDescargable($_GET['descargable']);
         else $documento->setDescargable(true);
 
-        if (isset($documentoData->$_GET['publico']))
-            $documento->setPublico($documentoData->publico);
+        if (isset($_GET['publico']))
+            $documento->setPublico($_GET['publico']);
         else $documento->setPublico(true);
 
-        if (isset($documentoData->$_GET['emisorID']))
-            $documento->setEmisorId($documentoData->emisorID);
+        if (isset($_GET['emisorID']))
+            $documento->setEmisorId($_GET['emisorID']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
         if ($_FILES['documento_pdf']) {
