@@ -46,6 +46,10 @@ createStyle()._content(`
 
 `);
 
+/**
+ *
+ * @constructor
+ */
 export default function AdminNewDocumento() {
     const _this = this;
     this.name = "AdminNewDocumento";
