@@ -89,6 +89,7 @@ abstract class Documentos {
         if (!Permiso::hasPermiso('documentos_create', $usuarioId))
             throw new ApiException('Forbidden', Response::FORBIDDEN);
 
+        // TODO: $_GET[]
         $documentoData = Request::getBodyAsJson();
 
         $documento = new Documento();
@@ -120,6 +121,7 @@ abstract class Documentos {
             $documento->setPublico($documentoData->publico);
         else $documento->setPublico(true);
 
+        // TODO: crear documento con $_FILES[][]
         if (isset($documentoData->pdfId))
             $documento->setPdfId($documentoData->pdfId);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
