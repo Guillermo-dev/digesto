@@ -164,14 +164,14 @@ class Pdf implements JsonSerializable {
      *
      * @throws ModalException
      */
-    public static function createPdf(Pdf $pdf): void {
+    public static function createPdf(Pdf $pdf): int {
         $conn = Connection::getConnection();
 
-        $query = sprintf(
+        $lastId = pg_getlastoid($query = sprintf(
             "INSERT INTO pdfs (contenido, path) VALUES ('%s','%s') RETURNING Currval('pdfs_pdf_id_seq')",
             pg_escape_string($pdf->getContenido()),
             pg_escape_string($pdf->getPath())
-        );
+        ));
 
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
@@ -182,6 +182,8 @@ class Pdf implements JsonSerializable {
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
+
+        return $lastId;
     }
 
     /**
