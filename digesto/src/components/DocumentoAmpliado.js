@@ -9,7 +9,6 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
 }
 
 .cuerpoDoc {
-    padding: 20px 0px 0px 0px;
     width: auto;
     margin: auto;
     overflow: hidden;   
@@ -26,8 +25,7 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
 
 .informacionDoc {
     width: auto;
-    padding: 20px 10px 10px 20px;
-    background-color: rgb(240, 240, 240);   
+    padding: 20px 10px 10px 20px; 
 }
 
 .pContenedor {
@@ -102,8 +100,8 @@ export default function DocumentoAmpliado() {
         console.log(tags);
         _content.append(
             (_this.root = createElement("div")._class("UsuarioEntry")._html(`
-        <div class="cuerpoDoc" id="cuerpoDoc">
-            <div class="encabezadoDoc" id="encabezadoDoc">
+        <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
+            <div class="encabezadoDoc " id="encabezadoDoc">
                 <h3> Detalles del Documento</h3>
             </div>
             <div class="informacionDoc" id="informacionDoc">
