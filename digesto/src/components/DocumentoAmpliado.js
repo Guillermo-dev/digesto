@@ -81,9 +81,7 @@ export default function DocumentoAmpliado() {
                 if (response.code === 200) {
                     _this.setClassState("css-loaded");
                     _processDocumento(
-                        response.data["documento"],
-                        response.data["emisor"],
-                        response.data["tags"]
+                        response.data
                     );
                 } else {
                     _this.setClassState("css-error");
@@ -96,8 +94,13 @@ export default function DocumentoAmpliado() {
             });
     }
 
-    function _processDocumento(documento, emisor, tags) {
-        console.log(tags);
+    function _processDocumento(data) {
+        const documento = data["documento"];
+        const emisor = data["emisor"];
+        const tags = data["tags"];
+        const pdf = data["pdf"];
+        console.log(pdf)
+
         _content.append(
             (_this.root = createElement("div")._class("UsuarioEntry")._html(`
         <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
@@ -137,14 +140,13 @@ export default function DocumentoAmpliado() {
                     </div>
                 </div>
             </div>
-            ${
-                documento.descargable
-                    ? ` 
-                <div class="vistaDoc " id="vistaDoc ">
-                    <iframe src="../../global/images/AleBombones.pdf" class="frame" frameborder="5" width="100%" height="680px" > </iframe>
-                </div> `
-                    : ` DOCUMENTO NO DISPONIBLE`
-            }
+            <div class="vistaDoc " id="vistaDoc ">
+                <iframe src= ${
+                    documento.descargable
+                        ? `../../../${pdf.path}`
+                        : "../../../uploads/pdf_no_disponible.pdf"
+                } class="frame" frameborder="5" width="100%" height="680px" > </iframe>
+            </div> 
         </div>
         `))
         );

@@ -138,8 +138,9 @@ abstract class Documentos {
             $tmpPdfBd = new Pdf();
             $pdfId = Pdf::createPdf($tmpPdfBd);
 
+            //TODO: transaccion, los "create" no devuelven la id sino que la signan al obajeto y agregar extencion al nombre
             // Update y creacion del path
-            $namePdf =  'uploads/' . strtolower($namePdf . strval($pdfId));
+            $namePdf =  'uploads/' . strtolower($namePdf . strval($pdfId).$filesExt);
             $namePdf = preg_replace('/\s+/', '-', $namePdf);
             $tmpPdfBd->setPath($namePdf);
             Pdf::updatePdf($tmpPdfBd);
