@@ -280,7 +280,7 @@ export default function AdminDocumentos() {
          */
         function _changeVisibility(publico, fn) {
             fetch(`/api/documentos/${documento.id}`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
