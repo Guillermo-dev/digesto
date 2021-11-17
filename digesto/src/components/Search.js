@@ -15,7 +15,6 @@ createStyle()._content(`
 
     .Search .search-group input {
         border-right: none;
-        max-width: 250px;
     }
 
     .Search .search-group input::placeholder {
@@ -60,10 +59,6 @@ createStyle()._content(`
     }
 
     @media (max-width: 768px) {
-        .Search .search-group input {
-            max-width: unset;
-        }
-
         .Search .drop-down-box {
             width: 100%;
             max-width: 100%;
@@ -86,7 +81,7 @@ export default function Search() {
     this.root = createElement("div")._class("Search")
         ._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
-        <div class="col-md">
+        <div class="col-md-auto">
             <form data-js="form">
                 <div class="input-group search-group">
                     <input type="text" class="form-control p-2" placeholder="Buscar por titulo, numero" name="search" autocomplete="off">
