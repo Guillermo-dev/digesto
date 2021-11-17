@@ -68,7 +68,7 @@ export default function AdminNewDocumento() {
     <!--Loaded-->
     <div class="container css-loaded">
         <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
-            <div class="encabezadoDoc " id="encabezadoDoc">
+            <div class="encabezadoDoc text-center" id="encabezadoDoc">
                 <h3> Detalles del Documento</h3>
             </div>          
             <div class="contenedor">
@@ -76,7 +76,7 @@ export default function AdminNewDocumento() {
                     <div class="col-sm>
                         <form>
                             <div class="form-group">
-                                <label class="fw-bold mt-2" for="titulo">Título*</label>
+                                <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
                                 <input type="text " class="form-control " id="titulo " placeholder="">
                             </div>
                             <div class="form-group">
@@ -84,35 +84,37 @@ export default function AdminNewDocumento() {
                                 <textarea  class="form-control " id="descripcion " placeholder=""> </textarea>
                             </div>
                             <div class="form-group ">
-                                <label class="fw-bold mt-2" for="numero">Número*</label>
+                                <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
                                 <input type="text " class="form-control " id="numero " placeholder="">
                             </div>
                             <div class="form-group ">
-                                <label class="fw-bold mt-2" for="campaña">Fecha*</label>
-                                <input type="fate" class="form-control " id="fecha " placeholder="">
+                                <label class="fw-bold mt-2" for="campaña">Fecha<span class="text-danger">*</span></label>
+                                <input type="date" class="form-control " id="fecha " placeholder="">
                             </div> 
                             <div class="form-group ">
-                                <label class="fw-bold mt-2" for="campaña">Tipo*</label>
+                                <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control " id="tipo " placeholder="">
                             </div> 
                             <div class="form-group  ">
-                                <label class="fw-bold mt-2" for="campaña">Emisor*</p></label>
-                                <select class="form-control form-control-sm p-2">
+                                <label class="fw-bold mt-2" for="campaña">Emisor<span class="text-danger">*</span></label>
+                                <select class="form-control">
                                     <option>Rector</option>
                                     <option>Consejo Superior</option>
                                     <option>Otros</option>
                                 </select>
+                                <label class="fw-bold mt-2" for="nuevoEmisor">Nuevo Emisor</label>
+                                <input type="text" class="form-control" id="nuevoEmisor"> 
                             <div class="form-group ">
-                                <label class="fw-bold mt-2" for="campaña">Etiquetas*</label>
+                                <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
                                 <input type="text " class="form-control " id="etiquetas " placeholder="">
                                 <p>Se recomienda agregar entre 5 y 8 etiquetas por documento. Usar palabras representativas.</p>
                             </div> 
 
-                            <div class="row d-flex">
-                                <div class="col-ms">
+                            <div class="row">
+                                <div class="col-sm">
                                     <div class="form-check form-check-inline">
-                                        <label class="fw-bold mt-2" for="privacidad">Privacidad*</label>
-                                    </div>
+                                        <label class="fw-bold mt-2" for="privacidad">Privacidad<span class="text-danger">*</span></label>
+                                    
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="publico" id="publico" value="publico" checked>
                                         <label class="form-check-label" for="publico"> Público </label>                  
@@ -121,11 +123,12 @@ export default function AdminNewDocumento() {
                                         <input class="form-check-input" type="radio" name="Privado" id="Privado" value="Privado">
                                         <label class="form-check-label" for="Privado"> Privado </label>                   
                                     </div>
+                                    </div>
                                 </div>
                                
-                                <div class="col-ms">
+                                <div class="col-sm">
                                     <div class="form-check form-check-inline">
-                                        <label class="fw-bold mt-2" for="Estado">Estado*</label>
+                                        <label class="fw-bold mt-2" for="Estado">Estado<span class="text-danger">*</span></label>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="Descargable" id="Descargable" value="Descargable" checked>
                                             <label class="form-check-label" for="Descargable">Descargable </label>               
@@ -141,7 +144,7 @@ export default function AdminNewDocumento() {
                             <div class="cargaDocumento d-grid">
                                 <div class="card text-center mt-3">
                                     <div class="card-header fw-bold  bg-secondary bg-opacity-25 ">
-                                        Cargar Documento*
+                                        Cargar Documento<span class="text-danger">*</span>
                                     </div>
                                     <div class="card-body">
                                         <p class="card-text">Seleccione el archivo que desea subir</p>
@@ -149,6 +152,7 @@ export default function AdminNewDocumento() {
                                     </div>
                                 </div>   
                             </div>
+                            <p><span class="text-danger">*Campo obligatorio</span></p>
                             <div class="text-end mt-2 ">
                                 <button type="submit " class="btn btn-primary">Cancelar</button>
                                 <button type="submit " class="btn btn-primary">Guardar</button> 

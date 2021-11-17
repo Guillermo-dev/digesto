@@ -154,7 +154,7 @@ export default function AdminSearch() {
                         </button>
                     </div>
                     <div class="col-md-auto mt-2 mt-md-0 ms-md-2">
-                        <button type="button" name="loginBtn" class="btn btn-primary w-100 bi-power" title="Cerrar sesión"></button>
+                        <button type="button" name="loginBtn" class="btn btn-danger w-100 bi-power" title="Cerrar sesión"></button>
                     </div>
                 </div>
             </form>
@@ -173,7 +173,7 @@ export default function AdminSearch() {
      * Constructor
      */
     function _constructor() {
-        document.body.addEventListener("click", function () {
+        document.body.addEventListener("click", function() {
             if (_currentOpenedDropBox)
                 _currentOpenedDropBox.classList.remove("visible");
             _currentOpenedDropBox = null;
@@ -320,7 +320,7 @@ export default function AdminSearch() {
         const dropBox = this.parentElement.querySelector(
             '[data-js="drop-box"]'
         );
-        dropBox.onclick = function (event) {
+        dropBox.onclick = function(event) {
             event.cancelBubble = true;
         };
 
@@ -442,10 +442,10 @@ export default function AdminSearch() {
         if (emisores.length > 0) url.append("emisores", emisores.join(";"));
 
         if (privacidad.length > 0) {
-            if(privacidad.length == 1){
-                if(privacidad.includes("publicos")) url.append("privacidad", "publicos");
+            if (privacidad.length == 1) {
+                if (privacidad.includes("publicos")) url.append("privacidad", "publicos");
                 else if (privacidad.includes("privados")) url.append("privacidad", "privados");
-            }else{
+            } else {
                 url.append("privacidad", "all");
             }
         }
@@ -498,7 +498,7 @@ export default function AdminSearch() {
      *
      * @param documentosComponent
      */
-    this.setDocumentosComponent = function (documentosComponent) {
+    this.setDocumentosComponent = function(documentosComponent) {
         _documentosComponent = documentosComponent;
         _fetchDocumentos();
     };

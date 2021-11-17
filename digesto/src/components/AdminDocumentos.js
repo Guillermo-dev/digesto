@@ -1,5 +1,5 @@
-import {createElement, createStyle, errorAlert, successAlert} from "../global/js/util.js";
-import {Component} from "./Component.js";
+import { createElement, createStyle, errorAlert, successAlert } from "../global/js/util.js";
+import { Component } from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -212,12 +212,13 @@ export default function AdminDocumentos() {
                 icon: 'question',
                 title: '¿Eliminar documento?',
                 text: 'Esta accion no se podra deshacer',
-                cancelButtonText: 'No, lo pensaré',
                 confirmButtonText: 'Si, estoy seguro!',
+                cancelButtonText: 'No, lo pensaré',
+
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(result => {
-                if (result.isConfirmed) fetch(`/api/documentos/${documento.id}`, {method: 'DELETE'})
+                if (result.isConfirmed) fetch(`/api/documentos/${documento.id}`, { method: 'DELETE' })
                     .then(httpResp => httpResp.json())
                     .then(response => {
                         if (response.code === 200) {
@@ -280,14 +281,14 @@ export default function AdminDocumentos() {
          */
         function _changeVisibility(publico, fn) {
             fetch(`/api/documentos/${documento.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    publico: publico
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        publico: publico
+                    })
                 })
-            })
                 .then(httpResp => httpResp.json())
                 .then(response => {
                     if (response.code === 200) {
