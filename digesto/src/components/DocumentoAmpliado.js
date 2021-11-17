@@ -33,7 +33,7 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
 }
 
 .pContenedor p:first-of-type {
-    width: 120px;
+    min-width: 120px;
 }
 
 .vistaDoc {
