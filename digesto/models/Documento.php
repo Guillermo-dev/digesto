@@ -337,12 +337,12 @@ class Documento implements JsonSerializable {
     }
 
     /**
-     * @param string $algo
+     * @param string $str
      *
      * @return string
      */
-    private static function lloro(string $algo): string {
-        return '(\'' . implode('\',\'', explode(';', pg_escape_string($algo))) . '\')';
+    private static function lloro2elregreso(string $str): string {
+        return '(\'' . implode('\',\'', explode(';', pg_escape_string($str))) . '\')';
     }
 
     /**
@@ -373,9 +373,9 @@ class Documento implements JsonSerializable {
             $onlyPublics ? 'D.publico = TRUE' : 'D.publico = '.$publicos.' OR D.publico = '.$privados.'',
             $search == '' ? '' : "AND (UPPER(D.titulo) LIKE UPPER('%" . pg_escape_string($search) . "%')",
             $search == '' ? '' : "OR UPPER(D.numero_expediente) LIKE '%" . pg_escape_string($search) . "%')",
-            $emitters == '' ? '' : "AND E.nombre IN " . self::lloro($emitters),
-            $tags == '' ? '' : "AND T.nombre IN " . self::lloro($tags),
-            $years == '' ? '' : "AND CAST(EXTRACT(YEAR FROM D.fecha_emision) AS varchar) IN " . self::lloro($years),
+            $emitters == '' ? '' : "AND E.nombre IN " . self::lloro2elregreso($emitters),
+            $tags == '' ? '' : "AND T.nombre IN " . self::lloro2elregreso($tags),
+            $years == '' ? '' : "AND CAST(EXTRACT(YEAR FROM D.fecha_emision) AS varchar) IN " . self::lloro2elregreso($years),
         );
 
         if (($rs = pg_query($conn, $query)) === false)
