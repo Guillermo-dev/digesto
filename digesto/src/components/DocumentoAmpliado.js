@@ -80,9 +80,7 @@ export default function DocumentoAmpliado() {
             .then((response) => {
                 if (response.code === 200) {
                     _this.setClassState("css-loaded");
-                    _processDocumento(
-                        response.data
-                    );
+                    _processDocumento(response.data);
                 } else {
                     _this.setClassState("css-error");
                     errorAlert(response.error.message);
@@ -99,7 +97,7 @@ export default function DocumentoAmpliado() {
         const emisor = data["emisor"];
         const tags = data["tags"];
         const pdf = data["pdf"];
-        console.log(pdf)
+        console.log(pdf);
 
         _content.append(
             (_this.root = createElement("div")._class("UsuarioEntry")._html(`
@@ -162,13 +160,6 @@ export default function DocumentoAmpliado() {
         );
         return element;
     }
-
-    //armar el diseño de las tags
-    // armar el js acá
-
-    /* declaro una variable : const parrafos = _this.root.querySelector('[data-js="infoBD"]'); 
-    (en la variable parrafos guarda el querySelector busca las etiquetas data-js = infoBD)
-     */
 
     _constructor();
 }

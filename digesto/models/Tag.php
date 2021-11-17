@@ -133,6 +133,34 @@ class Tag implements JsonSerializable {
     }
 
     /**
+     * @param string $nombre
+     *
+     * @return Tag|null
+     * @throws ModalException
+     */
+    public static function getTagByName(string $name): ?Tag {
+        $conn = Connection::getConnection();
+
+        $query = sprintf('SELECT tag_id, nombre FROM tags WHERE nombre = %d', $name);
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        $tag = null;
+        if (($row = pg_fetch_assoc($rs)) != false) {
+            $tag = new Tag();
+            $tag->setId($row['tag_id']);
+            $tag->setNombre($row['nombre']);
+        }
+        if (($error = pg_last_error($conn)) != false)
+            throw new ModalException($error);
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error());
+
+        return $tag;
+    }
+
+    /**
      * @param Tag $tag
      *
      * @throws ModalException
@@ -140,10 +168,10 @@ class Tag implements JsonSerializable {
     public static function createTag(Tag $tag): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf(
+        $lastId = pg_getlastoid($query = sprintf(
             "INSERT INTO tags (nombre) VALUES ('%s') RETURNING Currval('tags_tag_id_seq')",
-            pg_escape_string($tag->getNombre()),
-        );
+            pg_escape_string(strtolower($tag->getNombre())),
+        ));
 
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
@@ -154,6 +182,8 @@ class Tag implements JsonSerializable {
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
+
+        $tag->setId($lastId);
     }
 
     /**
@@ -166,7 +196,7 @@ class Tag implements JsonSerializable {
 
         $query = sprintf(
             "UPDATE tag SET nombre='%s' WHERE tag_id=%d",
-            pg_escape_string($tag->getNombre()),
+            pg_escape_string(strtolower($tag->getNombre())),
             $tag->getId()
         );
 

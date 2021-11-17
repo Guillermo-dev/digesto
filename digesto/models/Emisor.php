@@ -134,6 +134,35 @@ class Emisor implements JsonSerializable {
     }
 
     /**
+     * @param string $nombre
+     *
+     * @return Emisor|null
+     * @throws ModalException
+     */
+    public static function getEmisorBynombre(string $nombre): ?Emisor {
+        $conn = Connection::getConnection();
+
+        $query = sprintf('SELECT emisor_id, nombre FROM emisores WHERE nombre=%d', $nombre);
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        $emisor = null;
+        if (($row = pg_fetch_assoc($rs)) != false) {
+            $emisor = new Emisor();
+            $emisor->setId($row['emisor_id']);
+            $emisor->setNombre($row['nombre']);
+        }
+
+        if (($error = pg_last_error($conn)) != false)
+            throw new ModalException($error);
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error());
+
+        return $emisor;
+    }
+
+    /**
      * @param Emisor $emisor
      *
      * @throws ModalException

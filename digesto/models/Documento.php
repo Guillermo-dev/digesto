@@ -512,16 +512,38 @@ class Documento implements JsonSerializable {
     }
 
     /**
-     * @param int $documento_id
+     * @param int $documentoId
      *
      * @throws ModalException
      */
-    public static function deleteDocumento(int $documento_id): void {
+    public static function deleteDocumento(int $documentoId): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM documentos WHERE documento_id=%d", $documento_id);
+        $query = sprintf("DELETE FROM documentos WHERE documento_id=%d", $documentoId);
 
         if (!($rs = pg_query($conn, $query)))
+            throw new ModalException(pg_last_error($conn));
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error($conn));
+    }
+
+    /**
+     * @param int $documentoId
+     * @param int $tagId
+     *
+     * @throws ModalException
+     */
+    public static function assignTagDocumento(int $documentoId, int $tagId):void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            'INSERT INTO documentos_tags (documento_id, tag_id) VALUES (%d, %d)',
+            $documentoId,
+            $tagId,
+        );
+
+        if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
         if (!pg_free_result($rs))
