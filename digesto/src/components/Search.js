@@ -83,7 +83,8 @@ createStyle()._content(`
 export default function Search() {
     const _this = this;
     this.name = "Search";
-    this.root = createElement("div")._class("Search")._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("Search")
+        ._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md">
             <form data-js="form">

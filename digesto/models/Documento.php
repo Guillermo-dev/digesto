@@ -355,7 +355,7 @@ class Documento implements JsonSerializable {
      * @return array
      * @throws exceptions\ModalException
      */
-    public static function getDocumentosSearch(string $search, string $emitters, string $tags, string $years, bool $onlyPublics): array {
+    public static function getDocumentosSearch(string $search, string $emitters, string $tags, string $years, bool $onlyPublics, string $publicos, string $privados): array {
         $conn = Connection::getConnection();
 
         $query = sprintf(
@@ -363,14 +363,14 @@ class Documento implements JsonSerializable {
             FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
             INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
             INNER JOIN tags T ON DT.tag_id = T.tag_id
-            WHERE (D.publico = %s OR D.publico = TRUE) 
+            WHERE (%s) 
                 %s 
                 %s 
                 %s 
                 %s
                 %s
                 ORDER BY  D.fecha_emision DESC",
-            $onlyPublics ? 'TRUE' : 'FALSE',
+            $onlyPublics ? 'D.publico = TRUE' : 'D.publico = '.$publicos.' OR D.publico = '.$privados.'',
             $search == '' ? '' : "AND (UPPER(D.titulo) LIKE UPPER('%" . pg_escape_string($search) . "%')",
             $search == '' ? '' : "OR UPPER(D.numero_expediente) LIKE '%" . pg_escape_string($search) . "%')",
             $emitters == '' ? '' : "AND E.nombre IN " . self::lloro($emitters),

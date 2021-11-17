@@ -146,7 +146,7 @@ export default function Documentos() {
                 <p class="mb-0 text-muted">${documento["descripcion"]}</p>
                 <div class="text-end">
                     <button type="button" data-js="button" class="btn btn-primary btn-sm">
-                        <i class="bi-search me-2"></i><span>Ver documento</span>
+                        <i class="bi-search me-2"></i><span>Ver detalles</span>
                     </button>
                 </div>
             </div>

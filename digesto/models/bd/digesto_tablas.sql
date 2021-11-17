@@ -77,15 +77,15 @@ CREATE TABLE documentos_tags
 /*******************/
 
 INSERT INTO permisos (nombre, descripcion)
-VALUES ('documentos_create', ''),
-       ('documentos_update', ''),
-       ('documentos_delete', ''),
-       ('tags_create', ''),
-       ('tags_update', ''),
-       ('tags_delete', ''),
-       ('emisores_create', ''),
-       ('emisores_update', ''),
-       ('emisores_delete', ''),
-       ('usuarios_create', ''),
-       ('usuarios_update', ''),
-       ('usuarios_delete', '');
+VALUES ('documentos_create', 'Crear nuevos documentos'),
+       ('documentos_update', 'Actualizar documentos'),
+       ('documentos_delete', 'Eliminar documentos'),
+       ('tags_create', 'Crear nuevas etiquetas'),
+       ('tags_update', 'Actualizar etiquetas'),
+       ('tags_delete', 'Eliminar etiquetas'),
+       ('emisores_create', 'Crear nuevos emisores'),
+       ('emisores_update', 'Actualizar emisores'),
+       ('emisores_delete', 'Eliminar emisores'),
+       ('usuarios_create', 'Crear nuevos usuarios'),
+       ('usuarios_update', 'Actualizar usuarios'),
+       ('usuarios_delete', 'Eliminar usuarios');

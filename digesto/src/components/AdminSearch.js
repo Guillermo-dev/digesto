@@ -135,7 +135,7 @@ export default function AdminSearch() {
                     </div>
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="publicBtn" class="btn w-100 text-white">
-                            <b class="me-2">Publicos</b>
+                            <b class="me-2">Privacidad</b>
                             <span>Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
@@ -220,8 +220,12 @@ export default function AdminSearch() {
      *
      */
     function _fillPublicos() {
-        _lists[3].append(_createFilterOption("publics", "Ver todos"));
-        _lists[3].append(_createFilterOption("publics", "Ver privados"));
+        _lists[3].append(
+            _createFilterOption("Privacidad", "Ver solo publicos")
+        );
+        _lists[3].append(
+            _createFilterOption("Privacidad", "Ver solo privados")
+        );
     }
 
     /**
@@ -404,6 +408,7 @@ export default function AdminSearch() {
         const etiquetas = [];
         const anios = [];
         const emisores = [];
+        const privacidad = [];
 
         _forms[1]["etiquetas"].forEach((option) => {
             if (option.checked) {
@@ -420,12 +425,30 @@ export default function AdminSearch() {
                 emisores.push(option.value);
             }
         });
+        _forms[1]["Privacidad"].forEach((option) => {
+            if (option.checked) {
+                if (option.value === "Ver solo publicos") {
+                    privacidad.push("publicos");
+                } else if (option.value == "Ver solo privados") {
+                    privacidad.push("privados");
+                }
+            }
+        });
 
         if (etiquetas.length > 0) url.append("etiquetas", etiquetas.join(";"));
 
         if (anios.length > 0) url.append("anios", anios.join(";"));
 
         if (emisores.length > 0) url.append("emisores", emisores.join(";"));
+
+        if (privacidad.length > 0) {
+            if(privacidad.length == 1){
+                if(privacidad.includes("publicos")) url.append("privacidad", "publicos");
+                else if (privacidad.includes("privados")) url.append("privacidad", "privados");
+            }else{
+                url.append("privacidad", "all");
+            }
+        }
 
         let _url = "";
         if (url.toString().length > 0) _url = `?${url.toString()}`;

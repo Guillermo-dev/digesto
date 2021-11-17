@@ -25,6 +25,8 @@ abstract class Documentos {
     public static function getDocumentos(): void {
         $filtered = false;
         $onlyPublic = true;
+        $publicos = 'TRUE';
+        $privados = 'TRUE';
 
         if (!isset($_GET['search'])) {
             $_GET['search'] = '';
@@ -46,11 +48,28 @@ abstract class Documentos {
             $filtered = true;
         }
 
-        if (isset($_SESSION['user']) && isset($_GET['visible']))
-            $onlyPublic = false;
 
+        if (isset($_SESSION['user']) && isset($_GET['visible'])) {
+            $publicos = 'FALSE';
+            $privados = 'TRUE';
+            $onlyPublic = false;
+        }
+
+
+        if (isset($_GET['privacidad'])) {
+            if ($_GET['privacidad'] == 'publicos')
+                $publicos = 'TRUE';
+            else
+                $publicos = 'FALSE';
+            if ($_GET['privacidad'] == 'privados')
+                $privados = 'FALSE';
+            else
+                $privados = 'TRUE';
+            $filtered = true;
+        }
+        
         if ($filtered)
-            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic));
+            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic, $publicos, $privados));
         else
             Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublic));
     }

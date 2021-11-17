@@ -255,4 +255,34 @@ class Tag implements JsonSerializable {
 
         return $tags;
     }
+
+    /**
+     * @param string $text
+     *
+     * @return Tag|null
+     * @throws ModalException
+     */
+    public static function getTagByText(string $text): Tag {
+        $conn = Connection::getConnection();
+
+        $query = sprintf('SELECT tag_id, nombre FROM tags 
+        WHERE (UPPER(nombre)) LIKE UPPER(%% %s %%)',pg_escape_string($text));
+        
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        $tag = null;
+        if (($row = pg_fetch_assoc($rs)) != false) {
+            $tag = new Tag();
+            $tag->setId($row['tag_id']);
+            $tag->setNombre($row['nombre']);
+        }
+        if (($error = pg_last_error($conn)) != false)
+            throw new ModalException($error);
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error());
+
+        return $tag;
+    }
 }
