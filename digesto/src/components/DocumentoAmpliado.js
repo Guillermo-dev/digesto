@@ -29,7 +29,7 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
 }
 
 .pContenedor {
-    display: flex;
+    display: flex;   
 }
 
 .pContenedor p:first-of-type {
@@ -99,39 +99,39 @@ export default function DocumentoAmpliado() {
         const pdf = data["pdf"];
 
         _content.append(
-            (_this.root = createElement("div")._class("UsuarioEntry")._html(`
+                (_this.root = createElement("div")._class("UsuarioEntry")._html(`
         <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
-            <div class="encabezadoDoc " id="encabezadoDoc">
+            <div class="encabezadoDoc px-5 text-center " id="encabezadoDoc">
                 <h3> Detalles del Documento</h3>
             </div>
-            <div class="informacionDoc" id="informacionDoc">
-                <div class="pContenedor">
-                    <p>Número:</p>
+            <div class="informacionDoc  border shadow " id="informacionDoc">
+                <div class="pContenedor border-bottom border-secondary;">
+                    <p class=" fw-bold ">Número:</p>
                     <p data-js="infoBD">${documento.numeroExpediente}</p>
                 </div>
                 <br>
-                <div class="pContenedor">
-                    <p>Título:</p>
+                <div class="pContenedor border-bottom border-secondary;">
+                    <p class=" fw-bold ">Título:</p>
                     <p data-js="infoBD">${documento.titulo}</p>
                 </div>
                 <br>
-                <div class="pContenedor">
-                    <p>Fecha:</p>
+                <div class="pContenedor border-bottom border-secondary;">
+                    <p class=" fw-bold ">Fecha:</p>
                     <p data-js="infoBD">${documento.fechaEmision}</p>
                 </div>
                 <br>
-                <div class="pContenedor">
-                    <p>Descripción:</p>
+                <div class="pContenedor border-bottom border-secondary;">
+                    <p class=" fw-bold ">Descripción:</p>
                     <p data-js="infoBD">${documento.descripcion}</p>
                 </div>
                 <br>
-                <div class="pContenedor">
-                    <p>Emisor: </p>
+                <div class="pContenedor border-bottom border-secondary;">
+                    <p class=" fw-bold ">Emisor: </p>
                     <p data-js="infoBD">${emisor.nombre}</p>
                 </div>
                 <br>
                 <div class="pContenedor">
-                    <p>Etiquetas:</p>
+                    <p class=" fw-bold ">Etiquetas:</p>
                     <div data-js="tags">
                         <!-- tags -->
                     </div>
