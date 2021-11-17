@@ -18,7 +18,7 @@ if (isset($router)) {
     $router->get('/documentos', 'api\Documentos@getDocumentos');
     $router->get('/documentos/(\d+)', 'api\Documentos@getDocumento');
     $router->post('/documentos', 'api\Documentos@createDocumento');
-    $router->put('/documentos/(\d+)', 'api\Documentos@updateDocumento');
+    $router->post('/documentos/(\d+)', 'api\Documentos@updateDocumento');
     $router->delete('/documentos/(\d+)', 'api\Documentos@deleteDocumento');
 
     $router->get('/emisores', 'api\Emisores@getEmisores');

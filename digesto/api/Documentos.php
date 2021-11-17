@@ -67,7 +67,7 @@ abstract class Documentos {
                 $privados = 'TRUE';
             $filtered = true;
         }
-        
+
         if ($filtered)
             Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic, $publicos, $privados));
         else
@@ -110,36 +110,36 @@ abstract class Documentos {
 
         $documento = new Documento();
 
-        if (isset($_GET['numeroExpediente']))
-            $documento->setNumeroExpediente($_GET['numeroExpediente']);
+        if (isset($_POST['numeroExpediente']))
+            $documento->setNumeroExpediente($_POST['numeroExpediente']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($_GET['titulo']))
-            $documento->setTitulo($_GET['titulo']);
+        if (isset($_POST['titulo']))
+            $documento->setTitulo($_POST['titulo']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($_GET['descripcion']))
-            $documento->setDescripcion($_GET['descripcion']);
+        if (isset($_POST['descripcion']))
+            $documento->setDescripcion($_POST['descripcion']);
 
-        if (isset($_GET['tipo']))
-            $documento->setTipo($_GET['tipo']);
+        if (isset($_POST['tipo']))
+            $documento->setTipo($_POST['tipo']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($_GET['fechaEmision']))
-            $documento->setFechaEmision($_GET['fechaEmision']);
+        if (isset($_POST['fechaEmision']))
+            $documento->setFechaEmision($_POST['fechaEmision']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-        if (isset($_GET['descargable']))
-            $documento->setDescargable($_GET['descargable']);
+        if (isset($_POST['descargable']))
+            $documento->setDescargable($_POST['descargable']);
         else $documento->setDescargable(true);
 
-        if (isset($_GET['publico']))
-            $documento->setPublico($_GET['publico']);
+        if (isset($_POST['publico']))
+            $documento->setPublico($_POST['publico']);
         else $documento->setPublico(true);
 
-        if (isset($_GET['tags'])) {
+        if (isset($_POST['tags'])) {
             $tagsIds = [];
-            foreach ($_GET['tags'] as $tagName) {
+            foreach ($_POST['tags'] as $tagName) {
                 $tagName = strtolower($tagName);
                 if (!$tag = Tag::getTagByName($tagName)) {
                     $tag = new Tag();
@@ -151,8 +151,8 @@ abstract class Documentos {
         } else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
 
-        if (isset($_GET['emisor']))
-            $emisor = Emisor::getEmisorBynombre($_GET['emisor']);
+        if (isset($_POST['emisor']))
+            $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
         if (!$emisor)
             throw new ApiException('Bad Request', Response::BAD_REQUEST);
@@ -210,37 +210,32 @@ abstract class Documentos {
 
         $documento = Documento::getDocumentoById($id);
 
-        if (isset($_GET['numeroExpediente']))
-            $documento->setNumeroExpediente($_GET['numeroExpediente']);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
+        if (isset($_POST['numeroExpediente']))
+            $documento->setNumeroExpediente($_POST['numeroExpediente']);
 
-        if (isset($_GET['titulo']))
-            $documento->setTitulo($_GET['titulo']);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
+        if (isset($_POST['titulo']))
+            $documento->setTitulo($_POST['titulo']);
 
-        if (isset($_GET['descripcion']))
-            $documento->setDescripcion($_GET['descripcion']);
+        if (isset($_POST['descripcion']))
+            $documento->setDescripcion($_POST['descripcion']);
 
-        if (isset($_GET['tipo']))
-            $documento->setTipo($_GET['tipo']);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
+        if (isset($_POST['tipo']))
+            $documento->setTipo($_POST['tipo']);
 
-        if (isset($_GET['fechaEmision']))
-            $documento->setFechaEmision($_GET['fechaEmision']);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        if (isset($_GET['descargable']))
-            $documento->setDescargable($_GET['descargable']);
-        else $documento->setDescargable(true);
-
-        if (isset($_GET['publico']))
-            $documento->setPublico($_GET['publico']);
-        else $documento->setPublico(true);
+        if (isset($_POST['fechaEmision']))
+            $documento->setFechaEmision($_POST['fechaEmision']);
 
 
-        if (isset($_GET['tags'])) {
+        if (isset($_POST['descargable']))
+            $documento->setDescargable($_POST['descargable']);
+
+        if (isset($_POST['publico']))
+            $documento->setPublico($_POST['publico']);
+
+
+        if (isset($_POST['tags'])) {
             $tagsIds = [];
-            foreach ($_GET['tags'] as $tagName) {
+            foreach ($_POST['tags'] as $tagName) {
                 $tagName = strtolower($tagName);
                 if (!$tag = Tag::getTagByName($tagName)) {
                     $tag = new Tag();
@@ -249,49 +244,48 @@ abstract class Documentos {
                 }
                 $tagsIds[] = $tag->getId();
             }
-        } else throw new ApiException('Bad Request', Response::BAD_REQUEST);
+        }
 
+        if (isset($_POST['emisor'])) {
+            $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
+            $documento->setEmisorId($emisor->getId());
+        }
 
-        if (isset($_GET['emisor']))
-            $emisor = Emisor::getEmisorBynombre($_GET['emisor']);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
-        if (!$emisor)
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-        $documento->setEmisorId($emisor->getId());
-
-        if (!$_FILES['documento_pdf'])
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        if ($_FILES['fichero_usuario']['error'] > 0)
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        $namePdf = $_FILES['documento_pdf']['name'];
-        $tmpPathPdf = $_FILES['documento_pdf']['tmp_name'];
-
-        $validExt = array('pdf');
-        $filesExt = strtolower(pathinfo($namePdf, PATHINFO_EXTENSION));
-        if (!in_array($filesExt, $validExt))
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        $pdf = new Pdf();
-        Pdf::createPdf($pdf);
-
-        // Update y creacion del path
-        $pathPdf =  'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
-        $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
-        $pdf->setPath($pathPdf);
-        Pdf::updatePdf($pdf);
-
-        // Guardado de pdf
-        if (!move_uploaded_file($tmpPathPdf, $namePdf))
-            throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
-        $documento->setPdfId($pdf->getId());
         $documento->setUsuarioId($usuarioId);
 
         Documento::updateDocumento($documento);
-        foreach ($tagsIds as $tagId) {
-            Documento::assignTagDocumento($documento->getId(), $tagId);
+
+        if (isset($_FILES['documento_pdf'])) {
+            if ($_FILES['fichero_usuario']['error'] > 0)
+                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+
+            $namePdf = $_FILES['documento_pdf']['name'];
+            $tmpPathPdf = $_FILES['documento_pdf']['tmp_name'];
+
+            $validExt = array('pdf');
+            $filesExt = strtolower(pathinfo($namePdf, PATHINFO_EXTENSION));
+            if (!in_array($filesExt, $validExt))
+                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+
+            $pdf = new Pdf();
+            Pdf::createPdf($pdf);
+
+            // Update y creacion del path
+            $pathPdf =  'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
+            $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
+            $pdf->setPath($pathPdf);
+            Pdf::updatePdf($pdf);
+
+            // Guardado de pdf
+            if (!move_uploaded_file($tmpPathPdf, $namePdf))
+                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+
+            $documento->setPdfId($pdf->getId());
+
+            foreach ($tagsIds as $tagId) {
+                Documento::assignTagDocumento($documento->getId(), $tagId);
+            }
+            Documento::updateDocumento($documento);
         }
     }
 

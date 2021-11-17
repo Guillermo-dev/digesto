@@ -281,6 +281,7 @@ export default function AdminDocumentos() {
          */
         function _changeVisibility(publico, fn) {
             fetch(`/api/documentos/${documento.id}`, {
+<<<<<<< HEAD
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -288,6 +289,14 @@ export default function AdminDocumentos() {
                     body: JSON.stringify({
                         publico: publico
                     })
+=======
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    publico: publico
+>>>>>>> b0c958f550c81effe5752fc3b3d67d7c4a01c33c
                 })
                 .then(httpResp => httpResp.json())
                 .then(response => {

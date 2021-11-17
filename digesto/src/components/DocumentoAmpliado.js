@@ -97,7 +97,6 @@ export default function DocumentoAmpliado() {
         const emisor = data["emisor"];
         const tags = data["tags"];
         const pdf = data["pdf"];
-        console.log(pdf);
 
         _content.append(
                 (_this.root = createElement("div")._class("UsuarioEntry")._html(`
