@@ -146,7 +146,8 @@ abstract class Documentos {
             if (is_array($tagsArray)) {
                 foreach ($tagsArray as $tagName) {
                     $tagName = strtolower($tagName);
-                    if (!($tag = Tag::getTagByName($tagName))) {
+                    $tag = Tag::getTagByName($tagName);
+                    if ($tag == null) {
                         $tag = new Tag();
                         $tag->setNombre($tagName);
                         Tag::createTag($tag);
