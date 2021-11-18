@@ -20,6 +20,9 @@ abstract class Tags {
      * @throws Exception
      */
     public static function getTags(): void {
+        if (isset($_GET['tags']))
+        Response::getResponse()->appendData('tags', Tag::getTagsByText($_GET['tags']));
+
         Response::getResponse()->appendData('tags', Tag::getTags());
     }
 
@@ -98,5 +101,16 @@ abstract class Tags {
             throw new ApiException('El tag no existe', Response::NOT_FOUND);
 
         Tag::deleteTag($tag->getId());
+    }
+
+    public static function tagsSearch(): void {
+        if (!isset($_SESSION['user']))
+            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+
+        if (!isset($_GET['tags']))
+            throw new ApiException('bat request', Response::BAD_REQUEST);
+
+        $tagText = $_GET['tags'];
+        Response::getResponse()->appendData('tags', Tag::getTagsByText($tagText));
     }
 }
