@@ -133,7 +133,7 @@ class Tag implements JsonSerializable {
     }
 
     /**
-     * @param string $nombre
+     * @param string $name
      *
      * @return Tag|null
      * @throws ModalException
@@ -141,7 +141,7 @@ class Tag implements JsonSerializable {
     public static function getTagByName(string $name): ?Tag {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT tag_id, nombre FROM tags WHERE nombre = %d', $name);
+        $query = sprintf("SELECT tag_id, nombre FROM tags WHERE nombre = '%s'", $name);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -180,12 +180,8 @@ class Tag implements JsonSerializable {
             $tag->setId(($row[0]));
         else throw new ModalException(pg_last_error($rs));
 
-        $lastId = pg_getlastoid($rs);
-
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
-
-        $tag->setId($lastId);
     }
 
     /**

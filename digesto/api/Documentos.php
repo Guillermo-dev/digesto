@@ -141,12 +141,12 @@ abstract class Documentos {
         else $documento->setPublico(true);
 
         if (isset($_POST['tags'])) {
-            $tagsArray = json_encode($_POST['tags']);
+            $tagsArray = json_decode($_POST['tags']);
             $tagsIds = [];
             if (is_array($tagsArray)) {
                 foreach ($tagsArray as $tagName) {
                     $tagName = strtolower($tagName);
-                    if (!$tag = Tag::getTagByName($tagName)) {
+                    if (!($tag = Tag::getTagByName($tagName))) {
                         $tag = new Tag();
                         $tag->setNombre($tagName);
                         Tag::createTag($tag);
@@ -156,7 +156,6 @@ abstract class Documentos {
             }
         } else throw new ApiException('Etiquetas requeridas', Response::BAD_REQUEST);
 
-        var_dump($tagsIds);
         if (isset($_POST['emisor']))
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
         else throw new ApiException('Emisor requerido', Response::BAD_REQUEST);
@@ -168,7 +167,7 @@ abstract class Documentos {
         if (!$_FILES['documento_pdf'])
             throw new ApiException('Documento PDF requerido', Response::BAD_REQUEST);
 
-        if ($_FILES['fichero_usuario']['error'] > 0)
+        if ($_FILES['documento_pdf']['error'] > 0)
             throw new ApiException('Hubo un error en la carga del archivo', Response::BAD_REQUEST);
 
         $namePdf = $_FILES['documento_pdf']['name'];
@@ -184,14 +183,13 @@ abstract class Documentos {
 
         // Update y creacion del path
         $pathPdf = 'uploads/' . strtolower($pdf->getId().$namePdf);
-        $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
         $pdf->setPath($pathPdf);
         Pdf::updatePdf($pdf);
 
 
         // Guardado de pdf
         if (!move_uploaded_file($tmpPathPdf, $pathPdf))
-            throw new ApiException('No se pudo guardar el archivo', Response::BAD_REQUEST);
+            throw new ApiException('No se pudo guardar el archivo', Response::INTERNAL_SERVER_ERROR);
 
         $documento->setPdfId($pdf->getId());
         $documento->setUsuarioId($usuarioId);

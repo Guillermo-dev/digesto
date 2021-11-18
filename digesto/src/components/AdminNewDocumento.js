@@ -430,7 +430,7 @@ export default function AdminNewDocumento() {
             window.iziToast.warning({message: 'Debe agregar etiquetas'});
             return false;
         } else {
-            formData.append('tags', JSON.stringify(Object.keys(_tags)));
+            formData.append('tags', JSON.stringify(Object.keys(_tags)).replace(' ', ''));
         }
 
         if (_form['emisor'].value === '-1') {
