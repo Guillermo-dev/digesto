@@ -426,12 +426,11 @@ export default function AdminNewDocumento() {
         formData.append('tipo', _form['tipo'].value);
         formData.append('descargable', _form['descargable'].value);
         formData.append('publico', _form['publico'].value);
-
-        if (Object.values(_tags).length === 0) {
+        if (Object.keys(_tags).length === 0) {
             window.iziToast.warning({message: 'Debe agregar etiquetas'});
             return false;
         } else {
-            formData.append('tags', JSON.stringify(_tags));
+            formData.append('tags', JSON.stringify(Object.keys(_tags)));
         }
 
         if (_form['emisor'].value === '-1') {

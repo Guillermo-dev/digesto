@@ -168,10 +168,10 @@ class Tag implements JsonSerializable {
     public static function createTag(Tag $tag): void {
         $conn = Connection::getConnection();
 
-        $lastId = pg_getlastoid($query = sprintf(
+        $query = sprintf(
             "INSERT INTO tags (nombre) VALUES ('%s') RETURNING Currval('tags_tag_id_seq')",
             pg_escape_string(strtolower($tag->getNombre())),
-        ));
+        );
 
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
@@ -179,6 +179,8 @@ class Tag implements JsonSerializable {
         if (($row = pg_fetch_row($rs)))
             $tag->setId(($row[0]));
         else throw new ModalException(pg_last_error($rs));
+
+        $lastId = pg_getlastoid($rs);
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));

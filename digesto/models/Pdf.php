@@ -48,16 +48,16 @@ class Pdf implements JsonSerializable {
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getContenido(): int {
+    public function getContenido(): string {
         return $this->contenido;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getPath(): int {
+    public function getPath(): string {
         return $this->path;
     }
 
@@ -167,11 +167,11 @@ class Pdf implements JsonSerializable {
     public static function createPdf(Pdf $pdf): void {
         $conn = Connection::getConnection();
 
-        $lastId = pg_getlastoid($query = sprintf(
+        $query = sprintf(
             "INSERT INTO pdfs (contenido, path) VALUES ('%s','%s') RETURNING Currval('pdfs_pdf_id_seq')",
             pg_escape_string($pdf->getContenido()),
             pg_escape_string($pdf->getPath())
-        ));
+        );
 
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
@@ -182,8 +182,6 @@ class Pdf implements JsonSerializable {
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
-
-        $pdf->setId($lastId);
     }
 
     /**
