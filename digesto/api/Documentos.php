@@ -160,12 +160,12 @@ abstract class Documentos {
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
         else throw new ApiException('Emisor requerido', Response::BAD_REQUEST);
 
-        if (!$emisor){
+        if (!$emisor) {
             $emisor = new Emisor();
             $emisor->setNombre($_POST['emisor']);
             Emisor::createEmisor($emisor);
         }
-            
+
         $documento->setEmisorId($emisor->getId());
 
         if (!$_FILES['documento_pdf'])
@@ -186,7 +186,7 @@ abstract class Documentos {
         Pdf::createPdf($pdf);
 
         // Update y creacion del path
-        $pathPdf = 'uploads/' . strtolower($pdf->getId().$namePdf);
+        $pathPdf = 'uploads/' . strtolower($pdf->getId() . $namePdf);
         $pdf->setPath($pathPdf);
         Pdf::updatePdf($pdf);
 
@@ -242,7 +242,7 @@ abstract class Documentos {
 
         if (isset($_POST['publico']))
             $documento->setPublico($_POST['publico']);
-
+        
 
         if (isset($_POST['tags'])) {
             $tagsIds = [];

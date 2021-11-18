@@ -280,26 +280,20 @@ export default function AdminDocumentos() {
          * @private
          */
         function _changeVisibility(publico, fn) {
-            fetch(`/api/documentos/${documento.id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        publico: publico
-                    })
-                })
-                .then(httpResp => httpResp.json())
-                .then(response => {
-                    if (response.code === 200) {
-                        fn();
-                    } else {
-                        errorAlert(response.error.message);
-                    }
-                })
-                .catch(reason => {
-                    errorAlert(reason);
-                })
+            const formData = new FormData();
+            formData.append('publico',publico);
+            fetch(`/api/documentos/${documento.id}`, {method: 'POST', body: formData})
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    fn();
+                } else {
+                    errorAlert(response.error.message);
+                }
+            })
+            .catch(reason => {
+                errorAlert(reason);
+            })
         }
 
         //Invoke
