@@ -1,5 +1,5 @@
-import { createElement, createStyle } from "../global/js/util.js";
-import { Component } from "./Component.js";
+import {createElement, createStyle, errorAlert} from "../global/js/util.js";
+import {Component} from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -7,6 +7,18 @@ createStyle()._content(`
     .AdminNewDocumento:not(.css-loading) .css-loading,
     .AdminNewDocumento:not(.css-error) .css-error {
         display: none !important;
+    }
+
+    .AdminNewDocumento .drag-zone {
+        border: dashed #d6d7db 1px;
+        background-color: #f1f1f5;
+        color: #60636d;
+        min-height: 150px;
+        transition: border .3s ease-in-out;
+    }
+
+    .AdminNewDocumento .drag-zone.changed {
+        border: dashed #9daade 4px;
     }
 
     .cuerpoDoc {
@@ -51,7 +63,7 @@ createStyle()._content(`
         height: auto;
     }
 
-    .cargaDocumento{
+    .cargaDocumento {
         display: flex;
     }
 
@@ -62,127 +74,409 @@ createStyle()._content(`
  * @constructor
  */
 export default function AdminNewDocumento() {
-    const _this = this;
-    this.name = "AdminNewDocumento";
-    this.root = createElement("div")._class("AdminNewDocumento")._html(` 
-    <!--Loaded-->
-    <div class="container css-loaded">
-        <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
-            <div class="encabezadoDoc text-center" id="encabezadoDoc">
-                <h3> Detalles del Documento</h3>
-            </div>          
-            <div class="contenedor">
-                <div class="row">
-                    <div class="col-sm>
-                        <form>
-                            <div class="form-group">
-                                <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
-                                <input type="text " class="form-control " id="titulo " placeholder="">
-                            </div>
-                            <div class="form-group">
-                                <label class="fw-bold mt-2" for="descripcion">Descripción</label>
-                                <textarea  class="form-control " id="descripcion " placeholder=""> </textarea>
-                            </div>
-                            <div class="form-group ">
-                                <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
-                                <input type="text " class="form-control " id="numero " placeholder="">
-                            </div>
-                            <div class="form-group ">
-                                <label class="fw-bold mt-2" for="campaña">Fecha<span class="text-danger">*</span></label>
-                                <input type="date" class="form-control " id="fecha " placeholder="">
-                            </div> 
-                            <div class="form-group ">
-                                <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control " id="tipo " placeholder="">
-                            </div> 
-                            <div class="form-group  ">
-                                <label class="fw-bold mt-2" for="campaña">Emisor<span class="text-danger">*</span></label>
-                                <select class="form-control">
-                                    <option>Rector</option>
-                                    <option>Consejo Superior</option>
-                                    <option>Otros</option>
-                                </select>
-                                <label class="fw-bold mt-2" for="nuevoEmisor">Nuevo Emisor</label>
-                                <input type="text" class="form-control" id="nuevoEmisor"> 
-                            <div class="form-group ">
-                                <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
-                                <input type="text " class="form-control " id="etiquetas " placeholder="">
-                                <p>Se recomienda agregar entre 5 y 8 etiquetas por documento. Usar palabras representativas.</p>
-                            </div> 
-
-                            <div class="row">
-                                <div class="col-sm">
-                                    <div class="form-check form-check-inline">
-                                        <label class="fw-bold mt-2" for="privacidad">Privacidad<span class="text-danger">*</span></label>
-                                    
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="publico" id="publico" value="publico" checked>
-                                        <label class="form-check-label" for="publico"> Público </label>                  
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="Privado" id="Privado" value="Privado">
-                                        <label class="form-check-label" for="Privado"> Privado </label>                   
-                                    </div>
-                                    </div>
-                                </div>
-                               
-                                <div class="col-sm">
-                                    <div class="form-check form-check-inline">
-                                        <label class="fw-bold mt-2" for="Estado">Estado<span class="text-danger">*</span></label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="Descargable" id="Descargable" value="Descargable" checked>
-                                            <label class="form-check-label" for="Descargable">Descargable </label>               
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="No descargable" id="No descargable" value="No descargable">
-                                            <label class="form-check-label" for="No descargable">No descargable</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="cargaDocumento d-grid">
-                                <div class="card text-center mt-3">
-                                    <div class="card-header fw-bold  bg-secondary bg-opacity-25 ">
-                                        Cargar Documento<span class="text-danger">*</span>
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="card-text">Seleccione el archivo que desea subir</p>
-                                        <input type= "file" name="Upload" >
-                                    </div>
-                                </div>   
-                            </div>
-                            <p><span class="text-danger">*Campo obligatorio</span></p>
-                            <div class="text-end mt-2 ">
-                                <button type="submit " class="btn btn-primary">Cancelar</button>
-                                <button type="submit " class="btn btn-primary">Guardar</button> 
-                            </div>
-                        </form>
-                    </div>                           
+    this.root = createElement("div")._class("AdminNewDocumento")._html(`<!--Loaded-->
+<div class="container css-loaded">
+    <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
+        <div class="encabezadoDoc text-center" id="encabezadoDoc">
+            <h3>Crear documento</h3>
+        </div>
+        <form class="p-4" data-js="form">
+            <div class="row g-3 mb-3">
+                <div class="col-sm">
+                    <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="titulo" required id="titulo " placeholder="">
+                </div>
+                <div class="col-sm">
+                    <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="">
                 </div>
             </div>
-        </div>
+            <div class="mb-3">
+                <label class="fw-bold mt-2" for="descripcion">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" placeholder=""> </textarea>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-sm">
+                    <label class="fw-bold mt-2" for="campaña">Fecha<span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="fechaEmision" required id="fecha " placeholder="">
+                </div>
+                <div class="col-sm">
+                    <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="">
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-sm">
+                    <label class="fw-bold mt-2" for="campaña">Emisor<span class="text-danger">*</span></label>
+                    <select class="form-control" name="emisor" required>
+                        <!--carga dinamica-->
+                        <option value="0">Agregar nuevo</option>
+                    </select>
+                </div>
+                <div class="col-sm d-none">
+                    <label class="fw-bold mt-2" for="nuevoEmisor">Nuevo Emisor</label>
+                    <input type="text" name="nuevoEmisor" class="form-control" id="nuevoEmisor">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
+                <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="">
+                <datalist id="datalist" data-js="datalist-tags">
+                    <!---->
+                </datalist>
+                <p>Se recomienda agregar entre 5 y 8 etiquetas por documento. Usar palabras representativas.</p>
+                <div class="mb-2" data-js="tag-zone">
+                    <!--<span class="bg-primary p-2 text-white small rounded">Etiqueta 2 <i class="bi-x-lg ms-2" style="cursor:pointer;" title="Eliminar"></i></span>-->
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-sm">
+                    <div class="form-check form-check-inline">
+                        <label class="fw-bold mt-2" for="privacidad">Privacidad<span class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="publico" id="publico" value="1" checked>
+                            <label class="form-check-label" for="publico">Público</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="publico" id="Privado" value="0">
+                            <label class="form-check-label" for="Privado">Privado</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-check form-check-inline">
+                        <label class="fw-bold mt-2" for="Estado">Estado<span class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="descargable" id="Descargable" value="1" checked>
+                            <label class="form-check-label" for="Descargable">Descargable </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="descargable" id="No descargable" value="0">
+                            <label class="form-check-label" for="No descargable">No descargable</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="fw-bold">Cargar documento<span class="text-danger">*</span></label>
+                <div class="drag-zone p-5 d-flex justify-content-center align-items-center" data-js="drag-zone">
+                    <div>
+                        <p class="text-center">Arrastre aquí para subir un archivo</p>
+                        <p class="text-center">o si lo prefiere</p>
+                        <div class="text-center">
+                            <button type="button" name="fileBtn" class="btn btn-primary p-2"><span>Haga click para subir un archivo</span></button>
+                            <input type="file" name="file" hidden>
+                        </div>
+                        <div class="text-center text-muted mt-4 fw-bold d-none" data-js="file-text">
+                            <span><!----></span><i style="cursor:pointer;" title="Eliminar" class="text-danger bi-x-lg ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-danger mb-3">*Campo obligatorio</p>
+            <div class="text-end">
+                <button type="reset" class="btn btn-primary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
     </div>
-
-   
-
-    </div>
-    <!--Error-->
-    <div class="css-error p-3 text-center h-100 d-flex justify-content-center align-items-center flex-column">
-        <img src="/src/global/images/500.png" class="mb-3" width="400" alt="Sin resultados">
-    </div>
-    <!--Loading-->
-    <div class="css-loading p-3 text-center h-100 d-flex justify-content-center align-items-center flex-column">
-        <span class="spinner-border"></span>
-    </div>
+</div>
+<!--Error-->
+<div class="css-error p-3 text-center h-100 d-flex justify-content-center align-items-center flex-column">
+    <img src="/src/global/images/500.png" class="mb-3" width="400" alt="Sin resultados">
+</div>
+<!--Loading-->
+<div class="css-loading p-3 text-center h-100 d-flex justify-content-center align-items-center flex-column">
+    <span class="spinner-border"></span>
+</div>
 `);
+    this.name = "AdminNewDocumento";
+    const _this = this;
+    const _tagZone = _this.root.querySelector('[data-js="tag-zone"]');
+    const _dataListTags = _this.root.querySelector('[data-js="datalist-tags"]');
+    const _dragZone = _this.root.querySelector('[data-js="drag-zone"]');
+    const _fileText = _this.root.querySelector('[data-js="file-text"]');
+    const _form = _this.root.querySelector('[data-js="form"]');
+
+    let _file = null;
+    let _tags = {};
 
     /**
      * Constructor
      * @private
      */
     function _constructor() {
+        _fetchEmisores();
+        let counter = 0;
+        _fileText.children[1].onclick = _onRemoveFile;
+        _dragZone.ondragenter = function(event) {
+            counter++;
+            this.classList.add('changed');
+        }
+        _dragZone.ondragover = function(event) {
+            event.preventDefault();
+        }
+        _dragZone.ondrop = function(event) {
+            event.preventDefault();
+            this.classList.remove('changed');
+            if (event.dataTransfer.items.length === 1) {
+                _onSelectFile(event.dataTransfer.items[0].getAsFile());
+            } else {
+                window.iziToast.warning({message: 'Solo se permite cargar 1 archivo pdf'});
+            }
+        }
+        _dragZone.ondragleave = function(event) {
+            counter--;
+            if (counter === 0) {
+                this.classList.remove('changed');
+            }
+        };
+        _form['emisor'].onchange = _onChangeEmisores;
+        _form['fileBtn'].onclick = function() {this.nextElementSibling.click();};
+        _form['file'].onchange = function() {
+            _onSelectFile(this.files[0]);
+        }
+        _form['etiqueta'].addEventListener('input', _onInputEtiqueta);
+        _form['etiqueta'].addEventListener('change', function(event) {
+            this.value += ' ';
+            _onInputEtiqueta.call(_form['etiqueta'], event);
+        });
+        _form.onsubmit = function(event) {
+            try {
+                _onSubmit.call(_form, event);
+            } catch (reason) {
+                window.iziToast.error({message: reason.toString()});
+            }
+            return false;
+        }
         _this.setClassState('css-loaded');
+        _fetchTags();
+    }
+
+    /**
+     *
+     * @param file
+     * @private
+     */
+    function _onSelectFile(file) {
+        _file = file;
+        _fileText.children[0].textContent = _file.name;
+        _fileText.classList.remove('d-none');
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _onRemoveFile() {
+        _file = null;
+        _fileText.classList.add('d-none');
+        _form['file'].value = '';
+    }
+
+    /**
+     *
+     * @param name
+     * @private
+     */
+    function _createEtiqueta(name) {
+        const etiqueta = createElement('span')._html(`
+            <span style="background-color: var(--bs-primary);" class="d-inline-block mb-2 p-2 text-white small rounded me-2">
+                ${name} <i class="bi-x-lg ms-2" style="cursor:pointer;" title="Eliminar"></i>
+            </span>
+        `).firstElementChild;
+        etiqueta._name = name;
+        etiqueta.firstElementChild.onclick = function() {
+            this.parentElement.remove();
+            delete _tags[this.parentElement._name];
+            _form['etiqueta'].disabled = false;
+        };
+        return etiqueta;
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _fetchTags() {
+        fetch(`/api/tags`)
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    _processTags(response.data);
+                } else {
+                    window.iziToast.error({message: response.error.message.toString()});
+                }
+            })
+            .catch(reason => {
+                window.iziToast.error({message: reason.toString()});
+            });
+    }
+
+    /**
+     *
+     * @param data
+     * @private
+     */
+    function _processTags(data) {
+        _dataListTags.innerHTML = "";
+        data.tags.forEach(tag => {
+            _dataListTags.append(_createOption(tag.nombre, tag.nombre));
+        });
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _onInputEtiqueta() {
+        if (Object.values(_tags).length >= 10) {
+            this.disabled = true;
+            window.iziToast.warning({message: 'Maximo de etiqueta alcanzado'});
+            this.value = '';
+            return;
+        }
+        if ((/^ *(\w+) $/i.test(this.value))) {
+            if (_tags[this.value] === undefined) {
+                _tags[this.value] = true;
+                _tagZone.append(_createEtiqueta(this.value));
+                this.value = '';
+            } else {
+                this.value = '';
+            }
+        }
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _onChangeEmisores() {
+        if (this.value !== '-1') {
+            _form['nuevoEmisor'].parentElement.classList.add('d-none');
+            _form['nuevoEmisor'].disabled = true;
+            _form['nuevoEmisor'].required = false;
+            return;
+        }
+        _form['nuevoEmisor'].disabled = false;
+        _form['nuevoEmisor'].required = true;
+        _form['nuevoEmisor'].parentElement.classList.remove('d-none');
+    }
+
+    /**
+     *
+     * @param value
+     * @param text
+     * @returns {HTMLOptionElement}
+     * @private
+     */
+    function _createOption(value, text) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.label = text;
+        option.innerText = text;
+        return option;
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _fetchEmisores() {
+        fetch(`/api/emisores`)
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    _processEmisores(response.data);
+                } else {
+                    window.iziToast.error({message: response.error.message.toString()});
+                }
+            })
+            .catch(reason => {
+                window.iziToast.error({message: reason.toString()});
+            })
+    }
+
+    /**
+     *
+     * @param data
+     * @private
+     */
+    function _processEmisores(data) {
+        _form['emisor'].innerHTML = "";
+        _form['emisor'].append(_createOption(0, 'Seleccionar emisor'));
+        data.emisores.forEach(emisor => {
+            _form['emisor'].append(_createOption(emisor.nombre, emisor.nombre));
+        });
+        _form['emisor'].append(_createOption(-1, 'Nuevo emisor'));
+    }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    function _onSubmit(event) {
+        const formData = new FormData();
+
+        formData.append('titulo', _form['titulo'].value);
+        formData.append('numeroExpediente', _form['numeroExpediente'].value);
+        formData.append('descripcion', _form['descripcion'].value);
+        formData.append('fechaEmision', _form['fechaEmision'].value);
+        formData.append('tipo', _form['tipo'].value);
+        formData.append('descargable', _form['descargable'].value);
+        formData.append('publico', _form['publico'].value);
+
+        if (Object.values(_tags).length === 0) {
+            window.iziToast.warning({message: 'Debe agregar etiquetas'});
+            return false;
+        } else {
+            formData.append('tags', JSON.stringify(_tags));
+        }
+
+        if (_form['emisor'].value === '-1') {
+            formData.append('emisor', _form['nuevoEmisor'].value);
+        } else if (_form['emisor'].value === '0') {
+            window.iziToast.warning({message: 'Debe seleccionar un emisor'});
+            return false;
+        } else {
+            formData.append('emisor', _form['emisor'].value);
+        }
+
+        if (_file === null) {
+            window.iziToast.warning({message: 'Debe seleccionar un archivo'});
+            return false;
+        } else {
+            formData.append('documento_pdf', _file);
+        }
+
+        fetch(`/api/documentos`, {method: 'POST', body: formData})
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    window.iziToast.success({message: 'El documento se registro con exito'});
+                    _clear();
+                } else {
+                    window.iziToast.error({message: response.error.message});
+                }
+            })
+            .catch(reason => {
+                window.iziToast.error({message: reason.toString()});
+            })
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _clear() {
+        _file = null;
+        _form.reset();
+        _tags = {};
+        _form['nuevoEmisor'].parentElement.classList.add('d-none');
+        _form['nuevoEmisor'].disabled = true;
+        _form['nuevoEmisor'].required = false;
+        _tagZone.innerHTML = "";
     }
 
     //Invoke

@@ -15,20 +15,35 @@
     <div id="root">
         <header>
             <div class="container p-2">
-                <div class="col-md text-center text-md-start logo mb-3 mb-sm-0">
-                    <img class="logo" src="../../global/images/unsada_logo_400.jpg" alt="" usemap="#daijesuto1">
-                    <img class="logo" src="../../global/images/unsada_logo_250.jpg" alt="" usemap="#daijesuto2">
-                    <map name="daijesuto1">
-                    <area id="TheZone1" shape="circle" coords="32,32,20" href="javascript:void(0);" style="background-color: #0a53be" alt="">
-                </map>
-                    <map name="daijesuto2">
-                    <area id="TheZone2" shape="circle" coords="15,15,20" href="javascript:void(0);" style="background-color: #0a53be" alt="">
-                </map>
+                <div class="row g-2">
+                    <div class="col-md text-center text-md-start logo mb-3 mb-sm-0">
+                        <img class="logo" src="../../global/images/unsada_logo_400.jpg" alt="" usemap="#daijesuto1">
+                        <img class="logo" src="../../global/images/unsada_logo_250.jpg" alt="" usemap="#daijesuto2">
+                        <map name="daijesuto1">
+                            <area id="TheZone1" shape="circle" coords="32,32,20" href="javascript:void(0);" style="background-color: #0a53be" alt="">
+                        </map>
+                        <map name="daijesuto2">
+                            <area id="TheZone2" shape="circle" coords="15,15,20" href="javascript:void(0);" style="background-color: #0a53be" alt="">
+                        </map>
+                    </div>
+                    <div class="col d-flex align-items-center justify-content-end" id="AdminMenu">
+                        <!--AdminMenu-->
+                    </div>
                 </div>
             </div>
         </header>
-        <nav id="AdminSearch">
-            <!--AdminSearch-->
+        <nav id="" class="p-2">
+            <div class="container">
+                <div class="row g-2 mb-0">
+                    <div class="col-auto">
+                        <a href="/admin" class="btn btn-primary"><i class="bi-house me-2"></i> Volver</a>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <a href="/auth/logout" class="btn btn-danger bi-power"></a>
+                    </div>
+                </div>
+            </div>
         </nav>
         <main id="AdminNewDocumento">
             <!--AdminNewDocumento-->

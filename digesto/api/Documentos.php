@@ -150,7 +150,6 @@ abstract class Documentos {
             }
         } else throw new ApiException('Bad Request', Response::BAD_REQUEST);
 
-
         if (isset($_POST['emisor']))
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
         else throw new ApiException('Bad Request', Response::BAD_REQUEST);
@@ -177,7 +176,7 @@ abstract class Documentos {
         Pdf::createPdf($pdf);
 
         // Update y creacion del path
-        $pathPdf =  'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
+        $pathPdf = 'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
         $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
         $pdf->setPath($pathPdf);
         Pdf::updatePdf($pdf);
@@ -271,7 +270,7 @@ abstract class Documentos {
             Pdf::createPdf($pdf);
 
             // Update y creacion del path
-            $pathPdf =  'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
+            $pathPdf = 'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
             $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
             $pdf->setPath($pathPdf);
             Pdf::updatePdf($pdf);
