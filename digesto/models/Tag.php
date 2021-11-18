@@ -193,7 +193,7 @@ class Tag implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE tag SET nombre='%s' WHERE tag_id=%d",
+            "UPDATE tags SET nombre='%s' WHERE tag_id=%d",
             pg_escape_string(strtolower($tag->getNombre())),
             $tag->getId()
         );

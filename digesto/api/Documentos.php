@@ -160,8 +160,12 @@ abstract class Documentos {
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
         else throw new ApiException('Emisor requerido', Response::BAD_REQUEST);
 
-        if (!$emisor)
-            throw new ApiException('El emisor no existe', Response::BAD_REQUEST);
+        if (!$emisor){
+            $emisor = new Emisor();
+            $emisor->setNombre($_POST['emisor']);
+            Emisor::createEmisor($emisor);
+        }
+            
         $documento->setEmisorId($emisor->getId());
 
         if (!$_FILES['documento_pdf'])
