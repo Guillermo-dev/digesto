@@ -178,7 +178,7 @@ abstract class Documentos {
         Pdf::createPdf($pdf);
 
         // Update y creacion del path
-        $pathPdf =  'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
+        $pathPdf = 'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
         $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
         $pdf->setPath($pathPdf);
         Pdf::updatePdf($pdf);
@@ -272,7 +272,7 @@ abstract class Documentos {
             Pdf::createPdf($pdf);
 
             // Update y creacion del path
-            $pathPdf =  'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
+            $pathPdf = 'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
             $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
             $pdf->setPath($pathPdf);
             Pdf::updatePdf($pdf);

@@ -22,26 +22,9 @@ createStyle()._content(`
 
 /**
  *
- * @returns {*}
- */
-function goBackButton() {
-    const element = createElement('div')._html(`
-        <div class="container p-2">
-            <button class="btn btn-primary btn-sm"><i class="bi-house me-2"></i>Volver</button>
-        </div>    
-    `);
-    element.firstElementChild.onclick = () => {
-        location.href="/admin"
-    }
-    return element;
-}
-
-/**
- *
  * @constructor
  */
 export default function Usuarios() {
-    const _this = this;
     this.root = createElement('div')._class('Usuarios')._html(`
         <!--New-->
         <div class="container mb-4">
@@ -72,9 +55,11 @@ export default function Usuarios() {
             <span class="spinner-border"></span>
         </div>
     `);
+
+    const _this = this;
     const _content = _this.root.querySelector('[data-js="content"]');
-    const _ext = document.getElementById('UsuariosExt');
     const _form = _this.root.querySelector('[data-js="form"]');
+
     const _permisosModal = new PermisosModal();
 
     /**
@@ -86,7 +71,6 @@ export default function Usuarios() {
             _onSubmit.call(_form, event);
             return false;
         }
-        _ext.append(goBackButton());
         _fetchUsuarios();
     }
 

@@ -76,10 +76,7 @@ createStyle()._content(`
  * @constructor
  */
 export default function Search() {
-    const _this = this;
-    this.name = "Search";
-    this.root = createElement("div")._class("Search")
-        ._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("Search")._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md-auto">
             <form data-js="form">
@@ -149,6 +146,8 @@ export default function Search() {
     </div>
 </div>`);
 
+    const _this = this;
+    this.name = "Search";
     const _forms = _this.root.querySelectorAll('[data-js="form"]');
     const _lists = _this.root.querySelectorAll('[data-js="drop-box"] ul');
     const _buttons = _forms[1].querySelectorAll('button[type="button"]');

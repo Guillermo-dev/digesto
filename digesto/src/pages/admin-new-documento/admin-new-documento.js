@@ -1,12 +1,12 @@
 import AdminNewDocumento from "../../components/AdminNewDocumento.js";
 import { Daijesuto } from "../../components/Daijesuto.js";
-import AdminSearch from "../../components/AdminSearch.js";
+import {AdminMenu} from "../../components/AdminMenu.js";
 
 const daijesuto = new Daijesuto();
 
 const adminNewDocumento = new AdminNewDocumento();
 
-const adminSearch = new AdminSearch();
+const adminMenu = new AdminMenu();
 
-adminSearch.append('AdminSearch');
 adminNewDocumento.append('AdminNewDocumento');
+adminMenu.append('AdminMenu');
