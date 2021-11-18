@@ -99,7 +99,7 @@ export default function DocumentoAmpliado() {
         const pdf = data["pdf"];
 
         _content.append(
-                (_this.root = createElement("div")._class("UsuarioEntry")._html(`
+                (_this.root = createElement("div")._class("Documento")._html(`
         <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
             <div class="encabezadoDoc px-5 text-center " id="encabezadoDoc">
                 <h3> Detalles del Documento</h3>

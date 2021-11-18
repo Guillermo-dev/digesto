@@ -173,9 +173,13 @@ export default function AdminNewDocumento() {
                     </div>
                 </div>
             </div>
-            <p class="text-danger mb-3">*Campo obligatorio</p>
+            <div class="d-none" data-js="archivo"> 
+                <label class ="fw-bold">Archivo</label>
+                <iframe data-js="NoTieneQueSerNecesariamenteLoQueQuieras" src="" class="frame" frameborder="5" width="100%" height="680px" ></iframe>
+            </div>
+            <p class="fw-bold text-danger mb-3">*Campo obligatorio</p>
             <div class="text-end">
-                <button type="reset" class="btn btn-primary">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-js="button">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
         </form>
@@ -197,6 +201,9 @@ export default function AdminNewDocumento() {
     const _dragZone = _this.root.querySelector('[data-js="drag-zone"]');
     const _fileText = _this.root.querySelector('[data-js="file-text"]');
     const _form = _this.root.querySelector('[data-js="form"]');
+    const _archivoContainer = _this.root.querySelector('[data-js="archivo"]');
+    const _pdf = _this.root.querySelector('[data-js="NoTieneQueSerNecesariamenteLoQueQuieras"]');
+    const _exitButton = _this.root.querySelector('[data-js="button"]');
 
     let _file = null;
     let _tags = {};
@@ -206,6 +213,7 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _constructor() {
+        _this.setClassState("css-loading");
         _fetchEmisores();
         let counter = 0;
         _fileText.children[1].onclick = _onRemoveFile;
@@ -249,8 +257,8 @@ export default function AdminNewDocumento() {
             }
             return false;
         }
-        _this.setClassState('css-loaded');
         _fetchTags();
+        _exitButton.onclick = () => {location.href = '/admin/';}
     }
 
     /**
@@ -262,6 +270,9 @@ export default function AdminNewDocumento() {
         _file = file;
         _fileText.children[0].textContent = _file.name;
         _fileText.classList.remove('d-none');
+        
+        _archivoContainer.classList.remove('d-none');
+        _pdf.src= URL.createObjectURL(file);
     }
 
     /**
@@ -271,6 +282,7 @@ export default function AdminNewDocumento() {
     function _onRemoveFile() {
         _file = null;
         _fileText.classList.add('d-none');
+        _archivoContainer.classList.add('d-none')
         _form['file'].value = '';
     }
 
@@ -304,7 +316,9 @@ export default function AdminNewDocumento() {
             .then(response => {
                 if (response.code === 200) {
                     _processTags(response.data);
+                    _this.setClassState('css-loaded');
                 } else {
+                    _this.setClassState('css-error');
                     window.iziToast.error({message: response.error.message.toString()});
                 }
             })
@@ -389,6 +403,7 @@ export default function AdminNewDocumento() {
                 if (response.code === 200) {
                     _processEmisores(response.data);
                 } else {
+                    _this.setClassState('css-error');
                     window.iziToast.error({message: response.error.message.toString()});
                 }
             })
@@ -470,7 +485,10 @@ export default function AdminNewDocumento() {
      */
     function _clear() {
         _file = null;
+        _fileText.classList.add('d-none');
+        _form['file'].value = '';
         _form.reset();
+        _archivoContainer.classList.remove('d-none');
         _tags = {};
         _form['nuevoEmisor'].parentElement.classList.add('d-none');
         _form['nuevoEmisor'].disabled = true;

@@ -85,16 +85,21 @@ abstract class Documentos {
         if (!$documento)
             throw new ApiException('El documento no existe', Response::NOT_FOUND);
 
-        if (!$documento->getPublico())
-            if (!isset($_SESSION['user']))
+        if (!$documento->getPublico()) {
+            if (isset($_SESSION['user'])) {
+                Response::getResponse()->appendData('documento', $documento);
+                Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
+                Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
+                Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
+            } else
                 throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
-
-        Response::getResponse()->appendData('documento', $documento);
-        Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
-        Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
-
-        if ($documento->getDescargable())
-            Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
+        } else {
+            Response::getResponse()->appendData('documento', $documento);
+            Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
+            Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
+            if ($documento->getDescargable())
+                Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
+        }
     }
 
     /**
@@ -243,7 +248,7 @@ abstract class Documentos {
 
         if (isset($_POST['publico']))
             $documento->setPublico($_POST['publico']);
-        
+
 
         if (isset($_POST['tags'])) {
             $tagsIds = [];

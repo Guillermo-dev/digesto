@@ -198,7 +198,7 @@ export default function AdminDocumentos() {
             _this.root.classList.add('d-none');
             _buttons[0].onclick = _onChangeVisibility;
             _buttons[1].onclick = function() {
-                location.href = `/admin/documentos/${documento.id}`;
+                location.href = `/admin/documento/${documento.id}`;
             }
             _buttons[2].onclick = _onDelete
         }

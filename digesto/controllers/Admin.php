@@ -39,7 +39,7 @@ abstract class Admin {
      */
     public static function documento(): void {
         self::middleware();
-        echo file_get_contents('src/pages/admin-document/admin-document.html');
+        echo file_get_contents('src/pages/admin-documento/admin-documento.html');
     }
 
     /**
