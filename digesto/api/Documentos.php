@@ -138,18 +138,20 @@ abstract class Documentos {
         else $documento->setPublico(true);
 
         if (isset($_POST['tags'])) {
+            $tagsArray = json_encode($_POST['tags']);
             $tagsIds = [];
-            foreach ($_POST['tags'] as $tagName) {
-                $tagName = strtolower($tagName);
-                if (!$tag = Tag::getTagByName($tagName)) {
-                    $tag = new Tag();
-                    $tag->setNombre($tagName);
-                    Tag::createTag($tag);
+            if (is_array($tagsArray)) {
+                foreach ($tagsArray as $tagName) {
+                    $tagName = strtolower($tagName);
+                    if (!$tag = Tag::getTagByName($tagName)) {
+                        $tag = new Tag();
+                        $tag->setNombre($tagName);
+                        Tag::createTag($tag);
+                    }
+                    $tagsIds[] = $tag->getId();
                 }
-                $tagsIds[] = $tag->getId();
             }
         } else throw new ApiException('Bad Request', Response::BAD_REQUEST);
-
 
         if (isset($_POST['emisor']))
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
@@ -157,7 +159,6 @@ abstract class Documentos {
         if (!$emisor)
             throw new ApiException('Bad Request', Response::BAD_REQUEST);
         $documento->setEmisorId($emisor->getId());
-
 
         if (!$_FILES['documento_pdf'])
             throw new ApiException('Bad Request', Response::BAD_REQUEST);
