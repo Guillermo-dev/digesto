@@ -21,9 +21,9 @@ abstract class Tags {
      */
     public static function getTags(): void {
         if (isset($_GET['tags']))
-        Response::getResponse()->appendData('tags', Tag::getTagsByText($_GET['tags']));
-
-        Response::getResponse()->appendData('tags', Tag::getTags());
+            Response::getResponse()->appendData('tags', Tag::getTagsByText($_GET['tags']));
+        else
+            Response::getResponse()->appendData('tags', Tag::getTags());
     }
 
     /**
