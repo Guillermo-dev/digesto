@@ -303,7 +303,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
+            'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id
         FROM documentos WHERE publico = %s OR publico = TRUE ORDER BY  fecha_emision DESC, numero_expediente',
             $onlyPublics ? 'TRUE' : 'FALSE'
         );
@@ -323,7 +323,6 @@ class Documento implements JsonSerializable {
             $documento->setPublico($row['publico'] === 't');
             $documento->setPdfId($row['pdf_id']);
             $documento->setEmisorId($row['emisor_id']);
-            $documento->setUsuarioId($row['usuario_id']);
             $documentos[] = $documento;
         }
 
@@ -359,7 +358,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "SELECT DISTINCT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.tipo, D.fecha_emision, D.descargable, D.publico, D.pdf_id, D.emisor_id, D.usuario_id 
+            "SELECT DISTINCT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.tipo, D.fecha_emision, D.descargable, D.publico, D.pdf_id, D.emisor_id 
             FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
             INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
             INNER JOIN tags T ON DT.tag_id = T.tag_id
@@ -394,7 +393,6 @@ class Documento implements JsonSerializable {
             $documento->setPublico($row['publico'] === 't');
             $documento->setPdfId($row['pdf_id']);
             $documento->setEmisorId($row['emisor_id']);
-            $documento->setUsuarioId($row['usuario_id']);
             $documentos[] = $documento;
         }
 
@@ -416,7 +414,7 @@ class Documento implements JsonSerializable {
     public static function getDocumentoById(int $id): ?Documento {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
+        $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id 
     FROM documentos WHERE documento_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
@@ -434,7 +432,6 @@ class Documento implements JsonSerializable {
             $documento->setPublico($row['publico'] === 't');
             $documento->setPdfId($row['pdf_id']);
             $documento->setEmisorId($row['emisor_id']);
-            $documento->setUsuarioId($row['usuario_id']);
         }
 
         if (($error = pg_last_error($conn)) != false)
@@ -455,7 +452,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id, usuario_id) 
+            "INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id) 
       VALUES ('%s','%s','%s','%s','%s',%s,%s,%d,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
@@ -466,7 +463,6 @@ class Documento implements JsonSerializable {
             $documento->getPublico() ? "TRUE" : "FALSE",
             $documento->getPdfId(),
             $documento->getEmisorId(),
-            $documento->getUsuarioId()
         );
 
         if (($rs = pg_query($conn, $query)) === false)
@@ -489,7 +485,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', tipo='%s', fecha_emision='%s', descargable=%s, publico=%s, pdf_id=%d, emisor_id=%d, usuario_id=%d 
+            "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', tipo='%s', fecha_emision='%s', descargable=%s, publico=%s, pdf_id=%d, emisor_id=%d 
       WHERE documento_id=%d",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
@@ -500,7 +496,6 @@ class Documento implements JsonSerializable {
             $documento->getPublico() ? "TRUE" : "FALSE",
             $documento->getPdfId(),
             $documento->getEmisorId(),
-            $documento->getUsuarioId(),
             $documento->getId()
         );
 
