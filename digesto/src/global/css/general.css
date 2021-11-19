@@ -25,13 +25,11 @@ html, body {
     grid-template-rows: max-content max-content auto minmax(100px, max-content);
 }
 
-#root > header .logo img:nth-child(1) {
+#root > header .logo a:nth-child(1) {
     width: 400px;
 }
 
-#root > header .logo img:nth-child(2) {
-    width: 100%;
-    max-width: 200px;
+#root > header .logo a:nth-child(2) {
     display: none;
 }
 
@@ -51,11 +49,11 @@ html, body {
 }
 
 @media (max-width: 768px) {
-    #root > header .logo img:nth-child(1) {
+    #root > header .logo a:nth-child(1) {
         display: none;
     }
 
-    #root > header .logo img:nth-child(2) {
+    #root > header .logo a:nth-child(2) {
         display: inline-block;
     }
 }
