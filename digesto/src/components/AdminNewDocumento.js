@@ -471,7 +471,7 @@ export default function AdminNewDocumento() {
                     window.iziToast.success({message: 'El documento se registro con exito'});
                     _clear();
                 } else {
-                    window.iziToast.error({message: response.error.message});
+                    window.iziToast.error({message: response.error});
                 }
             })
             .catch(reason => {

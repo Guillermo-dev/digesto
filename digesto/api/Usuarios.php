@@ -124,6 +124,9 @@ abstract class Usuarios {
         if (!$usuario)
             throw new ApiException('El usuario no existe', Response::NOT_FOUND);
 
+        if ($usuario->getAdmin())
+            throw new ApiException('No se puede editar el usuario admin', Response::NOT_FOUND);
+
         Usuario::deleteUsuario($usuario->getId());
     }
 

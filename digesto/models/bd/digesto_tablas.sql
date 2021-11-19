@@ -55,10 +55,12 @@ CREATE TABLE documentos
     publico           BOOLEAN     NOT NULL,
     pdf_id            INTEGER     NOT NULL,
     emisor_id         INTEGER     NOT NULL,
-    usuario_id        INTEGER     NOT NULL,
+    usuario_id        INTEGER             ,
     CONSTRAINT pdf_fk FOREIGN KEY (pdf_id) REFERENCES pdfs (pdf_id),
     CONSTRAINT emisor_fk FOREIGN KEY (emisor_id) REFERENCES emisores (emisor_id),
     CONSTRAINT usuario_fk FOREIGN KEY (usuario_id) REFERENCES usuarios (usuario_id)
+    ON UPDATE CASCADE
+    ON DELETE SET DEFAULT
 );
 
 CREATE TABLE documentos_tags
