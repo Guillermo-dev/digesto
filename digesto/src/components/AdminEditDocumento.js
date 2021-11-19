@@ -403,6 +403,7 @@ export default function AdminEditDocumento() {
             this.value = "";
             return;
         }
+        this.value = this.value.toLowerCase();
         if (/^ *(\w+) $/i.test(this.value)) {
             let name = this.value.replace(" ", "");
             if (_tags[name] === undefined) {
