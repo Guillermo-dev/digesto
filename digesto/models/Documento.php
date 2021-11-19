@@ -304,7 +304,7 @@ class Documento implements JsonSerializable {
 
         $query = sprintf(
             'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id,usuario_id 
-        FROM documentos WHERE publico = %s OR publico = TRUE ORDER BY  fecha_emision DESC',
+        FROM documentos WHERE publico = %s OR publico = TRUE ORDER BY  fecha_emision DESC, numero_expediente',
             $onlyPublics ? 'TRUE' : 'FALSE'
         );
         if (($rs = pg_query($conn, $query)) === false)
@@ -369,7 +369,7 @@ class Documento implements JsonSerializable {
                 %s 
                 %s
                 %s
-                ORDER BY  D.fecha_emision DESC",
+                ORDER BY  D.fecha_emision DESC, D.numero_expediente",
             $onlyPublics ? 'D.publico = TRUE' : 'D.publico = '.$publicos.' OR D.publico = '.$privados.'',
             $search == '' ? '' : "AND (UPPER(D.titulo) LIKE UPPER('%" . pg_escape_string($search) . "%')",
             $search == '' ? '' : "OR UPPER(D.numero_expediente) LIKE '%" . pg_escape_string($search) . "%')",
