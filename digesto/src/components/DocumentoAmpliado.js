@@ -101,39 +101,34 @@ export default function DocumentoAmpliado() {
         _content.append(
                 (_this.root = createElement("div")._class("Documento")._html(`
         <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
-            <div class="encabezadoDoc px-5 text-center " id="encabezadoDoc">
+            <div class="encabezadoDoc text-center " id="encabezadoDoc">
                 <h3> Detalles del Documento</h3>
             </div>
             <div class="informacionDoc  border shadow " id="informacionDoc">
-                <div class="pContenedor border-bottom border-secondary;">
+                <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Número:</p>
                     <p data-js="infoBD">${documento.numeroExpediente}</p>
                 </div>
-                <br>
-                <div class="pContenedor border-bottom border-secondary;">
+                <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Título:</p>
                     <p data-js="infoBD">${documento.titulo}</p>
                 </div>
-                <br>
-                <div class="pContenedor border-bottom border-secondary;">
+                <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Fecha:</p>
                     <p data-js="infoBD">${documento.fechaEmision}</p>
                 </div>
-                <br>
-                <div class="pContenedor border-bottom border-secondary;">
+                <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Descripción:</p>
                     <p data-js="infoBD">${documento.descripcion}</p>
                 </div>
-                <br>
-                <div class="pContenedor border-bottom border-secondary;">
+                <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Emisor: </p>
                     <p data-js="infoBD">${emisor.nombre}</p>
                 </div>
-                <br>
                 <div class="pContenedor">
                     <p class=" fw-bold ">Etiquetas:</p>
-                    <div data-js="tags">
-                        <!-- tags -->
+                    <div class="mb-2 d-flex flex-wrap" data-js="tag-zone">
+                        <!---->
                     </div>
                 </div>
             </div>
@@ -147,15 +142,17 @@ export default function DocumentoAmpliado() {
         </div>
         `))
         );
-        const _tagsList = _this.root.querySelector('[data-js="tags"]');
+        const _tagZone = _this.root.querySelector('[data-js="tag-zone"]');
         tags.forEach((tag) => {
-            _tagsList.append(_createTagElement(tag.nombre));
+            _tagZone.append(_createTagElement(tag.nombre));
         });
     }
 
     function _createTagElement(nombre) {
-        const element = createElement("div")._html(
-            `<p data-js="infoBD">${nombre}</p>` // TODO: HACER CSS PAO DE TAGS
+        const element = createElement("div")._html(`            
+        <span style="background-color: var(--bs-primary);" class="d-inline-block mb-2 p-2 text-white small rounded me-2">
+            ${nombre}
+        </span>` 
         );
         return element;
     }
