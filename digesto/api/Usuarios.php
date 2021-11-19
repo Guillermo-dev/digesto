@@ -91,14 +91,17 @@ abstract class Usuarios {
         if (!$usuario)
             throw new ApiException('El usuario no existe', Response::NOT_FOUND);
 
+        if ($usuario->getAdmin())
+            throw new ApiException('No se puede editar el usuario admin', Response::NOT_FOUND);
+
         if (isset($usuarioData->email))
             $usuario->setEmail($usuarioData->email);
 
         if (isset($usuarioData->nombre))
             $usuario->setNombre($usuarioData->nombre);
 
-        if (isset($usuarioData->apellido))
-            $usuario->setApellido($usuarioData->apellido);
+        if (isset($usuarioData->admin))
+            $usuario->setAdmin($usuarioData->admin);
 
         Usuario::updateUsuario($usuario);
     }
@@ -162,6 +165,9 @@ abstract class Usuarios {
         $usuario = Usuario::getUsuarioById($usuarioId);
         if (!$usuario)
             throw new ApiException('El usuario no existe', Response::NOT_FOUND);
+
+        if ($usuario->getAdmin())
+            throw new ApiException('No se puede editar el usuario admin', Response::NOT_FOUND);
 
         Connection::begin();
 

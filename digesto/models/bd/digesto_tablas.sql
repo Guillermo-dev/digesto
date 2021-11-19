@@ -10,7 +10,7 @@ CREATE TABLE usuarios
     usuario_id SERIAL PRIMARY KEY,
     email      VARCHAR(45) UNIQUE NOT NULL,
     nombre     VARCHAR(45)        NOT NULL,
-    apellido   VARCHAR(45)        NOT NULL
+    admin   BOOLEAN
 );
 
 CREATE TABLE usuarios_permisos

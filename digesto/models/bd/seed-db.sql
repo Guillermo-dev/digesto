@@ -9,9 +9,9 @@ VALUES ('algo', '/nose/nose/nose'),
        ('algo', '/nose/nose/nose'),
        ('algo', '/nose/nose/nose');
 
-INSERT INTO usuarios (email, nombre, apellido)
-VALUES ('prueba@prueba.com', 'Prueba', 'Prueba'),
-       ('prueba2@prueba2.com', 'Prueba 2', 'Prueba 2');
+INSERT INTO usuarios (email, nombre)
+VALUES ('prueba@prueba.com', 'Prueba'),
+       ('prueba2@prueba2.com', 'Prueba 2');
 
 INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id,
                         emisor_id, usuario_id)

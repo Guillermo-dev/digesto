@@ -145,7 +145,7 @@ export default function Usuarios() {
             <div class="p-4 mb-3 border">
                 <div class="row g-2">
                     <div class="col-sm">
-                        <p class="mb-0 fw-bold">${usuario["nombre"]} ${usuario["apellido"]}</p>
+                        <p class="mb-0 fw-bold">${usuario["nombre"]}</p>
                         <p class="text-muted mb-0">${usuario["email"]}</p>
                     </div>
                     <div class="col-sm-auto text-end">

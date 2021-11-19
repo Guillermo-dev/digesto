@@ -30,7 +30,7 @@ class Usuario implements JsonSerializable {
     /**
      * @var string
      */
-    private $apellido;
+    private $admin;
 
     /**
      * Usuario constructor.
@@ -38,13 +38,13 @@ class Usuario implements JsonSerializable {
      * @param int    $id
      * @param string $email
      * @param string $nombre
-     * @param string $apellido
+     * @param bool $admin
      */
-    public function __construct(int $id = 0, string $email = '', string $nombre = '', string $apellido = '') {
+    public function __construct(int $id = 0, string $email = '', string $nombre = '', bool $admin = false) {
         $this->id = $id;
         $this->email = $email;
         $this->nombre = $nombre;
-        $this->apellido = $apellido;
+        $this->admin = $admin;
     }
 
     /**
@@ -69,10 +69,10 @@ class Usuario implements JsonSerializable {
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getApelido(): string {
-        return $this->apellido;
+    public function getAdmin(): bool {
+        return $this->admin;
     }
 
     /**
@@ -106,12 +106,12 @@ class Usuario implements JsonSerializable {
     }
 
     /**
-     * @param string $apellido
+     * @param bool $admin
      *
      * @return $this
      */
-    public function setApellido(string $apellido): Usuario {
-        $this->apellido = $apellido;
+    public function setAdmin(bool $admin): Usuario {
+        $this->admin = $admin;
         return $this;
     }
 
@@ -131,7 +131,7 @@ class Usuario implements JsonSerializable {
     public static function getUsuarios(): array {
         $conn = Connection::getConnection();
 
-        $query = 'SELECT usuario_id, email, nombre, apellido FROM usuarios';
+        $query = 'SELECT usuario_id, email, nombre, admin FROM usuarios';
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -141,7 +141,7 @@ class Usuario implements JsonSerializable {
             $usuario->setId($row['usuario_id']);
             $usuario->setEmail($row['email']);
             $usuario->setNombre($row['nombre']);
-            $usuario->setApellido($row['apellido']);
+            $usuario->setAdmin($row['admin']);
             $usuarios[] = $usuario;
         }
 
@@ -163,7 +163,7 @@ class Usuario implements JsonSerializable {
     public static function getUsuarioById(int $id): ?Usuario {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT usuario_id, email, nombre, apellido FROM usuarios WHERE usuario_id = %d', $id);
+        $query = sprintf('SELECT usuario_id, email, nombre, admin FROM usuarios WHERE usuario_id = %d', $id);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -173,7 +173,7 @@ class Usuario implements JsonSerializable {
             $usuario->setId($row['usuario_id']);
             $usuario->setEmail($row['email']);
             $usuario->setNombre($row['nombre']);
-            $usuario->setApellido($row['apellido']);
+            $usuario->setAdmin($row['admin']);
         }
         if (($error = pg_last_error($conn)) != false)
             throw new ModalException($error);
@@ -194,7 +194,7 @@ class Usuario implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "SELECT usuario_id, email, nombre, apellido FROM usuarios WHERE email = '%s'",
+            "SELECT usuario_id, email, nombre, admin FROM usuarios WHERE email = '%s'",
             pg_escape_string($email)
         );
         if (($rs = pg_query($conn, $query)) === false)
@@ -206,7 +206,7 @@ class Usuario implements JsonSerializable {
             $usuario->setId($row['usuario_id']);
             $usuario->setEmail($row['email']);
             $usuario->setNombre($row['nombre']);
-            $usuario->setApellido($row['apellido']);
+            $usuario->setAdmin($row['admin']);
         }
         if (($error = pg_last_error($conn)) != false)
             throw new ModalException($error);
@@ -226,10 +226,9 @@ class Usuario implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "INSERT INTO usuarios (email, nombre, apellido) VALUES ('%s', '%s', '%s') RETURNING Currval('usuarios_usuario_id_seq')",
+            "INSERT INTO usuarios (email, nombre, admin) VALUES ('%s', '%s', FALSE) RETURNING Currval('usuarios_usuario_id_seq')",
             pg_escape_string($usuario->getEmail()),
             pg_escape_string($usuario->getNombre()),
-            pg_escape_string($usuario->getApelido())
         );
 
         if (($rs = pg_query($conn, $query)) === false)
@@ -252,10 +251,9 @@ class Usuario implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE usuarios SET email='%s' ,nombre='%s', apellido='%s' WHERE usuario_id='%d'",
+            "UPDATE usuarios SET email='%s' ,nombre='%s' WHERE usuario_id='%d'",
             pg_escape_string($usuario->getEmail()),
             pg_escape_string($usuario->getNombre()),
-            pg_escape_string($usuario->getApelido()),
             $usuario->getId()
         );
 
