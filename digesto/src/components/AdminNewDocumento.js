@@ -349,6 +349,7 @@ export default function AdminNewDocumento() {
             this.value = '';
             return;
         }
+        this.value = this.value.toLowerCase();
         if ((/^ *(\w+) $/i.test(this.value))) {
             if (_tags[this.value] === undefined) {
                 _tags[this.value] = true;
@@ -487,7 +488,7 @@ export default function AdminNewDocumento() {
         _fileText.classList.add('d-none');
         _form['file'].value = '';
         _form.reset();
-        _archivoContainer.classList.remove('d-none');
+        _archivoContainer.classList.add('d-none')
         _tags = {};
         _form['nuevoEmisor'].parentElement.classList.add('d-none');
         _form['nuevoEmisor'].disabled = true;
