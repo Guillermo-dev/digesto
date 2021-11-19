@@ -84,11 +84,11 @@ export default function AdminNewDocumento() {
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="titulo" required id="titulo " placeholder="">
+                    <input type="text" class="form-control" name="titulo" required id="titulo " placeholder="" autocomplete="off">
                 </div>
                 <div class="col-sm">
-                    <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="">
+                    <label class="fw-bold mt-2" for="numero">Número expediente<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="" autocomplete="off">
                 </div>
             </div>
             <div class="mb-3">
@@ -97,12 +97,12 @@ export default function AdminNewDocumento() {
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-sm">
-                    <label class="fw-bold mt-2" for="campaña">Fecha<span class="text-danger">*</span></label>
+                    <label class="fw-bold mt-2" for="campaña">Fecha de emisión<span class="text-danger">*</span></label>
                     <input type="date" class="form-control" name="fechaEmision" required id="fecha " placeholder="">
                 </div>
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="">
+                    <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="" autocomplete="off">
                 </div>
             </div>
             <div class="row g-3 mb-3">
@@ -115,7 +115,7 @@ export default function AdminNewDocumento() {
                 </div>
                 <div class="col-sm d-none">
                     <label class="fw-bold mt-2" for="nuevoEmisor">Nuevo Emisor</label>
-                    <input type="text" name="nuevoEmisor" class="form-control" id="nuevoEmisor">
+                    <input type="text" name="nuevoEmisor" class="form-control" id="nuevoEmisor" autocomplete="off">
                 </div>
             </div>
             <div class="mb-3">
@@ -174,10 +174,9 @@ export default function AdminNewDocumento() {
                 </div>
             </div>
             <div class="d-none" data-js="archivo"> 
-                <label class ="fw-bold">Archivo</label>
                 <iframe data-js="NoTieneQueSerNecesariamenteLoQueQuieras" src="" class="frame" frameborder="5" width="100%" height="680px" ></iframe>
             </div>
-            <p class="fw-bold text-danger mb-3">*Campo obligatorio</p>
+            <p class="fw-bold text-danger mb-3">*Campos obligatorios</p>
             <div class="text-end">
                 <button type="button" class="btn btn-primary" data-js="button">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Guardar</button>

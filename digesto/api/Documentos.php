@@ -193,6 +193,7 @@ abstract class Documentos {
 
         // Update y creacion del path
         $pathPdf = 'uploads/' . strtolower($pdf->getId() . $namePdf);
+        $pathPdf = str_replace(' ', '', $pathPdf);
         $pdf->setPath($pathPdf);
         Pdf::updatePdf($pdf);
 
@@ -242,39 +243,44 @@ abstract class Documentos {
         if (isset($_POST['fechaEmision']))
             $documento->setFechaEmision($_POST['fechaEmision']);
 
-
         if (isset($_POST['descargable']))
             $documento->setDescargable($_POST['descargable']);
 
         if (isset($_POST['publico']))
             $documento->setPublico($_POST['publico']);
 
-
         if (isset($_POST['tags'])) {
+            Documento::clearTagDocumento($id);
+            $tagsArray = json_decode($_POST['tags']);
             $tagsIds = [];
-            foreach ($_POST['tags'] as $tagName) {
-                $tagName = strtolower($tagName);
-                if (!$tag = Tag::getTagByName($tagName)) {
-                    $tag = new Tag();
-                    $tag->setNombre($tagName);
-                    Tag::createTag($tag);
+            if (is_array($tagsArray)) {
+                foreach ($tagsArray as $tagName) {
+                    $tagName = strtolower($tagName);
+                    $tag = Tag::getTagByName($tagName);
+                    if ($tag == null) {
+                        $tag = new Tag();
+                        $tag->setNombre($tagName);
+                        Tag::createTag($tag);
+                    }
+                    $tagsIds[] = $tag->getId();
                 }
-                $tagsIds[] = $tag->getId();
             }
         }
 
-        if (isset($_POST['emisor'])) {
+        if (isset($_POST['emisor']))
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
-            $documento->setEmisorId($emisor->getId());
+
+        if (!$emisor) {
+            $emisor = new Emisor();
+            $emisor->setNombre($_POST['emisor']);
+            Emisor::createEmisor($emisor);
         }
 
-        $documento->setUsuarioId($usuarioId);
-
-        Documento::updateDocumento($documento);
+        $documento->setEmisorId($emisor->getId());
 
         if (isset($_FILES['documento_pdf'])) {
-            if ($_FILES['fichero_usuario']['error'] > 0)
-                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+            if ($_FILES['documento_pdf']['error'] > 0)
+                throw new ApiException('Hubo un error en la carga del archivo', Response::BAD_REQUEST);
 
             $namePdf = $_FILES['documento_pdf']['name'];
             $tmpPathPdf = $_FILES['documento_pdf']['tmp_name'];
@@ -282,28 +288,30 @@ abstract class Documentos {
             $validExt = array('pdf');
             $filesExt = strtolower(pathinfo($namePdf, PATHINFO_EXTENSION));
             if (!in_array($filesExt, $validExt))
-                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+                throw new ApiException('El tipo de archivo no es valido', Response::BAD_REQUEST);
 
             $pdf = new Pdf();
             Pdf::createPdf($pdf);
 
             // Update y creacion del path
-            $pathPdf = 'uploads/' . strtolower($namePdf . strval($pdf->getId()) . '.' . $filesExt);
-            $pathPdf = preg_replace('/\s+/', '-', $pathPdf);
+            $pathPdf = 'uploads/' . strtolower($pdf->getId() . $namePdf);
+            $pathPdf = str_replace(' ', '', $pathPdf);
             $pdf->setPath($pathPdf);
             Pdf::updatePdf($pdf);
 
             // Guardado de pdf
-            if (!move_uploaded_file($tmpPathPdf, $namePdf))
-                throw new ApiException('Bad Request', Response::BAD_REQUEST);
+            if (!move_uploaded_file($tmpPathPdf, $pathPdf))
+                throw new ApiException('No se pudo guardar el archivo', Response::INTERNAL_SERVER_ERROR);
 
             $documento->setPdfId($pdf->getId());
-
-            foreach ($tagsIds as $tagId) {
-                Documento::assignTagDocumento($documento->getId(), $tagId);
-            }
-            Documento::updateDocumento($documento);
         }
+
+        foreach ($tagsIds as $tagId) {
+            Documento::assignTagDocumento($documento->getId(), $tagId);
+        }
+
+        $documento->setUsuarioId($usuarioId);
+        Documento::updateDocumento($documento);
     }
 
     /**

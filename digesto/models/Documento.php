@@ -549,4 +549,18 @@ class Documento implements JsonSerializable {
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
     }
+
+    public static function clearTagDocumento(int $documentoId): void{
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            'DELETE FROM documentos_tags WHERE documento_id = %d',
+            $documentoId,
+        );
+        if (!($rs = pg_query($conn, $query)))
+            throw new ModalException(pg_last_error($conn));
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error($conn));
+    }
 }

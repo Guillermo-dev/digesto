@@ -3,9 +3,9 @@
  * @constructor
  */
 export function Daijesuto() {
-    const _theZone1 = document.getElementById('TheZone1');
-    const _theZone2 = document.getElementById('TheZone2');
-    let _counter = 5;
+    const _theZone1 = document.getElementById("TheZone1");
+    const _theZone2 = document.getElementById("TheZone2");
+    let _counter = 10;
 
     /**
      *
@@ -22,13 +22,13 @@ export function Daijesuto() {
      */
     function _onClick() {
         if (_counter > 0) {
-            _counter--
+            _counter--;
             return;
         }
-        const audio = new Audio('/src/global/.hidden.mp3');
+        const audio = new Audio("/src/global/.hidden.mp3");
         audio.currentTime = 1.05;
-        audio.play().then(r => {
-        });
+        audio.play().then((r) => {});
+        _counter = 10;
     }
 
     //Invoke

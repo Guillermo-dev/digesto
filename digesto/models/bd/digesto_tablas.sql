@@ -86,6 +86,7 @@ VALUES ('documentos_create', 'Crear nuevos documentos'),
        ('emisores_create', 'Crear nuevos emisores'),
        ('emisores_update', 'Actualizar emisores'),
        ('emisores_delete', 'Eliminar emisores'),
+       ('usuarios_access', 'Permite ver los usuarios'),
        ('usuarios_create', 'Crear nuevos usuarios'),
        ('usuarios_update', 'Actualizar usuarios'),
        ('usuarios_delete', 'Eliminar usuarios');

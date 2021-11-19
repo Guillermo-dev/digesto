@@ -26,6 +26,10 @@ abstract class Usuarios {
         if (!isset($_SESSION['user']))
             throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('usuarios_access', $usuarioId))
+            throw new ApiException('Forbidden', Response::FORBIDDEN);
+
         Response::getResponse()->appendData('usuarios', Usuario::getUsuarios());
     }
 

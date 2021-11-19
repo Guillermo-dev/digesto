@@ -64,7 +64,7 @@ abstract class Tags {
             throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('ags_update', $usuarioId))
+        if (!Permiso::hasPermiso('tags_update', $usuarioId))
             throw new ApiException('Forbidden', Response::FORBIDDEN);
 
         $tagData = Request::getBodyAsJson();

@@ -88,11 +88,11 @@ export default function AdminEditDocumento() {
                 <div class="row g-3 mb-3">
                     <div class="col-sm">
                         <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="titulo" required id="titulo " placeholder="">
+                        <input type="text" class="form-control" name="titulo" required id="titulo " placeholder=""  autocomplete="off">
                     </div>
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="">
+                        <label class="fw-bold mt-2" for="numero">Número expediente<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="" autocomplete="off">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -101,12 +101,12 @@ export default function AdminEditDocumento() {
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="campaña">Fecha<span class="text-danger">*</span></label>
+                        <label class="fw-bold mt-2" for="campaña">Fecha de emisión<span class="text-danger">*</span></label>
                         <input type="date" class="form-control" name="fechaEmision" required id="fecha " placeholder="">
                     </div>
                     <div class="col-sm">
                         <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="">
+                        <input type="text" class="form-control" name="tipo" required id="tipo " placeholder=""  autocomplete="off">
                     </div>
                 </div>
                 <div class="row g-3 mb-3">
@@ -119,7 +119,7 @@ export default function AdminEditDocumento() {
                     </div>
                     <div class="col-sm d-none">
                         <label class="fw-bold mt-2" for="nuevoEmisor">Nuevo Emisor</label>
-                        <input type="text" name="nuevoEmisor" class="form-control" id="nuevoEmisor">
+                        <input type="text" name="nuevoEmisor" class="form-control" id="nuevoEmisor" autocomplete="off">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -178,10 +178,9 @@ export default function AdminEditDocumento() {
                     </div>
                 </div>
                 <div data-js="archivo"> 
-                    <label class ="fw-bold">Archivo</label>
                     <iframe data-js="NoTieneQueSerNecesariamenteLoQueQuieras" src="" class="frame" frameborder="5" width="100%" height="680px" ></iframe>
                 </div>
-                <p class="fw-bold text-danger mb-3">*Campos obligatorio</p>
+                <p class="fw-bold text-danger mb-3">*Campos obligatorios</p>
                 <div class="text-end">
                     <button type="button" class="btn btn-primary"  data-js="button">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -216,8 +215,8 @@ export default function AdminEditDocumento() {
      * @private
      */
     function _constructor() {
-        _fetchData();
         _fetchEmisores();
+        _fetchData();
         let counter = 0;
         _fileText.children[1].onclick = _onRemoveFile;
         _dragZone.ondragenter = function (event) {
@@ -276,7 +275,7 @@ export default function AdminEditDocumento() {
             .then((httpResp) => httpResp.json())
             .then((response) => {
                 if (response.code === 200) {
-                    _processDocumento(response.data);
+                    _processData(response.data);
                 } else {
                     _this.setClassState("css-error");
                     errorAlert(response.error.message);
@@ -288,7 +287,7 @@ export default function AdminEditDocumento() {
             });
     }
 
-    function _processDocumento(data) {
+    function _processData(data) {
         _form["titulo"].value = data["documento"].titulo;
         _form["numeroExpediente"].value = data["documento"].numeroExpediente;
         _form["descripcion"].value = data["documento"].descripcion;
@@ -510,16 +509,13 @@ export default function AdminEditDocumento() {
         if (_form["emisor"].value === "-1") {
             formData.append("emisor", _form["nuevoEmisor"].value);
         } else if (_form["emisor"].value === "0") {
-            window.iziToast.warning({ message: "Debe seleccionar un emisor" });
+            window.iziToast.warning({ message: "Debe seleccionar un emisor valido" });
             return false;
         } else {
             formData.append("emisor", _form["emisor"].value);
         }
 
-        if (_file === null) {
-            window.iziToast.warning({ message: "Debe seleccionar un archivo" });
-            return false;
-        } else {
+        if (!_file === null) {
             formData.append("documento_pdf", _file);
         }
 
@@ -530,9 +526,8 @@ export default function AdminEditDocumento() {
             .then((response) => {
                 if (response.code === 200) {
                     window.iziToast.success({
-                        message: "El documento se registro con exito",
+                        message: "El documento se actualizo con exito",
                     });
-                    _clear();
                 } else {
                     window.iziToast.error({ message: response.error.message });
                 }
