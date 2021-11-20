@@ -183,7 +183,7 @@ export default function AdminEditDocumento() {
                 <p class="fw-bold text-danger mb-3">*Campos obligatorios</p>
                 <div class="text-end">
                     <button type="button" class="btn btn-primary"  data-js="button">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button name ="submitBtn" type="submit" class="btn btn-primary">Guardar<span class="ms-2 spinner-border spinner-border-sm d-none"></span></button>
                 </div>
                 </form>
             </div>
@@ -488,6 +488,8 @@ export default function AdminEditDocumento() {
      * @private
      */
     function _onSubmit(event) {
+        _form['submitBtn'].disabled = true;
+        _form['submitBtn'].lastElementChild.classList.remove('d-none');
         const formData = new FormData();
 
         formData.append("titulo", _form["titulo"].value);
@@ -499,6 +501,8 @@ export default function AdminEditDocumento() {
         formData.append("publico", _form["publico"].value == 1 ? true : false);
         if (Object.keys(_tags).length === 0) {
             window.iziToast.warning({ message: "Debe agregar etiquetas" });
+            _form['submitBtn'].disabled = false;
+            _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
             formData.append(
@@ -511,6 +515,8 @@ export default function AdminEditDocumento() {
             formData.append("emisor", _form["nuevoEmisor"].value);
         } else if (_form["emisor"].value === "0") {
             window.iziToast.warning({ message: "Debe seleccionar un emisor valido" });
+            _form['submitBtn'].disabled = false;
+            _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
             formData.append("emisor", _form["emisor"].value);
@@ -525,15 +531,19 @@ export default function AdminEditDocumento() {
         fetch(`/api/documentos/${id}`, { method: "POST", body: formData })
             .then((httpResp) => httpResp.json())
             .then((response) => {
+                _form['submitBtn'].disabled = false;
+                _form['submitBtn'].lastElementChild.classList.add('d-none');
                 if (response.code === 200) {
                     window.iziToast.success({
                         message: "El documento se actualizo con exito",
                     });
                 } else {
-                    window.iziToast.error({ message: response.error.message });
+                    window.iziToast.error({ message: response.error.message.toString() });
                 }
             })
             .catch((reason) => {
+                _form['submitBtn'].disabled = false;
+                _form['submitBtn'].lastElementChild.classList.add('d-none');
                 window.iziToast.error({ message: reason.toString() });
             });
     }

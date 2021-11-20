@@ -459,6 +459,8 @@ export default function AdminNewDocumento() {
         formData.append('publico', _form['publico'].value);
         if (Object.keys(_tags).length === 0) {
             window.iziToast.warning({message: 'Debe agregar etiquetas'});
+            _form['submitBtn'].disabled = false;
+            _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
             formData.append('tags', JSON.stringify(Object.keys(_tags)).replace(' ', ''));
@@ -468,6 +470,8 @@ export default function AdminNewDocumento() {
             formData.append('emisor', _form['nuevoEmisor'].value);
         } else if (_form['emisor'].value === '0') {
             window.iziToast.warning({message: 'Debe seleccionar un emisor'});
+            _form['submitBtn'].disabled = false;
+            _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
             formData.append('emisor', _form['emisor'].value);
@@ -475,6 +479,8 @@ export default function AdminNewDocumento() {
 
         if (_file === null) {
             window.iziToast.warning({message: 'Debe seleccionar un archivo'});
+            _form['submitBtn'].disabled = false;
+            _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
             formData.append('documento_pdf', _file);

@@ -85,15 +85,13 @@ abstract class Documentos {
         if (!$documento)
             throw new ApiException('El documento no existe', Response::NOT_FOUND);
 
-        if (!$documento->getPublico()) {
-            if (isset($_SESSION['user'])) {
-                Response::getResponse()->appendData('documento', $documento);
-                Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
-                Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
-                Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
-            } else
-                throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
-        } else {
+        if (isset($_SESSION['user'])) {
+            Response::getResponse()->appendData('documento', $documento);
+            Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
+            Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
+            Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
+        }
+        if ($documento->getPublico()) {
             Response::getResponse()->appendData('documento', $documento);
             Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
             Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
@@ -244,12 +242,12 @@ abstract class Documentos {
             $documento->setFechaEmision($_POST['fechaEmision']);
 
         if (isset($_POST['descargable']))
-            $documento->setDescargable($_POST['descargable'] === 'false' ? false: true);
+            $documento->setDescargable($_POST['descargable'] === 'false' ? false : true);
 
-        if (isset($_POST['publico'])){
-            $documento->setPublico($_POST['publico'] === 'false' ? false: true);
+        if (isset($_POST['publico'])) {
+            $documento->setPublico($_POST['publico'] === 'false' ? false : true);
         }
-            
+
 
         if (isset($_POST['tags'])) {
             Documento::clearTagDocumento($id);
@@ -308,12 +306,12 @@ abstract class Documentos {
             $documento->setPdfId($pdf->getId());
         }
 
-        if(isset($tagsIds)){
+        if (isset($tagsIds)) {
             foreach ($tagsIds as $tagId) {
                 Documento::assignTagDocumento($documento->getId(), $tagId);
             }
         }
-        
+
         $documento->setUsuarioId($usuarioId);
         Documento::updateDocumento($documento);
     }
