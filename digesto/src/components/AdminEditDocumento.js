@@ -521,10 +521,7 @@ export default function AdminEditDocumento() {
             _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
-            formData.append(
-                "tags",
-                JSON.stringify(Object.keys(_tags)).replace(" ", "")
-            );
+            formData.append("tags", JSON.stringify(Object.keys(_tags)));
         }
 
         if (_form["emisor"].value === "-1") {
