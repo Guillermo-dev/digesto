@@ -173,8 +173,11 @@ export default function Search() {
             return false;
         };
         _forms[1].onsubmit = (event) => {
-            event.preventDefault();
-            _onSubmitFilter.call(_forms[1], event);
+            try {
+                _onSubmitFilter.call(_forms[1], event);
+            } catch (error) {
+                window.iziToast.error({message: error.toString()});
+            }
             return false;
         };
         _forms[1]['loginBtn'].onclick = () => {
@@ -261,15 +264,17 @@ export default function Search() {
      * @private
      */
     function _processFilterData(data) {
-        if (data["tags"] !== undefined)
+        if (data["tags"] !== undefined) {
             data["tags"].forEach((tag) => {
                 _lists[0].append(_createFilterOption('etiquetas', tag['nombre']));
             });
+        }
 
-        if (data["emisores"] !== undefined)
+        if (data["emisores"] !== undefined) {
             data["emisores"].forEach((emisor) => {
                 _lists[2].append(_createFilterOption('emisores', emisor['nombre']));
             });
+        }
     }
 
     /**
@@ -366,17 +371,17 @@ export default function Search() {
         const anios = [];
         const emisores = [];
 
-        _forms[1]["etiquetas"].forEach((option) => {
+        Array.from(_forms[1].querySelectorAll('input[name="etiquetas"]')).forEach((option) => {
             if (option.checked) {
                 etiquetas.push(option.value);
             }
         });
-        _forms[1]["anios"].forEach((option) => {
+        Array.from(_forms[1].querySelectorAll('input[name="anios"]')).forEach((option) => {
             if (option.checked) {
                 anios.push(option.value);
             }
         });
-        _forms[1]["emisores"].forEach((option) => {
+        Array.from(_forms[1].querySelectorAll('input[name="emisores"]')).forEach((option) => {
             if (option.checked) {
                 emisores.push(option.value);
             }

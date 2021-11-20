@@ -28,7 +28,7 @@ class Usuario implements JsonSerializable {
     private $nombre;
 
     /**
-     * @var string
+     * @var bool
      */
     private $admin;
 
@@ -38,7 +38,7 @@ class Usuario implements JsonSerializable {
      * @param int    $id
      * @param string $email
      * @param string $nombre
-     * @param bool $admin
+     * @param bool   $admin
      */
     public function __construct(int $id = 0, string $email = '', string $nombre = '', bool $admin = false) {
         $this->id = $id;
@@ -173,7 +173,7 @@ class Usuario implements JsonSerializable {
             $usuario->setId($row['usuario_id']);
             $usuario->setEmail($row['email']);
             $usuario->setNombre($row['nombre']);
-            $usuario->setAdmin($row['admin']);
+            $usuario->setAdmin($row['admin'] == 't');
         }
         if (($error = pg_last_error($conn)) != false)
             throw new ModalException($error);

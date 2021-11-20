@@ -77,8 +77,7 @@ createStyle()._content(`
  */
 export default function AdminSearch() {
     const _this = this;
-    this.root = createElement("div")._class("AdminSearch")
-        ._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("AdminSearch")._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md-auto">
             <form data-js="form">
@@ -410,26 +409,26 @@ export default function AdminSearch() {
         const emisores = [];
         const privacidad = [];
 
-        _forms[1]["etiquetas"].forEach((option) => {
+        _forms[1].querySelectorAll('input[name="etiquetas"]').forEach((option) => {
             if (option.checked) {
                 etiquetas.push(option.value);
             }
         });
-        _forms[1]["anios"].forEach((option) => {
+        _forms[1].querySelectorAll('input[name="anios"]').forEach((option) => {
             if (option.checked) {
                 anios.push(option.value);
             }
         });
-        _forms[1]["emisores"].forEach((option) => {
+        _forms[1].querySelectorAll('input[name="emisores"]').forEach((option) => {
             if (option.checked) {
                 emisores.push(option.value);
             }
         });
-        _forms[1]["Privacidad"].forEach((option) => {
+        _forms[1].querySelectorAll('input[name="Privacidad"]').forEach((option) => {
             if (option.checked) {
                 if (option.value === "Ver solo publicos") {
                     privacidad.push("publicos");
-                } else if (option.value == "Ver solo privados") {
+                } else if (option.value === "Ver solo privados") {
                     privacidad.push("privados");
                 }
             }

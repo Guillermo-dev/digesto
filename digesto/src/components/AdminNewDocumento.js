@@ -194,6 +194,7 @@ export default function AdminNewDocumento() {
 </div>
 `);
     this.name = "AdminNewDocumento";
+
     const _this = this;
     const _tagZone = _this.root.querySelector('[data-js="tag-zone"]');
     const _dataListTags = _this.root.querySelector('[data-js="datalist-tags"]');
@@ -266,11 +267,19 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _onSelectFile(file) {
+        if (file.type !== 'application/pdf') {
+            window.iziToast.error({message: 'El archivo debe ser de tipo PDF'});
+            return;
+        }
+
         _file = file;
+
         _fileText.children[0].textContent = _file.name;
+
         _fileText.classList.remove('d-none');
 
         _archivoContainer.classList.remove('d-none');
+
         _pdf.src = URL.createObjectURL(file);
     }
 
@@ -438,6 +447,7 @@ export default function AdminNewDocumento() {
     function _onSubmit(event) {
         _form['submitBtn'].disabled = true;
         _form['submitBtn'].lastElementChild.classList.remove('d-none');
+
         const formData = new FormData();
 
         formData.append('titulo', _form['titulo'].value);
@@ -473,16 +483,18 @@ export default function AdminNewDocumento() {
         fetch(`/api/documentos`, {method: 'POST', body: formData})
             .then(httpResp => httpResp.json())
             .then(response => {
+                _form['submitBtn'].disabled = false;
+                _form['submitBtn'].lastElementChild.classList.add('d-none');
                 if (response.code === 200) {
                     window.iziToast.success({message: 'El documento se registro con exito'});
-                    _form['submitBtn'].disabled = false;
-                    _form['submitBtn'].lastElementChild.classList.add('d-none');
                     _clear();
                 } else {
-                    window.iziToast.error({message: response.error});
+                    window.iziToast.error({message: response.error.message.toString()});
                 }
             })
             .catch(reason => {
+                _form['submitBtn'].disabled = false;
+                _form['submitBtn'].lastElementChild.classList.add('d-none');
                 window.iziToast.error({message: reason.toString()});
             })
     }
