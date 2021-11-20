@@ -250,11 +250,11 @@ export default function AdminEditDocumento() {
         _form["file"].onchange = function () {
             _onSelectFile(this.files[0]);
         };
-        _form["etiqueta"].addEventListener("input", _onInputEtiqueta);
-        _form["etiqueta"].addEventListener("change", function (event) {
-            this.value += " ";
-            _onInputEtiqueta.call(_form["etiqueta"], event);
-        });
+        _form['etiqueta'].onkeydown = _onKeyDownEtiquetas;
+        _form['etiqueta'].onchange = function(event) {
+            event.keyCode = 13;
+            _onKeyDownEtiquetas.call(_form['etiqueta'], event);
+        };
         _form.onsubmit = function (event) {
             try {
                 _onSubmit.call(_form, event);
@@ -399,31 +399,34 @@ export default function AdminEditDocumento() {
         });
     }
 
+
     /**
      *
      * @private
      */
-    function _onInputEtiqueta() {
-        if (Object.values(_tags).length >= 10) {
+     function _onKeyDownEtiquetas(event) {
+        if (event.keyCode !== 13) {
+            return;
+        } else if (Object.values(_tags).length >= 10) {
             this.disabled = true;
-            window.iziToast.warning({
-                message: "Maximo de etiqueta alcanzado",
-            });
-            this.value = "";
+            window.iziToast.warning({message: 'Maximo de etiqueta alcanzado'});
+            this.value = '';
             return;
         }
+
+        event.preventDefault();
+
         this.value = this.value.toLowerCase();
-        if (/^ *(\w+) $/i.test(this.value)) {
-            let name = this.value.replace(" ", "");
-            if (_tags[name] === undefined) {
-                _tags[name] = true;
-                _tagZone.append(_createEtiqueta(name));
-                this.value = "";
-            } else {
-                this.value = "";
-            }
+
+        if (_tags[this.value] === undefined && this.value != '') {
+            _tags[this.value] = true;
+            _tagZone.append(_createEtiqueta(this.value));
+            this.value = '';
+        } else {
+            this.value = '';
         }
     }
+
 
     /**
      *

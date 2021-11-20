@@ -365,7 +365,7 @@ export default function AdminNewDocumento() {
 
         this.value = this.value.toLowerCase();
 
-        if (_tags[this.value] === undefined) {
+        if (_tags[this.value] === undefined && this.value != '') {
             _tags[this.value] = true;
             _tagZone.append(_createEtiqueta(this.value));
             this.value = '';
