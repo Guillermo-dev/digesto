@@ -495,8 +495,8 @@ export default function AdminEditDocumento() {
         formData.append("descripcion", _form["descripcion"].value);
         formData.append("fechaEmision", _form["fechaEmision"].value);
         formData.append("tipo", _form["tipo"].value);
-        formData.append("descargable", _form["descargable"].value);
-        formData.append("publico", _form["publico"].value);
+        formData.append("descargable", _form["descargable"].value == 1 ? true : false);
+        formData.append("publico", _form["publico"].value == 1 ? true : false);
         if (Object.keys(_tags).length === 0) {
             window.iziToast.warning({ message: "Debe agregar etiquetas" });
             return false;

@@ -244,10 +244,12 @@ abstract class Documentos {
             $documento->setFechaEmision($_POST['fechaEmision']);
 
         if (isset($_POST['descargable']))
-            $documento->setDescargable($_POST['descargable']);
+            $documento->setDescargable($_POST['descargable'] === 'false' ? false: true);
 
-        if (isset($_POST['publico']))
-            $documento->setPublico($_POST['publico']);
+        if (isset($_POST['publico'])){
+            $documento->setPublico($_POST['publico'] === 'false' ? false: true);
+        }
+            
 
         if (isset($_POST['tags'])) {
             Documento::clearTagDocumento($id);
@@ -267,16 +269,16 @@ abstract class Documentos {
             }
         }
 
-        if (isset($_POST['emisor']))
+        if (isset($_POST['emisor'])) {
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
+            if (!$emisor) {
+                $emisor = new Emisor();
+                $emisor->setNombre($_POST['emisor']);
+                Emisor::createEmisor($emisor);
+            }
 
-        if (!$emisor) {
-            $emisor = new Emisor();
-            $emisor->setNombre($_POST['emisor']);
-            Emisor::createEmisor($emisor);
+            $documento->setEmisorId($emisor->getId());
         }
-
-        $documento->setEmisorId($emisor->getId());
 
         if (isset($_FILES['documento_pdf'])) {
             if ($_FILES['documento_pdf']['error'] > 0)
@@ -306,10 +308,12 @@ abstract class Documentos {
             $documento->setPdfId($pdf->getId());
         }
 
-        foreach ($tagsIds as $tagId) {
-            Documento::assignTagDocumento($documento->getId(), $tagId);
+        if(isset($tagsIds)){
+            foreach ($tagsIds as $tagId) {
+                Documento::assignTagDocumento($documento->getId(), $tagId);
+            }
         }
-
+        
         $documento->setUsuarioId($usuarioId);
         Documento::updateDocumento($documento);
     }

@@ -369,7 +369,7 @@ class Documento implements JsonSerializable {
                 %s
                 %s
                 ORDER BY  D.fecha_emision DESC, D.numero_expediente",
-            $onlyPublics ? 'D.publico = TRUE' : 'D.publico = '.$publicos.' OR D.publico = '.$privados.'',
+            $onlyPublics ? 'D.publico = TRUE' : 'D.publico = ' . $publicos . ' OR D.publico = ' . $privados . '',
             $search == '' ? '' : "AND (UPPER(D.titulo) LIKE UPPER('%" . pg_escape_string($search) . "%')",
             $search == '' ? '' : "OR UPPER(D.numero_expediente) LIKE '%" . pg_escape_string($search) . "%')",
             $emitters == '' ? '' : "AND E.nombre IN " . self::lloro2elregreso($emitters),
@@ -453,7 +453,7 @@ class Documento implements JsonSerializable {
 
         $query = sprintf(
             "INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id) 
-      VALUES ('%s','%s','%s','%s','%s',%s,%s,%d,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
+      VALUES ('%s','%s','%s','%s','%s',%s,%s,%d,%d) RETURNING Currval('documentos_documento_id_seq')",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
@@ -529,7 +529,7 @@ class Documento implements JsonSerializable {
      *
      * @throws ModalException
      */
-    public static function assignTagDocumento(int $documentoId, int $tagId):void {
+    public static function assignTagDocumento(int $documentoId, int $tagId): void {
         $conn = Connection::getConnection();
 
         $query = sprintf(
@@ -545,7 +545,7 @@ class Documento implements JsonSerializable {
             throw new ModalException(pg_last_error($conn));
     }
 
-    public static function clearTagDocumento(int $documentoId): void{
+    public static function clearTagDocumento(int $documentoId): void {
         $conn = Connection::getConnection();
 
         $query = sprintf(
