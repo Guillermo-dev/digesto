@@ -209,7 +209,7 @@ export default function AdminEditDocumento() {
     let _oldPath;
     let _file = null;
     let _tags = {};
-
+    let _emisor = '';
     /**
      * Constructor
      * @private
@@ -302,7 +302,10 @@ export default function AdminEditDocumento() {
         _form["descripcion"].value = data["documento"].descripcion;
         _form["fechaEmision"].value = data["documento"].fechaEmision;
         _form["tipo"].value = data["documento"].tipo;
-        _form["emisor"].value = data["emisor"].nombre;
+
+        _emisor = data['emisor'].nombre;
+        _form["emisor"].value = _emisor;
+
         data["tags"].forEach((tag) => {
             _tags[tag.nombre] = true;
             _tagZone.append(_createEtiqueta(tag.nombre));
@@ -399,7 +402,6 @@ export default function AdminEditDocumento() {
         });
     }
 
-
     /**
      *
      * @private
@@ -426,7 +428,6 @@ export default function AdminEditDocumento() {
             this.value = '';
         }
     }
-
 
     /**
      *
@@ -492,6 +493,9 @@ export default function AdminEditDocumento() {
             _form["emisor"].append(_createOption(emisor.nombre, emisor.nombre));
         });
         _form["emisor"].append(_createOption(-1, "Nuevo emisor"));
+        if(_emisor != ''){
+           _form["emisor"].value = _emisor;
+        }
     }
 
     /**
