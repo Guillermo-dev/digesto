@@ -316,7 +316,7 @@ class Documento implements JsonSerializable {
             $documento->setId($row['documento_id']);
             $documento->setNumeroExpediente($row['numero_expediente']);
             $documento->setTitulo($row['titulo']);
-            $documento->setDescripcion(isset($row['descripcion']) ? $row['descripcion'] : 'No hay descripcion de este documento');
+            $documento->setDescripcion(isset($row['descripcion']) ? $row['descripcion'] : 'No hay descripción de este documento');
             $documento->setTipo($row['tipo']);
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
@@ -386,7 +386,7 @@ class Documento implements JsonSerializable {
             $documento->setId($row['documento_id']);
             $documento->setNumeroExpediente($row['numero_expediente']);
             $documento->setTitulo($row['titulo']);
-            $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripcion de este documento');
+            $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripción de este documento');
             $documento->setTipo($row['tipo']);
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
@@ -425,7 +425,7 @@ class Documento implements JsonSerializable {
             $documento->setId($row['documento_id']);
             $documento->setNumeroExpediente($row['numero_expediente']);
             $documento->setTitulo($row['titulo']);
-            $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripcion de este documento');
+            $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripción de este documento');
             $documento->setTipo($row['tipo']);
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');

@@ -2,7 +2,6 @@
 
 namespace api;
 
-use Exception;
 use JsonException;
 use models\Connection;
 use models\exceptions\ModalException;
@@ -24,11 +23,11 @@ abstract class Usuarios {
      */
     public static function getUsuarios(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_access', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         Response::getResponse()->appendData('usuarios', Usuario::getUsuarios());
     }
@@ -41,7 +40,11 @@ abstract class Usuarios {
      */
     public static function getUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
+
+        $usuarioId = unserialize($_SESSION['user'])->getId();
+        if (!Permiso::hasPermiso('usuarios_access', $usuarioId))
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         Response::getResponse()->appendData('usuario', Usuario::getUsuarioById($id));
     }
@@ -53,11 +56,11 @@ abstract class Usuarios {
      */
     public static function createUsuario(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_create', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $usuarioData = Request::getBodyAsJson();
 
@@ -79,11 +82,11 @@ abstract class Usuarios {
      */
     public static function updateUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_update', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $usuarioData = Request::getBodyAsJson();
 
@@ -114,11 +117,11 @@ abstract class Usuarios {
      */
     public static function deleteUsuario(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_delete', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $usuario = Usuario::getUsuarioById($id);
         if (!$usuario)
@@ -138,7 +141,7 @@ abstract class Usuarios {
      */
     public static function getPermisos(int $usuarioId = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuario = Usuario::getUsuarioById($usuarioId);
         if (!$usuario)
@@ -157,11 +160,11 @@ abstract class Usuarios {
      */
     public static function updatePermisos(int $usuarioId = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $loggedUserId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('usuarios_update', $loggedUserId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $requestData = Request::getBodyAsJson();
 

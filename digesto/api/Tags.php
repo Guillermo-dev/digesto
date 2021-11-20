@@ -37,11 +37,11 @@ abstract class Tags {
      */
     public static function createTag(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('tags_create', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tagData = Request::getBodyAsJson();
 
@@ -49,7 +49,7 @@ abstract class Tags {
 
         if (isset($tagData->nombre))
             $tag->setNombre($tagData->nombre);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
+        else throw new ApiException('Nombre de tag requerido', Response::BAD_REQUEST);
 
         Tag::createTag($tag);
     }
@@ -61,11 +61,11 @@ abstract class Tags {
      */
     public static function updateTag(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('tags_update', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tagData = Request::getBodyAsJson();
 
@@ -75,7 +75,7 @@ abstract class Tags {
 
         if (isset($tagData->nombre))
             $tag->setNombre($tagData->nombre);
-        else throw new ApiException('Bad Request', Response::BAD_REQUEST);
+        else throw new ApiException('Nombre de tag requerido', Response::BAD_REQUEST);
 
         Tag::updateTag($tag);
     }
@@ -87,11 +87,11 @@ abstract class Tags {
      */
     public static function deleteTag(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('tags_delete', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tag = Tag::getTagById($id);
         if (!$tag)
@@ -102,10 +102,10 @@ abstract class Tags {
 
     public static function tagsSearch(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         if (!isset($_GET['tags']))
-            throw new ApiException('bat request', Response::BAD_REQUEST);
+            throw new ApiException('Tag requerido', Response::BAD_REQUEST);
 
         $tagText = $_GET['tags'];
         Response::getResponse()->appendData('tags', Tag::getTagsByText($tagText));

@@ -3,13 +3,11 @@
 namespace api;
 
 use Exception;
-use Google\Service\BigQueryConnectionService\Connection;
 use models\Documento;
 use models\Pdf;
 use models\Emisor;
 use models\Permiso;
 use models\Tag;
-use api\util\Request;
 use api\util\Response;
 use api\exceptions\ApiException;
 
@@ -106,11 +104,11 @@ abstract class Documentos {
      */
     public static function createDocumento(): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_create', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         \models\Connection::begin();
 
@@ -218,11 +216,11 @@ abstract class Documentos {
      */
     public static function updateDocumento(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_update', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $documento = Documento::getDocumentoById($id);
 
@@ -323,11 +321,11 @@ abstract class Documentos {
      */
     public static function deleteDocumento(int $id = 0): void {
         if (!isset($_SESSION['user']))
-            throw new ApiException('Unauthorized', Response::UNAUTHORIZED);
+            throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
         if (!Permiso::hasPermiso('documentos_delete', $usuarioId))
-            throw new ApiException('Forbidden', Response::FORBIDDEN);
+            throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $documento = Documento::getDocumentoById($id);
         if (!$documento)
