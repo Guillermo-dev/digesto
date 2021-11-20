@@ -420,6 +420,11 @@ export default function AdminEditDocumento() {
 
         this.value = this.value.toLowerCase();
 
+        if(this.value.length >= 25){
+            window.iziToast.warning({message: 'La etiqueta es demasido larga'});
+            return;
+        }
+
         if (_tags[this.value] === undefined && this.value != '') {
             _tags[this.value] = true;
             _tagZone.append(_createEtiqueta(this.value));
@@ -508,10 +513,25 @@ export default function AdminEditDocumento() {
         _form['submitBtn'].lastElementChild.classList.remove('d-none');
         const formData = new FormData();
 
+        if(_form['titulo'].value.length >= 45){
+            window.iziToast.warning({message: 'El titulo es demasido largo'});
+            return false;
+        }
         formData.append("titulo", _form["titulo"].value);
+
+        if(_form['numeroExpediente'].value.length >= 45){
+            window.iziToast.warning({message: 'El numero de expediente es demasido largo'});
+            return false;
+        }
         formData.append("numeroExpediente", _form["numeroExpediente"].value);
+
         formData.append("descripcion", _form["descripcion"].value);
         formData.append("fechaEmision", _form["fechaEmision"].value);
+
+        if(_form['tipo'].value.length >= 25){
+            window.iziToast.warning({message: 'El tipo es demasido largo'});
+            return false;
+        }
         formData.append("tipo", _form["tipo"].value);
         formData.append("descargable", _form["descargable"].value == 1 ? true : false);
         formData.append("publico", _form["publico"].value == 1 ? true : false);
@@ -524,6 +544,10 @@ export default function AdminEditDocumento() {
             _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
+            if(_form['emisor'].value.length >= 25){
+                window.iziToast.warning({message: 'El emisor es demasido largo'});
+                return false;
+            }
             formData.append("emisor", _form["emisor"].value);
         }
 
