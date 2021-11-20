@@ -93,7 +93,7 @@ export default function AdminNewDocumento() {
             </div>
             <div class="mb-3">
                 <label class="fw-bold mt-2" for="descripcion">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" placeholder=""> </textarea>
+                <textarea class="form-control" id="descripcion" name="descripcion" placeholder=""></textarea>
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-sm">
@@ -120,7 +120,7 @@ export default function AdminNewDocumento() {
             </div>
             <div class="mb-3">
                 <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
-                <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="">
+                <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Ingrese una etiqueta y presione ENTER para agregarla">
                 <datalist id="datalist" data-js="datalist-tags">
                     <!---->
                 </datalist>
