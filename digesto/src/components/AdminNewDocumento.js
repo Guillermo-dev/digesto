@@ -457,14 +457,6 @@ export default function AdminNewDocumento() {
         formData.append('tipo', _form['tipo'].value);
         formData.append('descargable', _form['descargable'].value);
         formData.append('publico', _form['publico'].value);
-        if (Object.keys(_tags).length === 0) {
-            window.iziToast.warning({message: 'Debe agregar etiquetas'});
-            _form['submitBtn'].disabled = false;
-            _form['submitBtn'].lastElementChild.classList.add('d-none');
-            return false;
-        } else {
-            formData.append('tags', JSON.stringify(Object.keys(_tags)));
-        }
 
         if (_form['emisor'].value === '-1') {
             formData.append('emisor', _form['nuevoEmisor'].value);
@@ -475,6 +467,15 @@ export default function AdminNewDocumento() {
             return false;
         } else {
             formData.append('emisor', _form['emisor'].value);
+        }
+
+        if (Object.keys(_tags).length === 0) {
+            window.iziToast.warning({message: 'Debe agregar etiquetas'});
+            _form['submitBtn'].disabled = false;
+            _form['submitBtn'].lastElementChild.classList.add('d-none');
+            return false;
+        } else {
+            formData.append('tags', JSON.stringify(Object.keys(_tags)));
         }
 
         if (_file === null) {

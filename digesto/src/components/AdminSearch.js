@@ -48,7 +48,7 @@ createStyle()._content(`
 
     .AdminSearch .drop-down-box ul {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
     .AdminSearch .drop-down-box ul li {
@@ -77,7 +77,8 @@ createStyle()._content(`
  */
 export default function AdminSearch() {
     const _this = this;
-    this.root = createElement("div")._class("AdminSearch")._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("AdminSearch")
+        ._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md-auto">
             <form data-js="form">
@@ -93,7 +94,7 @@ export default function AdminSearch() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="tagBtn" class="btn w-100 text-white">
                             <b class="me-2">ETIQUETAS</b>
-                            <span>Todas</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -107,7 +108,7 @@ export default function AdminSearch() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="yearBtn" class="btn w-100 text-white">
                             <b class="me-2">AÑO</b>
-                            <span>Todos</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -121,7 +122,7 @@ export default function AdminSearch() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="emitterBtn" class="btn w-100 text-white">
                             <b class="me-2">EMISOR</b>
-                            <span>Todos</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -135,7 +136,7 @@ export default function AdminSearch() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="publicBtn" class="btn w-100 text-white">
                             <b class="me-2">PRIVACIDAD</b>
-                            <span>Todos</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -172,7 +173,7 @@ export default function AdminSearch() {
      * Constructor
      */
     function _constructor() {
-        document.body.addEventListener("click", function() {
+        document.body.addEventListener("click", function () {
             if (_currentOpenedDropBox)
                 _currentOpenedDropBox.classList.remove("visible");
             _currentOpenedDropBox = null;
@@ -319,7 +320,7 @@ export default function AdminSearch() {
         const dropBox = this.parentElement.querySelector(
             '[data-js="drop-box"]'
         );
-        dropBox.onclick = function(event) {
+        dropBox.onclick = function (event) {
             event.cancelBubble = true;
         };
 
@@ -377,6 +378,7 @@ export default function AdminSearch() {
         fetch(`/api/documentos?${url.toString()}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
+                _claerFilters();
                 if (response.code === 200) {
                     history.pushState(null, "", `/admin?${url.toString()}`);
                     _documentosComponent.processDocumentos(
@@ -388,9 +390,48 @@ export default function AdminSearch() {
                 }
             })
             .catch((reason) => {
+                _claerFilters();
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _claerFilters() {
+        Array.from(_forms[1].querySelectorAll('span[data-js="filtro"]')).forEach((span) => {
+            span.textContent = "Todos";
+          });
+        Array.from(
+            _forms[1].querySelectorAll('input[name="etiquetas"]')
+        ).forEach((option) => {
+            if (option.checked) {
+                option.checked = false;
+            }
+        });
+        Array.from(_forms[1].querySelectorAll('input[name="anios"]')).forEach(
+            (option) => {
+                if (option.checked) {
+                    option.checked = false;
+                }
+            }
+        );
+        Array.from(
+            _forms[1].querySelectorAll('input[name="emisores"]')
+        ).forEach((option) => {
+            if (option.checked) {
+                option.checked = false;
+            }
+        });
+        Array.from(
+            _forms[1].querySelectorAll('input[name="Privacidad"]')
+        ).forEach((option) => {
+            if (option.checked) {
+                option.checked = false;
+            }
+        });
     }
 
     /**
@@ -409,30 +450,36 @@ export default function AdminSearch() {
         const emisores = [];
         const privacidad = [];
 
-        _forms[1].querySelectorAll('input[name="etiquetas"]').forEach((option) => {
-            if (option.checked) {
-                etiquetas.push(option.value);
-            }
-        });
+        _forms[1]
+            .querySelectorAll('input[name="etiquetas"]')
+            .forEach((option) => {
+                if (option.checked) {
+                    etiquetas.push(option.value);
+                }
+            });
         _forms[1].querySelectorAll('input[name="anios"]').forEach((option) => {
             if (option.checked) {
                 anios.push(option.value);
             }
         });
-        _forms[1].querySelectorAll('input[name="emisores"]').forEach((option) => {
-            if (option.checked) {
-                emisores.push(option.value);
-            }
-        });
-        _forms[1].querySelectorAll('input[name="Privacidad"]').forEach((option) => {
-            if (option.checked) {
-                if (option.value === "Ver solo publicos") {
-                    privacidad.push("publicos");
-                } else if (option.value === "Ver solo privados") {
-                    privacidad.push("privados");
+        _forms[1]
+            .querySelectorAll('input[name="emisores"]')
+            .forEach((option) => {
+                if (option.checked) {
+                    emisores.push(option.value);
                 }
-            }
-        });
+            });
+        _forms[1]
+            .querySelectorAll('input[name="Privacidad"]')
+            .forEach((option) => {
+                if (option.checked) {
+                    if (option.value === "Ver solo publicos") {
+                        privacidad.push("publicos");
+                    } else if (option.value === "Ver solo privados") {
+                        privacidad.push("privados");
+                    }
+                }
+            });
 
         if (etiquetas.length > 0) url.append("etiquetas", etiquetas.join(";"));
 
@@ -442,8 +489,10 @@ export default function AdminSearch() {
 
         if (privacidad.length > 0) {
             if (privacidad.length == 1) {
-                if (privacidad.includes("publicos")) url.append("privacidad", "publicos");
-                else if (privacidad.includes("privados")) url.append("privacidad", "privados");
+                if (privacidad.includes("publicos"))
+                    url.append("privacidad", "publicos");
+                else if (privacidad.includes("privados"))
+                    url.append("privacidad", "privados");
             } else {
                 url.append("privacidad", "all");
             }
@@ -455,6 +504,7 @@ export default function AdminSearch() {
         fetch(`/api/documentos${_url}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
+                _forms[0]["search"].value = "";
                 if (response.code === 200) {
                     history.pushState(null, "", `/admin${_url}`);
                     _documentosComponent.processDocumentos(
@@ -466,6 +516,7 @@ export default function AdminSearch() {
                 }
             })
             .catch((reason) => {
+                _forms[0]["search"].value = "";
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -497,7 +548,7 @@ export default function AdminSearch() {
      *
      * @param documentosComponent
      */
-    this.setDocumentosComponent = function(documentosComponent) {
+    this.setDocumentosComponent = function (documentosComponent) {
         _documentosComponent = documentosComponent;
         _fetchDocumentos();
     };

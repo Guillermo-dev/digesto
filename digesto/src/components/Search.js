@@ -1,5 +1,5 @@
-import {createElement, createStyle, errorAlert} from "../global/js/util.js";
-import {Component} from "./Component.js";
+import { createElement, createStyle, errorAlert } from "../global/js/util.js";
+import { Component } from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -48,7 +48,7 @@ createStyle()._content(`
 
     .Search .drop-down-box ul {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
     .Search .drop-down-box ul li {
@@ -76,7 +76,8 @@ createStyle()._content(`
  * @constructor
  */
 export default function Search() {
-    this.root = createElement("div")._class("Search")._html(`<div class="container p-3 px-2 position-relative">
+    this.root = createElement("div")._class("Search")
+        ._html(`<div class="container p-3 px-2 position-relative">
     <div class="row g-0">
         <div class="col-md-auto">
             <form data-js="form">
@@ -92,7 +93,7 @@ export default function Search() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="tagBtn" class="btn w-100 text-white">
                             <b class="me-2">ETIQUETAS</b>
-                            <span>Todas</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -106,7 +107,7 @@ export default function Search() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="yearBtn" class="btn w-100 text-white">
                             <b class="me-2">AÑO</b>
-                            <span>Todos</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -120,7 +121,7 @@ export default function Search() {
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="emitterBtn" class="btn w-100 text-white">
                             <b class="me-2">EMISOR</b>
-                            <span>Todos</span>
+                            <span data-js="filtro">Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
                         <div class="drop-down-box p-2" data-js="drop-box">
@@ -159,7 +160,7 @@ export default function Search() {
      * Constructor
      */
     function _constructor() {
-        document.body.addEventListener("click", function() {
+        document.body.addEventListener("click", function () {
             if (_currentOpenedDropBox)
                 _currentOpenedDropBox.classList.remove("visible");
             _currentOpenedDropBox = null;
@@ -176,13 +177,13 @@ export default function Search() {
             try {
                 _onSubmitFilter.call(_forms[1], event);
             } catch (error) {
-                window.iziToast.error({message: error.toString()});
+                window.iziToast.error({ message: error.toString() });
             }
             return false;
         };
-        _forms[1]['loginBtn'].onclick = () => {
+        _forms[1]["loginBtn"].onclick = () => {
             location.href = "/auth/login";
-        }
+        };
         _fetchEtiquetas();
         _fetchEmisores();
         _fillYears();
@@ -194,7 +195,7 @@ export default function Search() {
     function _fillYears() {
         const currentYear = new Date().getFullYear();
         for (let year = currentYear; year >= 2016; year--) {
-            _lists[1].append(_createFilterOption('anios', year));
+            _lists[1].append(_createFilterOption("anios", year));
         }
     }
 
@@ -204,17 +205,19 @@ export default function Search() {
      */
     function _fetchDocumentos() {
         _documentosComponent.setLoading();
-        fetch('/api/documentos')
-            .then(httpResp => httpResp.json())
-            .then(response => {
+        fetch("/api/documentos")
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
-                    _documentosComponent.processDocumentos(response.data['documentos']);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -225,18 +228,18 @@ export default function Search() {
      * @private
      */
     function _fetchEtiquetas() {
-        fetch('/api/tags')
-            .then(httpResp => httpResp.json())
-            .then(response => {
+        fetch("/api/tags")
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason);
-            })
+            });
     }
 
     /**
@@ -244,18 +247,18 @@ export default function Search() {
      * @private
      */
     function _fetchEmisores() {
-        fetch('/api/emisores')
-            .then(httpResp => httpResp.json())
-            .then(response => {
+        fetch("/api/emisores")
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
                     _processFilterData(response.data);
                 } else {
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason);
-            })
+            });
     }
 
     /**
@@ -266,13 +269,17 @@ export default function Search() {
     function _processFilterData(data) {
         if (data["tags"] !== undefined) {
             data["tags"].forEach((tag) => {
-                _lists[0].append(_createFilterOption('etiquetas', tag['nombre']));
+                _lists[0].append(
+                    _createFilterOption("etiquetas", tag["nombre"])
+                );
             });
         }
 
         if (data["emisores"] !== undefined) {
             data["emisores"].forEach((emisor) => {
-                _lists[2].append(_createFilterOption('emisores', emisor['nombre']));
+                _lists[2].append(
+                    _createFilterOption("emisores", emisor["nombre"])
+                );
             });
         }
     }
@@ -285,8 +292,10 @@ export default function Search() {
     function _onOpenDropBox(event) {
         event.cancelBubble = true;
 
-        const dropBox = this.parentElement.querySelector('[data-js="drop-box"]');
-        dropBox.onclick = function(event) {
+        const dropBox = this.parentElement.querySelector(
+            '[data-js="drop-box"]'
+        );
+        dropBox.onclick = function (event) {
             event.cancelBubble = true;
         };
 
@@ -309,9 +318,11 @@ export default function Search() {
     function _onSelectOption(event) {
         const list = this.parentElement.parentElement;
         const button = list.parentElement.parentElement.previousElementSibling;
-        const checkedInputs = Array.from(list.querySelectorAll('input')).filter(input => {
-            return input.checked
-        });
+        const checkedInputs = Array.from(list.querySelectorAll("input")).filter(
+            (input) => {
+                return input.checked;
+            }
+        );
         if (checkedInputs.length === 0) {
             button.children[1].textContent = "Todos";
         } else if (checkedInputs.length === 1) {
@@ -342,20 +353,55 @@ export default function Search() {
 
         _documentosComponent.setLoading();
         fetch(`/api/documentos?${url.toString()}`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
+                _claerFilters();
                 if (response.code === 200) {
-                    history.pushState(null, '', `/?${url.toString()}`)
-                    _documentosComponent.processDocumentos(response.data["documentos"]);
+                    history.pushState(null, "", `/?${url.toString()}`);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
+                _claerFilters();
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _claerFilters() {
+        Array.from(_forms[1].querySelectorAll('span[data-js="filtro"]')).forEach((span) => {
+          span.textContent = "Todos";
+        });
+        Array.from(
+            _forms[1].querySelectorAll('input[name="etiquetas"]')
+        ).forEach((option) => {
+            if (option.checked) {
+                option.checked = false;
+            }
+        });
+        Array.from(_forms[1].querySelectorAll('input[name="anios"]')).forEach(
+            (option) => {
+                if (option.checked) {
+                    option.checked = false;
+                }
+            }
+        );
+        Array.from(
+            _forms[1].querySelectorAll('input[name="emisores"]')
+        ).forEach((option) => {
+            if (option.checked) {
+                option.checked = false;
+            }
+        });
     }
 
     /**
@@ -371,34 +417,36 @@ export default function Search() {
         const anios = [];
         const emisores = [];
 
-        Array.from(_forms[1].querySelectorAll('input[name="etiquetas"]')).forEach((option) => {
+        Array.from(
+            _forms[1].querySelectorAll('input[name="etiquetas"]')
+        ).forEach((option) => {
             if (option.checked) {
                 etiquetas.push(option.value);
             }
         });
-        Array.from(_forms[1].querySelectorAll('input[name="anios"]')).forEach((option) => {
-            if (option.checked) {
-                anios.push(option.value);
+        Array.from(_forms[1].querySelectorAll('input[name="anios"]')).forEach(
+            (option) => {
+                if (option.checked) {
+                    anios.push(option.value);
+                }
             }
-        });
-        Array.from(_forms[1].querySelectorAll('input[name="emisores"]')).forEach((option) => {
+        );
+        Array.from(
+            _forms[1].querySelectorAll('input[name="emisores"]')
+        ).forEach((option) => {
             if (option.checked) {
                 emisores.push(option.value);
             }
         });
 
-        if (etiquetas.length > 0)
-            url.append("etiquetas", etiquetas.join(";"));
+        if (etiquetas.length > 0) url.append("etiquetas", etiquetas.join(";"));
 
-        if (anios.length > 0)
-            url.append("anios", anios.join(";"));
+        if (anios.length > 0) url.append("anios", anios.join(";"));
 
-        if (emisores.length > 0)
-            url.append("emisores", emisores.join(";"));
+        if (emisores.length > 0) url.append("emisores", emisores.join(";"));
 
-        let _url = '';
-        if (url.toString().length > 0)
-            _url = `?${url.toString()}`;
+        let _url = "";
+        if (url.toString().length > 0) _url = `?${url.toString()}`;
 
         if (!_documentosComponent) {
             location.href = `/?${url.toString()}`;
@@ -406,17 +454,21 @@ export default function Search() {
 
         _documentosComponent.setLoading();
         fetch(`/api/documentos${_url}`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
+                _forms[0]["search"].value = "";
                 if (response.code === 200) {
-                    history.pushState(null, '', `/${_url}`)
-                    _documentosComponent.processDocumentos(response.data["documentos"]);
+                    history.pushState(null, "", `/${_url}`);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
+                _forms[0]["search"].value = "";
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -429,17 +481,19 @@ export default function Search() {
      */
     function _onFetchSpecial(url) {
         fetch(`/api/documentos${url}`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
-                    history.pushState(null, '', `/${url.toString()}`)
-                    _documentosComponent.processDocumentos(response.data["documentos"]);
+                    history.pushState(null, "", `/${url.toString()}`);
+                    _documentosComponent.processDocumentos(
+                        response.data["documentos"]
+                    );
                 } else {
                     _documentosComponent.setError();
                     errorAlert(response.error.message);
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -453,7 +507,7 @@ export default function Search() {
      * @private
      */
     function _createFilterOption(name, value) {
-        const element = createElement('li')._html(`
+        const element = createElement("li")._html(`
         <div class="row g-0 flex-nowrap">
             <div class="col-auto">
                 <input id="${value}" name="${name}" type="checkbox" class="me-2" value="${value}">
@@ -471,7 +525,7 @@ export default function Search() {
      *
      * @param documentosComponent
      */
-    this.setDocumentosComponent = function(documentosComponent) {
+    this.setDocumentosComponent = function (documentosComponent) {
         _documentosComponent = documentosComponent;
         if (location.search.length === 0) {
             _fetchDocumentos();
