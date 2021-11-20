@@ -214,6 +214,7 @@ export default function AdminDocumentos() {
                 text: 'Esta accion no se podra deshacer',
                 confirmButtonText: 'Si, estoy seguro!',
                 cancelButtonText: 'No, lo pensaré',
+                reverseButtons:true,
 
                 showCancelButton: true,
                 showCloseButton: true,
@@ -247,6 +248,7 @@ export default function AdminDocumentos() {
                     confirmButtonText: 'Si, estoy seguro!',
                     showCancelButton: true,
                     showCloseButton: true,
+                    reverseButtons:true,
                 }).then(result => {
                     if (result.isConfirmed) _changeVisibility(false, () => {
                         successAlert('Cambiaste la visibilidad del documento a <b>Privado</b>');
@@ -261,6 +263,7 @@ export default function AdminDocumentos() {
                     html: 'Vas a cambiar la visibilidad del documento a <b>Publico<b>',
                     cancelButtonText: 'No, lo pensaré',
                     confirmButtonText: 'Si, estoy seguro!',
+                    reverseButtons:true,
                     showCancelButton: true,
                     showCloseButton: true,
                 }).then(result => {

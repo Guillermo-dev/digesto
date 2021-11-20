@@ -189,8 +189,9 @@ export default function Usuarios() {
                 icon: 'question',
                 title: '¿Eliminar usuario?',
                 text: 'Esta accion no se podra deshacer',
+                confirmButtonText: 'Si, estoy seguro!',               
                 cancelButtonText: 'No, lo pensaré',
-                confirmButtonText: 'Si, estoy seguro!',
+                reverseButtons:true,
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(result => {

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@fontsource/roboto-condensed": "^4.5.0",
+    "@fontsource/ubuntu": "^4.5.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "bootstrap": "^5.1.2",
     "bootstrap-icons": "^1.5.0",

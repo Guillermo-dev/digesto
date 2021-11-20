@@ -93,7 +93,7 @@ export default function AdminSearch() {
                 <div class="row g-0 justify-content-end">
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="tagBtn" class="btn w-100 text-white">
-                            <b class="me-2">Etiquetas</b>
+                            <b class="me-2">ETIQUETAS</b>
                             <span>Todas</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
@@ -107,7 +107,7 @@ export default function AdminSearch() {
                     </div>
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="yearBtn" class="btn w-100 text-white">
-                            <b class="me-2">Año </b>
+                            <b class="me-2">AÑO</b>
                             <span>Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
@@ -121,7 +121,7 @@ export default function AdminSearch() {
                     </div>
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="emitterBtn" class="btn w-100 text-white">
-                            <b class="me-2">Emisor</b>
+                            <b class="me-2">EMISOR</b>
                             <span>Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
@@ -135,7 +135,7 @@ export default function AdminSearch() {
                     </div>
                     <div class="col-md-auto text-center list-wrapper">
                         <button type="button" name="publicBtn" class="btn w-100 text-white">
-                            <b class="me-2">Privacidad</b>
+                            <b class="me-2">PRIVACIDAD</b>
                             <span>Todos</span>
                             <i class="ms-2 bi-chevron-down"></i>
                         </button>
