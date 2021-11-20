@@ -215,7 +215,6 @@ export default function AdminDocumentos() {
                 confirmButtonText: 'Si, estoy seguro!',
                 cancelButtonText: 'No, lo pensaré',
                 reverseButtons:true,
-
                 showCancelButton: true,
                 showCloseButton: true,
             }).then(result => {
@@ -224,6 +223,7 @@ export default function AdminDocumentos() {
                     .then(response => {
                         if (response.code === 200) {
                             _this.root.remove();
+                            successAlert(`Se <b>elimino</b> el documento <b>${documento.numeroExpediente}</b> con exito`);
                         } else {
                             errorAlert(response.error.message);
                         }
