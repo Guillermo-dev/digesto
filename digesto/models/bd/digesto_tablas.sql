@@ -46,7 +46,7 @@ CREATE TABLE tags
 CREATE TABLE documentos
 (
     documento_id      SERIAL PRIMARY KEY,
-    numero_expediente VARCHAR(25) NOT NULL,
+    numero_expediente VARCHAR(25) UNIQUE NOT NULL,
     titulo            VARCHAR(45) NOT NULL,
     descripcion       TEXT,
     tipo              VARCHAR(25) NOT NULL,

@@ -179,7 +179,7 @@ export default function AdminNewDocumento() {
             <p class="fw-bold text-danger mb-3">*Campos obligatorios</p>
             <div class="text-end">
                 <button type="button" class="btn btn-primary" data-js="button">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button name ="submitBtn" type="submit" class="btn btn-primary">Guardar<span class="ms-2 spinner-border spinner-border-sm d-none"></span></button>
             </div>
         </form>
     </div>
@@ -436,6 +436,8 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _onSubmit(event) {
+        _form['submitBtn'].disabled = true;
+        _form['submitBtn'].lastElementChild.classList.remove('d-none');
         const formData = new FormData();
 
         formData.append('titulo', _form['titulo'].value);
@@ -473,6 +475,8 @@ export default function AdminNewDocumento() {
             .then(response => {
                 if (response.code === 200) {
                     window.iziToast.success({message: 'El documento se registro con exito'});
+                    _form['submitBtn'].disabled = false;
+                    _form['submitBtn'].lastElementChild.classList.add('d-none');
                     _clear();
                 } else {
                     window.iziToast.error({message: response.error});
