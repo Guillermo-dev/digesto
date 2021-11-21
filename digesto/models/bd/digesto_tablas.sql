@@ -92,3 +92,8 @@ VALUES ('documentos_create', 'Crear nuevos documentos'),
        ('usuarios_create', 'Crear nuevos usuarios'),
        ('usuarios_update', 'Actualizar usuarios'),
        ('usuarios_delete', 'Eliminar usuarios');
+
+INSERT INTO usuarios (email, nombre, admin)
+VALUES ('guilletejera@gmail.com', '', true);
+
+INSERT INTO usuarios_permisos (usuario_id, permiso_id) VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13);
