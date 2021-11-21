@@ -1,4 +1,4 @@
-import {createElement, createStyle, errorAlert} from "../global/js/util.js";
+import {createElement, createStyle, errorAlert, successAlert, warningAlert} from "../global/js/util.js";
 import {Component} from "./Component.js";
 
 // language=CSS
@@ -230,7 +230,7 @@ export default function AdminNewDocumento() {
             if (event.dataTransfer.items.length === 1) {
                 _onSelectFile(event.dataTransfer.items[0].getAsFile());
             } else {
-                window.iziToast.warning({message: 'Solo se permite cargar 1 archivo pdf'});
+                warningAlert({message: 'Solo se permite cargar 1 archivo pdf'});
             }
         }
         _dragZone.ondragleave = function(event) {
@@ -253,7 +253,7 @@ export default function AdminNewDocumento() {
             try {
                 _onSubmit.call(_form, event);
             } catch (reason) {
-                window.iziToast.error({message: reason.toString()});
+                errorAlert({message: reason.toString()});
             }
             return false;
         }
@@ -268,7 +268,7 @@ export default function AdminNewDocumento() {
      */
     function _onSelectFile(file) {
         if (file.type !== 'application/pdf') {
-            window.iziToast.error({message: 'El archivo debe ser de tipo PDF'});
+            errorAlert({message: 'El archivo debe ser de tipo PDF'});
             return;
         }
 
@@ -327,11 +327,11 @@ export default function AdminNewDocumento() {
                     _this.setClassState('css-loaded');
                 } else {
                     _this.setClassState('css-error');
-                    window.iziToast.error({message: response.error.message.toString()});
+                    errorAlert({message: response.error.message.toString()});
                 }
             })
             .catch(reason => {
-                window.iziToast.error({message: reason.toString()});
+                errorAlert({message: reason.toString()});
             });
     }
 
@@ -356,7 +356,7 @@ export default function AdminNewDocumento() {
             return;
         } else if (Object.values(_tags).length >= 10) {
             this.disabled = true;
-            window.iziToast.warning({message: 'Maximo de etiqueta alcanzado'});
+           warningAlert({message: 'Maximo de etiqueta alcanzado'});
             this.value = '';
             return;
         }
@@ -366,7 +366,7 @@ export default function AdminNewDocumento() {
         this.value = this.value.toLowerCase();
 
         if(this.value.length >= 25){
-            window.iziToast.warning({message: 'Etiqueta demasido larga'});
+           warningAlert({message: 'Etiqueta demasido larga'});
             return;
         }
 
@@ -422,11 +422,11 @@ export default function AdminNewDocumento() {
                     _processEmisores(response.data);
                 } else {
                     _this.setClassState('css-error');
-                    window.iziToast.error({message: response.error.message.toString()});
+                    errorAlert({message: response.error.message.toString()});
                 }
             })
             .catch(reason => {
-                window.iziToast.error({message: reason.toString()});
+                errorAlert({message: reason.toString()});
             })
     }
 
@@ -456,13 +456,13 @@ export default function AdminNewDocumento() {
         const formData = new FormData();
 
         if(_form['titulo'].value.length >= 45){
-            window.iziToast.warning({message: 'El titulo es demasido largo'});
+           warningAlert({message: 'El titulo es demasido largo'});
             return false;
         }
         formData.append('titulo', _form['titulo'].value);
 
         if(_form['numeroExpediente'].value.length >= 25){
-            window.iziToast.warning({message: 'El numero de expediente es demasido largo'});
+           warningAlert({message: 'El numero de expediente es demasido largo'});
             return false;
         }
         formData.append('numeroExpediente', _form['numeroExpediente'].value);
@@ -471,7 +471,7 @@ export default function AdminNewDocumento() {
         formData.append('fechaEmision', _form['fechaEmision'].value);
 
         if(_form['tipo'].value.length >= 25){
-            window.iziToast.warning({message: 'El tipo es demasido largo'});
+           warningAlert({message: 'El tipo es demasido largo'});
             return false;
         }
         formData.append('tipo', _form['tipo'].value);
@@ -481,20 +481,20 @@ export default function AdminNewDocumento() {
         if (_form['emisor'].value === '-1') {
             formData.append('emisor', _form['nuevoEmisor'].value);
         } else if (_form['emisor'].value === '0') {
-            window.iziToast.warning({message: 'Debe seleccionar un emisor'});
+           warningAlert({message: 'Debe seleccionar un emisor'});
             _form['submitBtn'].disabled = false;
             _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
         } else {
             if(_form['emisor'].value.length >= 25){
-                window.iziToast.warning({message: 'El emisor es demasido largo'});
+               warningAlert({message: 'El emisor es demasido largo'});
                 return false;
             }
             formData.append('emisor', _form['emisor'].value);
         }
 
         if (Object.keys(_tags).length === 0) {
-            window.iziToast.warning({message: 'Debe agregar etiquetas'});
+           warningAlert({message: 'Debe agregar etiquetas'});
             _form['submitBtn'].disabled = false;
             _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
@@ -503,7 +503,7 @@ export default function AdminNewDocumento() {
         }
 
         if (_file === null) {
-            window.iziToast.warning({message: 'Debe seleccionar un archivo'});
+           warningAlert({message: 'Debe seleccionar un archivo'});
             _form['submitBtn'].disabled = false;
             _form['submitBtn'].lastElementChild.classList.add('d-none');
             return false;
@@ -517,16 +517,16 @@ export default function AdminNewDocumento() {
                 _form['submitBtn'].disabled = false;
                 _form['submitBtn'].lastElementChild.classList.add('d-none');
                 if (response.code === 200) {
-                    window.iziToast.success({message: 'El documento se registro con exito'});
+                    successAlert({message: 'El documento se registro con exito'});
                     _clear();
                 } else {
-                    window.iziToast.error({message: response.error.message.toString()});
+                    errorAlert({message: response.error.message.toString()});
                 }
             })
             .catch(reason => {
                 _form['submitBtn'].disabled = false;
                 _form['submitBtn'].lastElementChild.classList.add('d-none');
-                window.iziToast.error({message: reason.toString()});
+                errorAlert({message: reason.toString()});
             })
     }
 

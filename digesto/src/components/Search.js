@@ -177,7 +177,7 @@ export default function Search() {
             try {
                 _onSubmitFilter.call(_forms[1], event);
             } catch (error) {
-                window.iziToast.error({ message: error.toString() });
+                errorAlert({ message: error.toString() });
             }
             return false;
         };
