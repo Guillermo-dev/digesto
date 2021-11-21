@@ -378,7 +378,7 @@ export default function AdminSearch() {
         fetch(`/api/documentos?${url.toString()}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
-                _claerFilters();
+                _clearFilters();
                 if (response.code === 200) {
                     history.pushState(null, "", `/admin?${url.toString()}`);
                     _documentosComponent.processDocumentos(
@@ -390,7 +390,7 @@ export default function AdminSearch() {
                 }
             })
             .catch((reason) => {
-                _claerFilters();
+                _clearFilters();
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
@@ -400,7 +400,7 @@ export default function AdminSearch() {
      *
      * @private
      */
-    function _claerFilters() {
+    function _clearFilters() {
         Array.from(_forms[1].querySelectorAll('span[data-js="filtro"]')).forEach((span) => {
             span.textContent = "Todos";
           });
