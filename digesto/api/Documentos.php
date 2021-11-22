@@ -332,5 +332,6 @@ abstract class Documentos {
             throw new ApiException('El documento no existe', Response::NOT_FOUND);
 
         Documento::deleteDocumento($documento->getID());
+        Documento::clearTagDocumento($documento->getID());
     }
 }
