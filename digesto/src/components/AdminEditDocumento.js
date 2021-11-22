@@ -1,4 +1,10 @@
-import { createElement, createStyle, errorAlert, successAlert, warningAlert } from "../global/js/util.js";
+import {
+    createElement,
+    createStyle,
+    errorAlert,
+    successAlert,
+    warningAlert,
+} from "../global/js/util.js";
 import { Component } from "./Component.js";
 
 // language=CSS
@@ -203,13 +209,15 @@ export default function AdminEditDocumento() {
     const _fileText = _this.root.querySelector('[data-js="file-text"]');
     const _form = _this.root.querySelector('[data-js="form"]');
     const _archivoContainer = _this.root.querySelector('[data-js="archivo"]');
-    const _pdf = _this.root.querySelector('[data-js="NoTieneQueSerNecesariamenteLoQueQuieras"]');
+    const _pdf = _this.root.querySelector(
+        '[data-js="NoTieneQueSerNecesariamenteLoQueQuieras"]'
+    );
     const _exitButton = _this.root.querySelector('[data-js="button"]');
 
     let _oldPath;
     let _file = null;
     let _tags = {};
-    let _emisor = '';
+    let _emisor = "";
     /**
      * Constructor
      * @private
@@ -248,10 +256,10 @@ export default function AdminEditDocumento() {
         _form["file"].onchange = function () {
             _onSelectFile(this.files[0]);
         };
-        _form['etiqueta'].onkeydown = _onKeyDownEtiquetas;
-        _form['etiqueta'].onchange = function(event) {
+        _form["etiqueta"].onkeydown = _onKeyDownEtiquetas;
+        _form["etiqueta"].onchange = function (event) {
             event.keyCode = 13;
-            _onKeyDownEtiquetas.call(_form['etiqueta'], event);
+            _onKeyDownEtiquetas.call(_form["etiqueta"], event);
         };
         _form.onsubmit = function (event) {
             try {
@@ -262,7 +270,9 @@ export default function AdminEditDocumento() {
             return false;
         };
         _fetchTags();
-        _exitButton.onclick = () => {location.href = '/admin/';}
+        _exitButton.onclick = () => {
+            location.href = "/admin/";
+        };
     }
 
     /**
@@ -301,7 +311,7 @@ export default function AdminEditDocumento() {
         _form["fechaEmision"].value = data["documento"].fechaEmision;
         _form["tipo"].value = data["documento"].tipo;
 
-        _emisor = data['emisor'].nombre;
+        _emisor = data["emisor"].nombre;
         _form["emisor"].value = _emisor;
 
         data["tags"].forEach((tag) => {
@@ -315,8 +325,8 @@ export default function AdminEditDocumento() {
             ? (_form["publico"].value = 1)
             : (_form["publico"].value = 0);
 
-        _oldPath = `../../../${data['pdf'].path}`;
-        _pdf.src= _oldPath;
+        _oldPath = `../../../${data["pdf"].path}`;
+        _pdf.src = _oldPath;
     }
 
     /**
@@ -324,13 +334,13 @@ export default function AdminEditDocumento() {
      * @param file
      * @private
      */
-     function _onSelectFile(file) {
+    function _onSelectFile(file) {
         _file = file;
         _fileText.children[0].textContent = _file.name;
-        _fileText.classList.remove('d-none');
- 
-        _archivoContainer.classList.remove('d-none');
-        _pdf.src= URL.createObjectURL(file);
+        _fileText.classList.remove("d-none");
+
+        _archivoContainer.classList.remove("d-none");
+        _pdf.src = URL.createObjectURL(file);
     }
 
     /**
@@ -339,10 +349,10 @@ export default function AdminEditDocumento() {
      */
     function _onRemoveFile() {
         _file = null;
-        _fileText.classList.add('d-none');
+        _fileText.classList.add("d-none");
 
-        _form['file'].value = '';
-        _pdf.src= _oldPath;
+        _form["file"].value = "";
+        _pdf.src = _oldPath;
     }
 
     /**
@@ -377,7 +387,7 @@ export default function AdminEditDocumento() {
                     _this.setClassState("css-loaded");
                     _processTags(response.data);
                 } else {
-                    errorAlert (response.error.message.toString());
+                    errorAlert(response.error.message.toString());
                     _this.setClassState("css-error");
                 }
             })
@@ -402,13 +412,13 @@ export default function AdminEditDocumento() {
      *
      * @private
      */
-     function _onKeyDownEtiquetas(event) {
+    function _onKeyDownEtiquetas(event) {
         if (event.keyCode !== 13) {
             return;
         } else if (Object.values(_tags).length >= 10) {
             this.disabled = true;
-            warningAlert('Maximo de etiqueta alcanzado');
-            this.value = '';
+            warningAlert("Maximo de etiqueta alcanzado");
+            this.value = "";
             return;
         }
 
@@ -416,17 +426,17 @@ export default function AdminEditDocumento() {
 
         this.value = this.value.toLowerCase();
 
-        if(this.value.length >= 25){
-            warningAlert('La etiqueta es demasido larga');
+        if (this.value.length >= 25) {
+            warningAlert("La etiqueta es demasido larga");
             return;
         }
 
-        if (_tags[this.value] === undefined && this.value != '') {
+        if (_tags[this.value] === undefined && this.value != "") {
             _tags[this.value] = true;
             _tagZone.append(_createEtiqueta(this.value));
-            this.value = '';
+            this.value = "";
         } else {
-            this.value = '';
+            this.value = "";
         }
     }
 
@@ -492,8 +502,8 @@ export default function AdminEditDocumento() {
             _form["emisor"].append(_createOption(emisor.nombre, emisor.nombre));
         });
         _form["emisor"].append(_createOption(-1, "Nuevo emisor"));
-        if(_emisor != ''){
-           _form["emisor"].value = _emisor;
+        if (_emisor != "") {
+            _form["emisor"].value = _emisor;
         }
     }
 
@@ -503,18 +513,18 @@ export default function AdminEditDocumento() {
      * @private
      */
     function _onSubmit(event) {
-        _form['submitBtn'].disabled = true;
-        _form['submitBtn'].lastElementChild.classList.remove('d-none');
+        _form["submitBtn"].disabled = true;
+        _form["submitBtn"].lastElementChild.classList.remove("d-none");
         const formData = new FormData();
 
-        if(_form['titulo'].value.length >= 45){
-            warningAlert('El titulo es demasido largo');
+        if (_form["titulo"].value.length >= 45) {
+            warningAlert("El titulo es demasido largo");
             return false;
         }
         formData.append("titulo", _form["titulo"].value);
 
-        if(_form['numeroExpediente'].value.length >= 45){
-            warningAlert('El numero de expediente es demasido largo');
+        if (_form["numeroExpediente"].value.length >= 45) {
+            warningAlert("El numero de expediente es demasido largo");
             return false;
         }
         formData.append("numeroExpediente", _form["numeroExpediente"].value);
@@ -522,24 +532,27 @@ export default function AdminEditDocumento() {
         formData.append("descripcion", _form["descripcion"].value);
         formData.append("fechaEmision", _form["fechaEmision"].value);
 
-        if(_form['tipo'].value.length >= 25){
-            warningAlert('El tipo es demasido largo');
+        if (_form["tipo"].value.length >= 25) {
+            warningAlert("El tipo es demasido largo");
             return false;
         }
         formData.append("tipo", _form["tipo"].value);
-        formData.append("descargable", _form["descargable"].value == 1 ? true : false);
+        formData.append(
+            "descargable",
+            _form["descargable"].value == 1 ? true : false
+        );
         formData.append("publico", _form["publico"].value == 1 ? true : false);
 
         if (_form["emisor"].value === "-1") {
             formData.append("emisor", _form["nuevoEmisor"].value);
         } else if (_form["emisor"].value === "0") {
             warningAlert("Debe seleccionar un emisor valido");
-            _form['submitBtn'].disabled = false;
-            _form['submitBtn'].lastElementChild.classList.add('d-none');
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             return false;
         } else {
-            if(_form['emisor'].value.length >= 25){
-                warningAlert('El emisor es demasido largo');
+            if (_form["emisor"].value.length >= 25) {
+                warningAlert("El emisor es demasido largo");
                 return false;
             }
             formData.append("emisor", _form["emisor"].value);
@@ -547,8 +560,8 @@ export default function AdminEditDocumento() {
 
         if (Object.keys(_tags).length === 0) {
             warningAlert("Debe agregar etiquetas");
-            _form['submitBtn'].disabled = false;
-            _form['submitBtn'].lastElementChild.classList.add('d-none');
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             return false;
         } else {
             formData.append("tags", JSON.stringify(Object.keys(_tags)));
@@ -563,17 +576,19 @@ export default function AdminEditDocumento() {
         fetch(`/api/documentos/${id}`, { method: "POST", body: formData })
             .then((httpResp) => httpResp.json())
             .then((response) => {
-                _form['submitBtn'].disabled = false;
-                _form['submitBtn'].lastElementChild.classList.add('d-none');
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
                 if (response.code === 200) {
                     successAlert("El documento se actualizo con exito");
+                    _fetchTags();
+                    _fetchEmisores();
                 } else {
                     errorAlert(response.error.message.toString());
                 }
             })
             .catch((reason) => {
-                _form['submitBtn'].disabled = false;
-                _form['submitBtn'].lastElementChild.classList.add('d-none');
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
                 errorAlert(reason.toString());
             });
     }

@@ -27,12 +27,6 @@ if (isset($router)) {
     $router->put('/emisores/(\d+)', 'api\Emisores@updateEmisor');
     $router->delete('/emisores/(\d+)', 'api\Emisores@deleteEmisor');
 
-    $router->get('/pdfs', 'api\Pdfs@getPdfs');
-    $router->get('/pdfs/(\d+)', 'api\Pdfs@getPdf');
-    $router->post('/pdfs', 'api\Pdfs@createPdf');
-    $router->put('/pdfs/(\d+)', 'api\Pdfs@updatePdf');
-    $router->delete('/pdfs/(\d+)', 'api\Pdfs@deletePdf');
-
     $router->get('/tags', 'api\Tags@getTags');
     $router->get('/tags/(\d+)', 'api\Tags@getTag');
     $router->post('/tags', 'api\Tags@createTag');

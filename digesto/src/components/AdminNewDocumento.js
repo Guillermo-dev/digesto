@@ -1,5 +1,11 @@
-import {createElement, createStyle, errorAlert, successAlert, warningAlert} from "../global/js/util.js";
-import {Component} from "./Component.js";
+import {
+    createElement,
+    createStyle,
+    errorAlert,
+    successAlert,
+    warningAlert,
+} from "../global/js/util.js";
+import { Component } from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -74,7 +80,8 @@ createStyle()._content(`
  * @constructor
  */
 export default function AdminNewDocumento() {
-    this.root = createElement("div")._class("AdminNewDocumento")._html(`<!--Loaded-->
+    this.root = createElement("div")._class("AdminNewDocumento")
+        ._html(`<!--Loaded-->
 <div class="container css-loaded">
     <div class="cuerpoDoc mt-4 border shadow mb-5 bg-white  rounded-top" id="cuerpoDoc">
         <div class="encabezadoDoc text-center" id="encabezadoDoc">
@@ -202,7 +209,9 @@ export default function AdminNewDocumento() {
     const _fileText = _this.root.querySelector('[data-js="file-text"]');
     const _form = _this.root.querySelector('[data-js="form"]');
     const _archivoContainer = _this.root.querySelector('[data-js="archivo"]');
-    const _pdf = _this.root.querySelector('[data-js="NoTieneQueSerNecesariamenteLoQueQuieras"]');
+    const _pdf = _this.root.querySelector(
+        '[data-js="NoTieneQueSerNecesariamenteLoQueQuieras"]'
+    );
     const _exitButton = _this.root.querySelector('[data-js="button"]');
 
     let _file = null;
@@ -217,48 +226,52 @@ export default function AdminNewDocumento() {
         _fetchEmisores();
         let counter = 0;
         _fileText.children[1].onclick = _onRemoveFile;
-        _dragZone.ondragenter = function(event) {
+        _dragZone.ondragenter = function (event) {
             counter++;
-            this.classList.add('changed');
-        }
-        _dragZone.ondragover = function(event) {
+            this.classList.add("changed");
+        };
+        _dragZone.ondragover = function (event) {
             event.preventDefault();
-        }
-        _dragZone.ondrop = function(event) {
+        };
+        _dragZone.ondrop = function (event) {
             event.preventDefault();
-            this.classList.remove('changed');
+            this.classList.remove("changed");
             if (event.dataTransfer.items.length === 1) {
                 _onSelectFile(event.dataTransfer.items[0].getAsFile());
             } else {
-                warningAlert('Solo se permite cargar 1 archivo pdf');
+                warningAlert("Solo se permite cargar 1 archivo pdf");
             }
-        }
-        _dragZone.ondragleave = function(event) {
+        };
+        _dragZone.ondragleave = function (event) {
             counter--;
             if (counter === 0) {
-                this.classList.remove('changed');
+                this.classList.remove("changed");
             }
         };
-        _form['emisor'].onchange = _onChangeEmisores;
-        _form['fileBtn'].onclick = function() {this.nextElementSibling.click();};
-        _form['file'].onchange = function() {
-            _onSelectFile(this.files[0]);
-        }
-        _form['etiqueta'].onkeydown = _onKeyDownEtiquetas;
-        _form['etiqueta'].onchange = function(event) {
-            event.keyCode = 13;
-            _onKeyDownEtiquetas.call(_form['etiqueta'], event);
+        _form["emisor"].onchange = _onChangeEmisores;
+        _form["fileBtn"].onclick = function () {
+            this.nextElementSibling.click();
         };
-        _form.onsubmit = function(event) {
+        _form["file"].onchange = function () {
+            _onSelectFile(this.files[0]);
+        };
+        _form["etiqueta"].onkeydown = _onKeyDownEtiquetas;
+        _form["etiqueta"].onchange = function (event) {
+            event.keyCode = 13;
+            _onKeyDownEtiquetas.call(_form["etiqueta"], event);
+        };
+        _form.onsubmit = function (event) {
             try {
                 _onSubmit.call(_form, event);
             } catch (reason) {
                 errorAlert(reason.toString());
             }
             return false;
-        }
+        };
         _fetchTags();
-        _exitButton.onclick = () => {location.href = '/admin/';}
+        _exitButton.onclick = () => {
+            location.href = "/admin/";
+        };
     }
 
     /**
@@ -267,8 +280,8 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _onSelectFile(file) {
-        if (file.type !== 'application/pdf') {
-            errorAlert('El archivo debe ser de tipo PDF');
+        if (file.type !== "application/pdf") {
+            errorAlert("El archivo debe ser de tipo PDF");
             return;
         }
 
@@ -276,9 +289,9 @@ export default function AdminNewDocumento() {
 
         _fileText.children[0].textContent = _file.name;
 
-        _fileText.classList.remove('d-none');
+        _fileText.classList.remove("d-none");
 
-        _archivoContainer.classList.remove('d-none');
+        _archivoContainer.classList.remove("d-none");
 
         _pdf.src = URL.createObjectURL(file);
     }
@@ -289,9 +302,9 @@ export default function AdminNewDocumento() {
      */
     function _onRemoveFile() {
         _file = null;
-        _fileText.classList.add('d-none');
-        _archivoContainer.classList.add('d-none')
-        _form['file'].value = '';
+        _fileText.classList.add("d-none");
+        _archivoContainer.classList.add("d-none");
+        _form["file"].value = "";
     }
 
     /**
@@ -300,16 +313,16 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _createEtiqueta(name) {
-        const etiqueta = createElement('span')._html(`
+        const etiqueta = createElement("span")._html(`
             <span style="background-color: var(--bs-primary);" class="d-inline-block mb-2 p-2 text-white small rounded me-2">
                 ${name} <i class="bi-x-lg ms-2" style="cursor:pointer;" title="Eliminar"></i>
             </span>
         `).firstElementChild;
         etiqueta._name = name;
-        etiqueta.firstElementChild.onclick = function() {
+        etiqueta.firstElementChild.onclick = function () {
             this.parentElement.remove();
             delete _tags[this.parentElement._name];
-            _form['etiqueta'].disabled = false;
+            _form["etiqueta"].disabled = false;
         };
         return etiqueta;
     }
@@ -320,17 +333,17 @@ export default function AdminNewDocumento() {
      */
     function _fetchTags() {
         fetch(`/api/tags`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
                     _processTags(response.data);
-                    _this.setClassState('css-loaded');
+                    _this.setClassState("css-loaded");
                 } else {
-                    _this.setClassState('css-error');
-                    errorAlert( response.error.message.toString());
+                    _this.setClassState("css-error");
+                    errorAlert(response.error.message.toString());
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason.toString());
             });
     }
@@ -342,7 +355,7 @@ export default function AdminNewDocumento() {
      */
     function _processTags(data) {
         _dataListTags.innerHTML = "";
-        data.tags.forEach(tag => {
+        data.tags.forEach((tag) => {
             _dataListTags.append(_createOption(tag.nombre, tag.nombre));
         });
     }
@@ -356,8 +369,8 @@ export default function AdminNewDocumento() {
             return;
         } else if (Object.values(_tags).length >= 10) {
             this.disabled = true;
-           warningAlert('Maximo de etiqueta alcanzado');
-            this.value = '';
+            warningAlert("Maximo de etiqueta alcanzado");
+            this.value = "";
             return;
         }
 
@@ -365,17 +378,17 @@ export default function AdminNewDocumento() {
 
         this.value = this.value.toLowerCase();
 
-        if(this.value.length >= 25){
-           warningAlert('Etiqueta demasido larga');
+        if (this.value.length >= 25) {
+            warningAlert("Etiqueta demasido larga");
             return;
         }
 
-        if (_tags[this.value] === undefined && this.value != '') {
+        if (_tags[this.value] === undefined && this.value != "") {
             _tags[this.value] = true;
             _tagZone.append(_createEtiqueta(this.value));
-            this.value = '';
+            this.value = "";
         } else {
-            this.value = '';
+            this.value = "";
         }
     }
 
@@ -384,15 +397,15 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _onChangeEmisores() {
-        if (this.value !== '-1') {
-            _form['nuevoEmisor'].parentElement.classList.add('d-none');
-            _form['nuevoEmisor'].disabled = true;
-            _form['nuevoEmisor'].required = false;
+        if (this.value !== "-1") {
+            _form["nuevoEmisor"].parentElement.classList.add("d-none");
+            _form["nuevoEmisor"].disabled = true;
+            _form["nuevoEmisor"].required = false;
             return;
         }
-        _form['nuevoEmisor'].disabled = false;
-        _form['nuevoEmisor'].required = true;
-        _form['nuevoEmisor'].parentElement.classList.remove('d-none');
+        _form["nuevoEmisor"].disabled = false;
+        _form["nuevoEmisor"].required = true;
+        _form["nuevoEmisor"].parentElement.classList.remove("d-none");
     }
 
     /**
@@ -403,7 +416,7 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _createOption(value, text) {
-        const option = document.createElement('option');
+        const option = document.createElement("option");
         option.value = value;
         option.label = text;
         option.innerText = text;
@@ -416,18 +429,18 @@ export default function AdminNewDocumento() {
      */
     function _fetchEmisores() {
         fetch(`/api/emisores`)
-            .then(httpResp => httpResp.json())
-            .then(response => {
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
                 if (response.code === 200) {
                     _processEmisores(response.data);
                 } else {
-                    _this.setClassState('css-error');
+                    _this.setClassState("css-error");
                     errorAlert(response.error.message.toString());
                 }
             })
-            .catch(reason => {
+            .catch((reason) => {
                 errorAlert(reason.toString());
-            })
+            });
     }
 
     /**
@@ -436,12 +449,12 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _processEmisores(data) {
-        _form['emisor'].innerHTML = "";
-        _form['emisor'].append(_createOption(0, 'Seleccionar emisor'));
-        data.emisores.forEach(emisor => {
-            _form['emisor'].append(_createOption(emisor.nombre, emisor.nombre));
+        _form["emisor"].innerHTML = "";
+        _form["emisor"].append(_createOption(0, "Seleccionar emisor"));
+        data.emisores.forEach((emisor) => {
+            _form["emisor"].append(_createOption(emisor.nombre, emisor.nombre));
         });
-        _form['emisor'].append(_createOption(-1, 'Nuevo emisor'));
+        _form["emisor"].append(_createOption(-1, "Nuevo emisor"));
     }
 
     /**
@@ -450,84 +463,86 @@ export default function AdminNewDocumento() {
      * @private
      */
     function _onSubmit(event) {
-        _form['submitBtn'].disabled = true;
-        _form['submitBtn'].lastElementChild.classList.remove('d-none');
+        _form["submitBtn"].disabled = true;
+        _form["submitBtn"].lastElementChild.classList.remove("d-none");
 
         const formData = new FormData();
 
-        if(_form['titulo'].value.length >= 45){
-           warningAlert('El titulo es demasido largo');
+        if (_form["titulo"].value.length >= 45) {
+            warningAlert("El titulo es demasido largo");
             return false;
         }
-        formData.append('titulo', _form['titulo'].value);
+        formData.append("titulo", _form["titulo"].value);
 
-        if(_form['numeroExpediente'].value.length >= 25){
-           warningAlert('El numero de expediente es demasido largo');
+        if (_form["numeroExpediente"].value.length >= 25) {
+            warningAlert("El numero de expediente es demasido largo");
             return false;
         }
-        formData.append('numeroExpediente', _form['numeroExpediente'].value);
+        formData.append("numeroExpediente", _form["numeroExpediente"].value);
 
-        formData.append('descripcion', _form['descripcion'].value);
-        formData.append('fechaEmision', _form['fechaEmision'].value);
+        formData.append("descripcion", _form["descripcion"].value);
+        formData.append("fechaEmision", _form["fechaEmision"].value);
 
-        if(_form['tipo'].value.length >= 25){
-           warningAlert('El tipo es demasido largo');
+        if (_form["tipo"].value.length >= 25) {
+            warningAlert("El tipo es demasido largo");
             return false;
         }
-        formData.append('tipo', _form['tipo'].value);
-        formData.append('descargable', _form['descargable'].value);
-        formData.append('publico', _form['publico'].value);
+        formData.append("tipo", _form["tipo"].value);
+        formData.append("descargable", _form["descargable"].value);
+        formData.append("publico", _form["publico"].value);
 
-        if (_form['emisor'].value === '-1') {
-            formData.append('emisor', _form['nuevoEmisor'].value);
-        } else if (_form['emisor'].value === '0') {
-           warningAlert('Debe seleccionar un emisor');
-            _form['submitBtn'].disabled = false;
-            _form['submitBtn'].lastElementChild.classList.add('d-none');
+        if (_form["emisor"].value === "-1") {
+            formData.append("emisor", _form["nuevoEmisor"].value);
+        } else if (_form["emisor"].value === "0") {
+            warningAlert("Debe seleccionar un emisor");
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             return false;
         } else {
-            if(_form['emisor'].value.length >= 25){
-               warningAlert('El emisor es demasido largo');
+            if (_form["emisor"].value.length >= 25) {
+                warningAlert("El emisor es demasido largo");
                 return false;
             }
-            formData.append('emisor', _form['emisor'].value);
+            formData.append("emisor", _form["emisor"].value);
         }
 
         if (Object.keys(_tags).length === 0) {
-           warningAlert('Debe agregar etiquetas');
-            _form['submitBtn'].disabled = false;
-            _form['submitBtn'].lastElementChild.classList.add('d-none');
+            warningAlert("Debe agregar etiquetas");
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             return false;
         } else {
-            formData.append('tags', JSON.stringify(Object.keys(_tags)));
+            formData.append("tags", JSON.stringify(Object.keys(_tags)));
         }
 
         if (_file === null) {
-           warningAlert('Debe seleccionar un archivo');
-            _form['submitBtn'].disabled = false;
-            _form['submitBtn'].lastElementChild.classList.add('d-none');
+            warningAlert("Debe seleccionar un archivo");
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             return false;
         } else {
-            formData.append('documento_pdf', _file);
+            formData.append("documento_pdf", _file);
         }
 
-        fetch(`/api/documentos`, {method: 'POST', body: formData})
-            .then(httpResp => httpResp.json())
-            .then(response => {
-                _form['submitBtn'].disabled = false;
-                _form['submitBtn'].lastElementChild.classList.add('d-none');
+        fetch(`/api/documentos`, { method: "POST", body: formData })
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
                 if (response.code === 200) {
-                    successAlert('El documento se registro con exito');
+                    successAlert("El documento se registro con exito");
                     _clear();
+                    _fetchTags();
+                    _fetchEmisores();
                 } else {
                     errorAlert(response.error.message.toString());
                 }
             })
-            .catch(reason => {
-                _form['submitBtn'].disabled = false;
-                _form['submitBtn'].lastElementChild.classList.add('d-none');
-                errorAlert (reason.toString());
-            })
+            .catch((reason) => {
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
+                errorAlert(reason.toString());
+            });
     }
 
     /**
@@ -536,14 +551,14 @@ export default function AdminNewDocumento() {
      */
     function _clear() {
         _file = null;
-        _fileText.classList.add('d-none');
-        _form['file'].value = '';
+        _fileText.classList.add("d-none");
+        _form["file"].value = "";
         _form.reset();
-        _archivoContainer.classList.add('d-none')
+        _archivoContainer.classList.add("d-none");
         _tags = {};
-        _form['nuevoEmisor'].parentElement.classList.add('d-none');
-        _form['nuevoEmisor'].disabled = true;
-        _form['nuevoEmisor'].required = false;
+        _form["nuevoEmisor"].parentElement.classList.add("d-none");
+        _form["nuevoEmisor"].disabled = true;
+        _form["nuevoEmisor"].required = false;
         _tagZone.innerHTML = "";
     }
 
