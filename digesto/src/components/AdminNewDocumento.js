@@ -131,7 +131,7 @@ export default function AdminNewDocumento() {
                 <datalist id="datalist" data-js="datalist-tags">
                     <!---->
                 </datalist>
-                <p>Se recomienda agregar entre 5 y 8 etiquetas por documento. Usar palabras representativas.</p>
+                <p>Se recomienda agregar entre 3 y 8 etiquetas por documento. Usar palabras representativas.</p>
                 <div class="mb-2" data-js="tag-zone">
                     <!--<span class="bg-primary p-2 text-white small rounded">Etiqueta 2 <i class="bi-x-lg ms-2" style="cursor:pointer;" title="Eliminar"></i></span>-->
                 </div>
