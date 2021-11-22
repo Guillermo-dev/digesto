@@ -136,7 +136,7 @@ export default function DocumentoAmpliado() {
                 <iframe src= ${
                     documento.descargable
                         ? `../../../${pdf.path}`
-                        : "../../../uploads/pdf_no_disponible.pdf"
+                        : "../../../uploads/pdfNoDisponible.pdf"
                 } class="frame" frameborder="5" width="100%" height="680px" > </iframe>
             </div> 
         </div>
