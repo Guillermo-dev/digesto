@@ -83,7 +83,7 @@ class Tag implements JsonSerializable {
     public static function getTags(): array {
         $conn = Connection::getConnection();
 
-        $query = 'SELECT tag_id, nombre FROM tags';
+        $query = 'SELECT tag_id, nombre FROM tags ORDER BY nombre';
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 

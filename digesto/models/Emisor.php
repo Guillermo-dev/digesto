@@ -83,7 +83,7 @@ class Emisor implements JsonSerializable {
     public static function getEmisores(): array {
         $conn = Connection::getConnection();
 
-        $query = 'SELECT emisor_id, nombre FROM emisores';
+        $query = 'SELECT emisor_id, nombre FROM emisores  ORDER BY nombre';
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 

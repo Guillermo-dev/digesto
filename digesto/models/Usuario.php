@@ -131,7 +131,7 @@ class Usuario implements JsonSerializable {
     public static function getUsuarios(): array {
         $conn = Connection::getConnection();
 
-        $query = 'SELECT usuario_id, email, nombre, admin FROM usuarios';
+        $query = 'SELECT usuario_id, email, nombre, admin FROM usuarios  ORDER BY nombre';
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
