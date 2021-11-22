@@ -124,7 +124,7 @@ export default function AdminEditDocumento() {
                 </div>
                 <div class="mb-3">
                     <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
-                    <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Ingrese una etiqueta y presione ENTER para agregarla">
+                    <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Ingrese una etiqueta y presione ENTER para agregarla" autocomplete="off">
                     <datalist id="datalist" data-js="datalist-tags">
                         <!---->
                     </datalist>
