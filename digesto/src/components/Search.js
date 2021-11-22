@@ -177,7 +177,7 @@ export default function Search() {
             try {
                 _onSubmitFilter.call(_forms[1], event);
             } catch (error) {
-                errorAlert({ message: error.toString() });
+                errorAlert(error.toString());
             }
             return false;
         };
