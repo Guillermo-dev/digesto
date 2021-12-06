@@ -104,6 +104,34 @@ class Tag implements JsonSerializable {
         return $tags;
     }
 
+        /**
+     * @return array
+     * @throws ModalException
+     */
+    public static function getTagsUsed(): array {
+        $conn = Connection::getConnection();
+
+        $query = 'SELECT DISTINCT T.tag_id, T.nombre FROM tags T INNER JOIN documentos_tags D ON D.tag_id = T.tag_id ORDER BY nombre';
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        $tags = [];
+        while (($row = pg_fetch_assoc($rs)) != false) {
+            $tag = new Tag();
+            $tag->setId($row['tag_id']);
+            $tag->setNombre($row['nombre']);
+            $tags[] = $tag;
+        }
+
+        if (($error = pg_last_error($conn)) != false)
+            throw new ModalException($error);
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error($conn));
+
+        return $tags;
+    }
+
     /**
      * @param int $id
      *

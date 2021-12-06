@@ -20,7 +20,10 @@ abstract class Tags {
      * @throws Exception
      */
     public static function getTags(): void {
-        Response::getResponse()->appendData('tags', Tag::getTags());
+        if (isset($_GET['usedOnly']))
+            Response::getResponse()->appendData('tags', Tag::getTagsUsed());
+        else
+            Response::getResponse()->appendData('tags', Tag::getTags());
     }
 
     /**

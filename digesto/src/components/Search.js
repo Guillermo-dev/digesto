@@ -228,7 +228,7 @@ export default function Search() {
      * @private
      */
     function _fetchEtiquetas() {
-        fetch("/api/tags")
+        fetch("/api/tags?usedOnly=")
             .then((httpResp) => httpResp.json())
             .then((response) => {
                 if (response.code === 200) {
@@ -445,6 +445,9 @@ export default function Search() {
 
         if (emisores.length > 0) url.append("emisores", emisores.join(";"));
 
+        if (_forms[0]["search"].value.length > 0)
+            url.append("search", _forms[0]["search"].value);
+
         let _url = "";
         if (url.toString().length > 0) _url = `?${url.toString()}`;
 
@@ -456,7 +459,6 @@ export default function Search() {
         fetch(`/api/documentos${_url}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
-                _forms[0]["search"].value = "";
                 if (response.code === 200) {
                     history.pushState(null, "", `/${_url}`);
                     _documentosComponent.processDocumentos(
@@ -468,7 +470,6 @@ export default function Search() {
                 }
             })
             .catch((reason) => {
-                _forms[0]["search"].value = "";
                 _documentosComponent.setError();
                 errorAlert(reason);
             });

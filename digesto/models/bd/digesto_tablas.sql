@@ -43,21 +43,31 @@ CREATE TABLE tags
     nombre VARCHAR(25) UNIQUE NOT NULL
 );
 
+CREATE TABLE tipos 
+(
+    tipo_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(25) UNIQUE NOT NULL
+);
+
 CREATE TABLE documentos
 (
     documento_id      SERIAL PRIMARY KEY,
     numero_expediente VARCHAR(25) NOT NULL,
     titulo            VARCHAR(45) NOT NULL,
     descripcion       TEXT,
-    tipo              VARCHAR(25) NOT NULL,
     fecha_emision     DATE        NOT NULL,
     descargable       BOOLEAN     NOT NULL,
     publico           BOOLEAN     NOT NULL,
+    derogado          BOOLEAN     NOT NULL,
     pdf_id            INTEGER     NOT NULL,
+    tipo_id           INTEGER     NOT NULL,
     emisor_id         INTEGER     NOT NULL,
     usuario_id        INTEGER             ,
+    derogado_id       INTEGER             ,
     CONSTRAINT pdf_fk FOREIGN KEY (pdf_id) REFERENCES pdfs (pdf_id),
+    CONSTRAINT tipo_fk FOREIGN KEY (tipo_id) REFERENCES tipos (tipo_id),
     CONSTRAINT emisor_fk FOREIGN KEY (emisor_id) REFERENCES emisores (emisor_id),
+    CONSTRAINT derogado_fk FOREIGN KEY (derogado_id) REFERENCES documentos (documento_id),
     CONSTRAINT usuario_fk FOREIGN KEY (usuario_id) REFERENCES usuarios (usuario_id)
     ON UPDATE CASCADE
     ON DELETE SET DEFAULT

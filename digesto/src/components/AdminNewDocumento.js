@@ -91,11 +91,11 @@ export default function AdminNewDocumento() {
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="titulo" required id="titulo " placeholder="" autocomplete="off">
+                    <input type="text" class="form-control" name="titulo" id="titulo " placeholder="" autocomplete="off">
                 </div>
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="numero">Número expediente<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="" autocomplete="off">
+                    <input type="text" class="form-control" name="numeroExpediente" id="numero" placeholder="" autocomplete="off">
                 </div>
             </div>
             <div class="mb-3">
@@ -105,17 +105,21 @@ export default function AdminNewDocumento() {
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="campaña">Fecha de emisión<span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="fechaEmision" required id="fecha " placeholder="">
+                    <input type="date" class="form-control" name="fechaEmision" id="fecha " placeholder="">
                 </div>
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
+<<<<<<< Updated upstream
                     <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="Resolucion, Normativa, etc" autocomplete="off">
+=======
+                    <input type="text" class="form-control" name="tipo" id="tipo " placeholder="" autocomplete="off">
+>>>>>>> Stashed changes
                 </div>
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="campaña">Emisor<span class="text-danger">*</span></label>
-                    <select class="form-control" name="emisor" required>
+                    <select class="form-control" name="emisor">
                         <!--carga dinamica-->
                         <option value="0">Agregar nuevo</option>
                     </select>
@@ -127,7 +131,11 @@ export default function AdminNewDocumento() {
             </div>
             <div class="mb-3">
                 <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
+<<<<<<< Updated upstream
                 <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Ingrese una etiqueta y presione ENTER para agregarla" autocomplete="off">
+=======
+                <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Escriba la etiqueta y presione enter para agregarla">
+>>>>>>> Stashed changes
                 <datalist id="datalist" data-js="datalist-tags">
                     <!---->
                 </datalist>
@@ -216,6 +224,8 @@ export default function AdminNewDocumento() {
 
     let _file = null;
     let _tags = {};
+    let _createTag = false;
+    let _tagsData = {};
 
     /**
      * Constructor
@@ -357,6 +367,7 @@ export default function AdminNewDocumento() {
         _dataListTags.innerHTML = "";
         data.tags.forEach((tag) => {
             _dataListTags.append(_createOption(tag.nombre, tag.nombre));
+            _tagsData[tag.nombre] = true;
         });
     }
 
@@ -389,7 +400,9 @@ export default function AdminNewDocumento() {
             this.value = "";
         } else {
             this.value = "";
+
         }
+        _createTag = false;
     }
 
     /**

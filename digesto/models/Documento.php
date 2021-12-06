@@ -35,11 +35,6 @@ class Documento implements JsonSerializable {
     /**
      * @var string
      */
-    private $tipo;
-
-    /**
-     * @var string
-     */
     private $fechaEmision;
 
     /**
@@ -53,6 +48,11 @@ class Documento implements JsonSerializable {
     private $publico;
 
     /**
+     * @var bool
+     */
+    private $derogado;
+
+    /**
      * @var int
      */
     private $pdf_id;
@@ -60,7 +60,17 @@ class Documento implements JsonSerializable {
     /**
      * @var int
      */
+    private $tipo_id;
+
+    /**
+     * @var int
+     */
     private $emisor_id;
+
+     /**
+     * @var int
+     */
+    private $derogado_id;
 
     /**
      * @var int
@@ -74,25 +84,28 @@ class Documento implements JsonSerializable {
      * @param string $numeroExpediente
      * @param string $titulo
      * @param string $descripcion
-     * @param string $tipo
      * @param string $fechaEmision
      * @param bool   $descargable
      * @param bool   $publico
+     * @param bool   $derogado
      * @param int    $pdf_id
+     * @param int    $tipo_id
      * @param int    $emisor_id
      * @param int    $usuario_id
      */
-    public function __construct(int $id = 0, string $numeroExpediente = '', string $titulo = '', string $descripcion = '', string $tipo = '', string $fechaEmision = '', bool $descargable = false, bool $publico = false, int $pdf_id = 0, int $emisor_id = 0, int $usuario_id = 0) {
+    public function __construct(int $id = 0, string $numeroExpediente = '', string $titulo = '', string $descripcion = '', string $fechaEmision = '', bool $descargable = false, bool $publico = false, bool $derogado = false, int $pdf_id = 0, int $tipo_id = 0, int $emisor_id = 0,int $derogado_id = null, int $usuario_id = 0) {
         $this->id = $id;
         $this->numeroExpediente = $numeroExpediente;
         $this->titulo = $titulo;
         $this->descripcion = $descripcion;
-        $this->tipo = $tipo;
         $this->fechaEmision = $fechaEmision;
         $this->descargable = $descargable;
         $this->publico = $publico;
+        $this->derogado = $derogado;
         $this->pdf_id = $pdf_id;
+        $this->tipo_id = $tipo_id;
         $this->emisor_id = $emisor_id;
+        $this->derogado_id = $derogado_id;
         $this->usuario_id = $usuario_id;
     }
 
@@ -127,13 +140,6 @@ class Documento implements JsonSerializable {
     /**
      * @return string
      */
-    public function getTipo(): string {
-        return $this->tipo;
-    }
-
-    /**
-     * @return string
-     */
     public function getFechaEmision(): string {
         return $this->fechaEmision;
     }
@@ -153,6 +159,13 @@ class Documento implements JsonSerializable {
     }
 
     /**
+     * @return bool
+     */
+    public function getDerogado(): bool {
+        return $this->derogado;
+    }
+
+    /**
      * @return int
      */
     public function getPdfId(): int {
@@ -162,8 +175,22 @@ class Documento implements JsonSerializable {
     /**
      * @return int
      */
+    public function getTipoId(): int {
+        return $this->tipo_id;
+    }
+
+    /**
+     * @return int
+     */
     public function getEmisorId(): int {
         return $this->emisor_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDerogadoId(): int {
+        return $this->derogado_id;
     }
 
     /**
@@ -254,6 +281,16 @@ class Documento implements JsonSerializable {
     }
 
     /**
+     * @param bool $derogado
+     *
+     * @return $this
+     */
+    public function setDerogado(bool $derogado): Documento {
+        $this->derogado = $derogado;
+        return $this;
+    }
+
+    /**
      * @param int $pdf_id
      *
      * @return $this
@@ -264,12 +301,32 @@ class Documento implements JsonSerializable {
     }
 
     /**
+     * @param int $tipo_id
+     *
+     * @return $this
+     */
+    public function setTipoId(int $tipo_id): Documento {
+        $this->tipo_id = $tipo_id;
+        return $this;
+    }
+
+    /**
      * @param int $emisor_id
      *
      * @return $this
      */
     public function setEmisorId(int $emisor_id): Documento {
         $this->emisor_id = $emisor_id;
+        return $this;
+    }
+
+        /**
+     * @param int $derogado_id
+     *
+     * @return $this
+     */
+    public function setDerogadoId(?int $derogado_id): Documento {
+        $this->derogado_id = $derogado_id;
         return $this;
     }
 
@@ -303,7 +360,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            'SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id
+            'SELECT documento_id, numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id, derogado_id
         FROM documentos WHERE publico = %s OR publico = TRUE ORDER BY  fecha_emision DESC, numero_expediente',
             $onlyPublics ? 'TRUE' : 'FALSE'
         );
@@ -317,12 +374,14 @@ class Documento implements JsonSerializable {
             $documento->setNumeroExpediente($row['numero_expediente']);
             $documento->setTitulo($row['titulo']);
             $documento->setDescripcion(isset($row['descripcion']) ? $row['descripcion'] : 'No hay descripción de este documento');
-            $documento->setTipo($row['tipo']);
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
             $documento->setPublico($row['publico'] === 't');
+            $documento->setDerogado($row['derogado']);
             $documento->setPdfId($row['pdf_id']);
+            $documento->setTipoId($row['tipo_id']);
             $documento->setEmisorId($row['emisor_id']);
+            $documento->setDerogadoId($row['derogado_id']);
             $documentos[] = $documento;
         }
 
@@ -358,8 +417,10 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "SELECT DISTINCT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.tipo, D.fecha_emision, D.descargable, D.publico, D.pdf_id, D.emisor_id 
-            FROM documentos D INNER JOIN emisores E ON D.emisor_id = E.emisor_id
+            "SELECT DISTINCT D.documento_id, D.numero_expediente, D.titulo, D.descripcion, D.fecha_emision, D.descargable, D.publico, D.derogado, D.pdf_id, D.tipo_id, D.emisor_id, derogado_id 
+            FROM documentos D 
+            INNER JOIN emisores E ON D.emisor_id = E.emisor_id
+            INNER JOIN tipos TI ON D.tipo_id = TI.tipo_id
             INNER JOIN documentos_tags DT ON DT.documento_id = D.documento_id
             INNER JOIN tags T ON DT.tag_id = T.tag_id
             WHERE (%s) 
@@ -387,12 +448,14 @@ class Documento implements JsonSerializable {
             $documento->setNumeroExpediente($row['numero_expediente']);
             $documento->setTitulo($row['titulo']);
             $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripción de este documento');
-            $documento->setTipo($row['tipo']);
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
             $documento->setPublico($row['publico'] === 't');
+            $documento->setDerogado($row['derogado']);
             $documento->setPdfId($row['pdf_id']);
+            $documento->setTipoId($row['tipo_id']);
             $documento->setEmisorId($row['emisor_id']);
+            $documento->setDerogadoId($row['derogado_id']);
             $documentos[] = $documento;
         }
 
@@ -414,7 +477,7 @@ class Documento implements JsonSerializable {
     public static function getDocumentoById(int $id): ?Documento {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id 
+        $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id , derogado_id
     FROM documentos WHERE documento_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
@@ -426,12 +489,14 @@ class Documento implements JsonSerializable {
             $documento->setNumeroExpediente($row['numero_expediente']);
             $documento->setTitulo($row['titulo']);
             $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripción de este documento');
-            $documento->setTipo($row['tipo']);
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
             $documento->setPublico($row['publico'] === 't');
+            $documento->setDerogado($row['derogado']);
             $documento->setPdfId($row['pdf_id']);
+            $documento->setTipoId($row['tipo_id']);
             $documento->setEmisorId($row['emisor_id']);
+            $documento->setDerogadoId($row['derogado_id']);
         }
 
         if (($error = pg_last_error($conn)) != false)
@@ -452,17 +517,19 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "INSERT INTO documentos (numero_expediente, titulo, descripcion, tipo, fecha_emision, descargable, publico, pdf_id, emisor_id) 
-      VALUES ('%s','%s','%s','%s','%s',%s,%s,%d,%d) RETURNING Currval('documentos_documento_id_seq')",
+            "INSERT INTO documentos (numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id, derogado_id) 
+      VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
-            pg_escape_string($documento->getTipo()),
             pg_escape_string($documento->getFechaEmision()),
             $documento->getDescargable() ? "TRUE" : "FALSE",
             $documento->getPublico() ? "TRUE" : "FALSE",
+            $documento->getDerogado() ? "TRUE" : "FALSE",
             $documento->getPdfId(),
+            $documento->getTipoId(),
             $documento->getEmisorId(),
+            $documento->getDerogadoId(),
         );
 
         if (($rs = pg_query($conn, $query)) === false)
@@ -485,18 +552,20 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', tipo='%s', fecha_emision='%s', descargable=%s, publico=%s, pdf_id=%d, emisor_id=%d 
+            "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', fecha_emision='%s', descargable=%s, publico=%s, derogado=%s, pdf_id=%d, tipo_id=%d, emisor_id=%d, derogado_id  
       WHERE documento_id=%d",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
-            pg_escape_string($documento->getTipo()),
             pg_escape_string($documento->getFechaEmision()),
             $documento->getDescargable() ? "TRUE" : "FALSE",
             $documento->getPublico() ? "TRUE" : "FALSE",
+            $documento->getDerogado() ? "TRUE" : "FALSE",
             $documento->getPdfId(),
+            $documento->getTipoId(),
             $documento->getEmisorId(),
-            $documento->getId()
+            $documento->getDerogadoId(),
+            $documento->getId(),
         );
 
         if (($rs = pg_query($conn, $query)) === false)

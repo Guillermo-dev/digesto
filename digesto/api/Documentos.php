@@ -6,6 +6,7 @@ use Exception;
 use models\Documento;
 use models\Pdf;
 use models\Emisor;
+use models\Tipo;
 use models\Permiso;
 use models\Tag;
 use api\util\Response;
@@ -86,12 +87,14 @@ abstract class Documentos {
         if (isset($_SESSION['user'])) {
             Response::getResponse()->appendData('documento', $documento);
             Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
+            Response::getResponse()->appendData('tipo', Tipo::getTipoById($documento->getTipoId()));
             Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
             Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
         }
         if ($documento->getPublico()) {
             Response::getResponse()->appendData('documento', $documento);
             Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
+            Response::getResponse()->appendData('tipo', Tipo::getTipoById($documento->getTipoId()));
             Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
             if ($documento->getDescargable())
                 Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
@@ -125,10 +128,6 @@ abstract class Documentos {
         if (isset($_POST['descripcion']))
             $documento->setDescripcion($_POST['descripcion']);
 
-        if (isset($_POST['tipo']))
-            $documento->setTipo($_POST['tipo']);
-        else throw new ApiException('Tipo requerido', Response::BAD_REQUEST);
-
         if (isset($_POST['fechaEmision']))
             $documento->setFechaEmision($_POST['fechaEmision']);
         else throw new ApiException('Fecha de emision requerida', Response::BAD_REQUEST);
@@ -161,14 +160,22 @@ abstract class Documentos {
         if (isset($_POST['emisor']))
             $emisor = Emisor::getEmisorBynombre($_POST['emisor']);
         else throw new ApiException('Emisor requerido', Response::BAD_REQUEST);
-
         if (!$emisor) {
             $emisor = new Emisor();
             $emisor->setNombre($_POST['emisor']);
             Emisor::createEmisor($emisor);
         }
-
         $documento->setEmisorId($emisor->getId());
+
+        if (isset($_POST['tipo']))
+            $tipo = Tipo::getTipoBynombre($_POST['tipo']);
+        else throw new ApiException('Emisor requerido', Response::BAD_REQUEST);
+        if (!$tipo) {
+            $tipo = new Tipo();
+            $tipo->setNombre($_POST['tipo']);
+            Tipo::createTipo($tipo);
+        }
+        $documento->setTipoId($tipo->getId());
 
         if (!$_FILES['documento_pdf'])
             throw new ApiException('Documento PDF requerido', Response::BAD_REQUEST);
@@ -233,19 +240,33 @@ abstract class Documentos {
         if (isset($_POST['descripcion']))
             $documento->setDescripcion($_POST['descripcion']);
 
-        if (isset($_POST['tipo']))
-            $documento->setTipo($_POST['tipo']);
-
         if (isset($_POST['fechaEmision']))
             $documento->setFechaEmision($_POST['fechaEmision']);
 
         if (isset($_POST['descargable']))
             $documento->setDescargable($_POST['descargable'] === 'false' ? false : true);
 
-        if (isset($_POST['publico'])) {
+        if (isset($_POST['publico']))
             $documento->setPublico($_POST['publico'] === 'false' ? false : true);
-        }
 
+        if (isset($_POST['derogado'])) {
+            if ($_POST['derogado']) {
+                if (isset($_POST['derogadoId'])) {
+                    $documentoDerogado = Documento::getDocumentoById($_POST['derogadoId']);
+                    if ($documentoDerogado != null) {
+                        $documento->setDerogado(true);
+                        $documento->setDerogadoId($documentoDerogado->getId());
+                    } else
+                        throw new ApiException('Documento derogado necesario', Response::BAD_REQUEST);
+                }
+            } else {
+                $documento->setDerogado(false);
+                $documento->setDerogadoId(null);
+            }
+        } else {
+            $documento->setDerogado(false);
+            $documento->setDerogadoId(null);
+        }
 
         if (isset($_POST['tags'])) {
             Documento::clearTagDocumento($id);
@@ -272,8 +293,17 @@ abstract class Documentos {
                 $emisor->setNombre($_POST['emisor']);
                 Emisor::createEmisor($emisor);
             }
-
             $documento->setEmisorId($emisor->getId());
+        }
+
+        if (isset($_POST['tipo'])) {
+            $tipo = Tipo::getTipoBynombre($_POST['tipo']);
+            if (!$tipo) {
+                $tipo = new Tipo();
+                $tipo->setNombre($_POST['tipo']);
+                Tipo::createTipo($tipo);
+            }
+            $documento->setTipoId($tipo->getId());
         }
 
         if (isset($_FILES['documento_pdf'])) {

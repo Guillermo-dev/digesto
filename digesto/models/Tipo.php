@@ -6,11 +6,11 @@ use JsonSerializable;
 use models\exceptions\ModalException;
 
 /**
- * Class Emisor
+ * Class TIpo
  *
  * @package models
  */
-class Emisor implements JsonSerializable {
+class Tipo implements JsonSerializable {
 
     /**
      * @var int
@@ -52,7 +52,7 @@ class Emisor implements JsonSerializable {
      *
      * @return $this
      */
-    public function setId(int $id): Emisor {
+    public function setId(int $id): Tipo {
         $this->id = $id;
         return $this;
     }
@@ -62,7 +62,7 @@ class Emisor implements JsonSerializable {
      *
      * @return $this
      */
-    public function setNombre(string $nombre): Emisor {
+    public function setNombre(string $nombre): Tipo {
         $this->nombre = $nombre;
         return $this;
     }
@@ -80,19 +80,19 @@ class Emisor implements JsonSerializable {
      * @return array
      * @throws ModalException
      */
-    public static function getEmisores(): array {
+    public static function getTipos(): array {
         $conn = Connection::getConnection();
 
-        $query = 'SELECT emisor_id, nombre FROM emisores ORDER BY nombre';
+        $query = 'SELECT tipo_id, nombre FROM tipos ORDER BY nombre';
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
-        $emisores = [];
+        $tipos = [];
         while (($row = pg_fetch_assoc($rs)) != false) {
-            $emisor = new Emisor();
-            $emisor->setId($row['emisor_id']);
-            $emisor->setNombre($row['nombre']);
-            $emisores[] = $emisor;
+            $tipo = new Tipo();
+            $tipo->setId($row['tipo_id']);
+            $tipo->setNombre($row['nombre']);
+            $tipos[] = $tipo;
         }
 
         if (($error = pg_last_error($conn)) != false)
@@ -101,27 +101,27 @@ class Emisor implements JsonSerializable {
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
 
-        return $emisores;
+        return $tipos;
     }
 
-    /**
+        /**
      * @param int $id
      *
-     * @return Emisor|null
+     * @return Tipo|null
      * @throws ModalException
      */
-    public static function getEmisorById(int $id): ?Emisor {
+    public static function getTipoById(int $id): ?Tipo {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT emisor_id, nombre FROM emisores WHERE emisor_id=%d', $id);
+        $query = sprintf('SELECT tipo_id, nombre FROM tipos WHERE tipo_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
-        $emisor = null;
+        $tipo = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
-            $emisor = new Emisor();
-            $emisor->setId($row['emisor_id']);
-            $emisor->setNombre($row['nombre']);
+            $tipo = new Tipo();
+            $tipo->setId($row['tipo_id']);
+            $tipo->setNombre($row['nombre']);
         }
 
         if (($error = pg_last_error($conn)) != false)
@@ -130,27 +130,27 @@ class Emisor implements JsonSerializable {
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error());
 
-        return $emisor;
+        return $tipo;
     }
 
     /**
      * @param string $nombre
      *
-     * @return Emisor|null
+     * @return Tipo|null
      * @throws ModalException
      */
-    public static function getEmisorBynombre(string $nombre): ?Emisor {
+    public static function getTipoBynombre(string $nombre): ?Tipo {
         $conn = Connection::getConnection();
 
-        $query = sprintf('SELECT emisor_id, nombre FROM emisores WHERE nombre=\'%s\'', $nombre);
+        $query = sprintf('SELECT tipo_id, nombre FROM tipos WHERE nombre=\'%s\'', $nombre);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
-        $emisor = null;
+        $tipo = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
-            $emisor = new Emisor();
-            $emisor->setId($row['emisor_id']);
-            $emisor->setNombre($row['nombre']);
+            $tipo = new Emisor();
+            $tipo->setId($row['tipo_id']);
+            $tipo->setNombre($row['nombre']);
         }
 
         if (($error = pg_last_error($conn)) != false)
@@ -159,27 +159,27 @@ class Emisor implements JsonSerializable {
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error());
 
-        return $emisor;
+        return $tipo;
     }
 
     /**
-     * @param Emisor $emisor
+     * @param Tipo $tipo
      *
      * @throws ModalException
      */
-    public static function createEmisor(Emisor $emisor): void {
+    public static function createTipo(Tipo $tipo): void {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "INSERT INTO emisores (nombre) VALUES ('%s') RETURNING Currval('emisores_emisor_id_seq')",
-            pg_escape_string($emisor->getNombre()),
+            "INSERT INTO tipos (nombre) VALUES ('%s') RETURNING Currval('emisores_emisor_id_seq')",
+            pg_escape_string($tipo->getNombre()),
         );
 
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
         if (($row = pg_fetch_row($rs)))
-            $emisor->setId(($row[0]));
+            $tipo->setId(($row[0]));
         else throw new ModalException(pg_last_error($rs));
 
         if (!pg_free_result($rs))
@@ -187,17 +187,17 @@ class Emisor implements JsonSerializable {
     }
 
     /**
-     * @param Emisor $emisor
+     * @param Tipo $tipo
      *
      * @throws ModalException
      */
-    public static function updateEmisor(Emisor $emisor): void {
+    public static function updateTipo(Tipo $tipo): void {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE emisores SET nombre='%s' WHERE emisor_id=%d",
-            pg_escape_string($emisor->getNombre()),
-            $emisor->getId()
+            "UPDATE tipos SET nombre='%s' WHERE tipo_id=%d",
+            pg_escape_string($tipo->getNombre()),
+            $tipo->getId()
         );
 
         if (($rs = pg_query($conn, $query)) === false)
@@ -208,14 +208,14 @@ class Emisor implements JsonSerializable {
     }
 
     /**
-     * @param int $emisor_id
+     * @param int $tipo_id
      *
      * @throws ModalException
      */
-    public static function deleteEmisor(int $emisor_id): void {
+    public static function deleteTipo(int $tipo_id): void {
         $conn = Connection::getConnection();
 
-        $query = sprintf("DELETE FROM emisores WHERE emisor_id=%d", $emisor_id);
+        $query = sprintf("DELETE FROM tipos WHERE tipo_id=%d", $tipo_id);
 
         if (!($rs = pg_query($conn, $query)))
             throw new ModalException(pg_last_error($conn));

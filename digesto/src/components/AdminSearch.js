@@ -255,7 +255,7 @@ export default function AdminSearch() {
      * @private
      */
     function _fetchEtiquetas() {
-        fetch("/api/tags")
+        fetch("/api/tags?usedOnly=")
             .then((httpResp) => httpResp.json())
             .then((response) => {
                 if (response.code === 200) {
@@ -401,9 +401,11 @@ export default function AdminSearch() {
      * @private
      */
     function _clearFilters() {
-        Array.from(_forms[1].querySelectorAll('span[data-js="filtro"]')).forEach((span) => {
+        Array.from(
+            _forms[1].querySelectorAll('span[data-js="filtro"]')
+        ).forEach((span) => {
             span.textContent = "Todos";
-          });
+        });
         Array.from(
             _forms[1].querySelectorAll('input[name="etiquetas"]')
         ).forEach((option) => {
@@ -487,6 +489,9 @@ export default function AdminSearch() {
 
         if (emisores.length > 0) url.append("emisores", emisores.join(";"));
 
+        if (_forms[0]["search"].value.length > 0)
+            url.append("search", _forms[0]["search"].value);
+
         if (privacidad.length > 0) {
             if (privacidad.length == 1) {
                 if (privacidad.includes("publicos"))
@@ -504,7 +509,6 @@ export default function AdminSearch() {
         fetch(`/api/documentos${_url}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
-                _forms[0]["search"].value = "";
                 if (response.code === 200) {
                     history.pushState(null, "", `/admin${_url}`);
                     _documentosComponent.processDocumentos(
@@ -516,7 +520,6 @@ export default function AdminSearch() {
                 }
             })
             .catch((reason) => {
-                _forms[0]["search"].value = "";
                 _documentosComponent.setError();
                 errorAlert(reason);
             });
