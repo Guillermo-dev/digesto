@@ -109,11 +109,7 @@ export default function AdminNewDocumento() {
                 </div>
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
-<<<<<<< Updated upstream
                     <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="Resolucion, Normativa, etc" autocomplete="off">
-=======
-                    <input type="text" class="form-control" name="tipo" id="tipo " placeholder="" autocomplete="off">
->>>>>>> Stashed changes
                 </div>
             </div>
             <div class="row g-3 mb-3">
@@ -131,11 +127,8 @@ export default function AdminNewDocumento() {
             </div>
             <div class="mb-3">
                 <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
-<<<<<<< Updated upstream
                 <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Ingrese una etiqueta y presione ENTER para agregarla" autocomplete="off">
-=======
-                <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Escriba la etiqueta y presione enter para agregarla">
->>>>>>> Stashed changes
+
                 <datalist id="datalist" data-js="datalist-tags">
                     <!---->
                 </datalist>
