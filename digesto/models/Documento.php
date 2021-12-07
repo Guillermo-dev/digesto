@@ -189,7 +189,7 @@ class Documento implements JsonSerializable {
     /**
      * @return int
      */
-    public function getDerogadoId(): int {
+    public function getDerogadoId(): ?int {
         return $this->derogado_id;
     }
 
@@ -518,7 +518,7 @@ class Documento implements JsonSerializable {
 
         $query = sprintf(
             "INSERT INTO documentos (numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id, derogado_id) 
-      VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
+      VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, null) RETURNING Currval('documentos_documento_id_seq')",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
@@ -529,7 +529,6 @@ class Documento implements JsonSerializable {
             $documento->getPdfId(),
             $documento->getTipoId(),
             $documento->getEmisorId(),
-            $documento->getDerogadoId(),
         );
 
         if (($rs = pg_query($conn, $query)) === false)
@@ -552,7 +551,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', fecha_emision='%s', descargable=%s, publico=%s, derogado=%s, pdf_id=%d, tipo_id=%d, emisor_id=%d, derogado_id  
+            "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', fecha_emision='%s', descargable=%s, publico=%s, derogado=%s, pdf_id=%d, tipo_id=%d, emisor_id=%d, derogado_id=%s  
       WHERE documento_id=%d",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
@@ -564,7 +563,7 @@ class Documento implements JsonSerializable {
             $documento->getPdfId(),
             $documento->getTipoId(),
             $documento->getEmisorId(),
-            $documento->getDerogadoId(),
+            !$documento->getDerogadoId() ? $documento->getDerogadoId() : 'null',
             $documento->getId(),
         );
 

@@ -148,7 +148,7 @@ class Tipo implements JsonSerializable {
 
         $tipo = null;
         if (($row = pg_fetch_assoc($rs)) != false) {
-            $tipo = new Emisor();
+            $tipo = new Tipo();
             $tipo->setId($row['tipo_id']);
             $tipo->setNombre($row['nombre']);
         }
@@ -171,7 +171,7 @@ class Tipo implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "INSERT INTO tipos (nombre) VALUES ('%s') RETURNING Currval('emisores_emisor_id_seq')",
+            "INSERT INTO tipos (nombre) VALUES ('%s') RETURNING Currval('tipos_tipo_id_seq')",
             pg_escape_string($tipo->getNombre()),
         );
 

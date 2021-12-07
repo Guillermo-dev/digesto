@@ -140,6 +140,9 @@ abstract class Documentos {
             $documento->setPublico(intval($_POST['publico']));
         else $documento->setPublico(true);
 
+        $documento->setDerogado(false);
+        $documento->setDerogadoId(null);
+
         if (isset($_POST['tags'])) {
             $tagsArray = json_decode($_POST['tags']);
             $tagsIds = [];

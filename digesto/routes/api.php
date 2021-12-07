@@ -27,6 +27,9 @@ if (isset($router)) {
     $router->put('/emisores/(\d+)', 'api\Emisores@updateEmisor');
     $router->delete('/emisores/(\d+)', 'api\Emisores@deleteEmisor');
 
+    $router->get('/tipos', 'api\Tipos@getTipos');
+    $router->get('/tipos/(\d+)', 'api\Tipos@getTipo');
+
     $router->get('/tags', 'api\Tags@getTags');
     $router->get('/tags/(\d+)', 'api\Tags@getTag');
     $router->post('/tags', 'api\Tags@createTag');

@@ -107,9 +107,18 @@ export default function AdminNewDocumento() {
                     <label class="fw-bold mt-2" for="campaña">Fecha de emisión<span class="text-danger">*</span></label>
                     <input type="date" class="form-control" name="fechaEmision" id="fecha " placeholder="">
                 </div>
+            </div>
+            <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="tipo" required id="tipo " placeholder="Resolucion, Normativa, etc" autocomplete="off">
+                    <select class="form-control" name="tipo">
+                        <!--carga dinamica-->
+                        <option value="0">Agregar nuevo</option>
+                    </select>
+                </div>
+                <div class="col-sm d-none">
+                    <label class="fw-bold mt-2" for="nuevoTipo">Nuevo tipo</label>
+                    <input type="text" name="nuevoTipo" class="form-control" id="nuevoTipo" autocomplete="off">
                 </div>
             </div>
             <div class="row g-3 mb-3">
@@ -227,6 +236,7 @@ export default function AdminNewDocumento() {
     function _constructor() {
         _this.setClassState("css-loading");
         _fetchEmisores();
+        _fetchTipos();
         let counter = 0;
         _fileText.children[1].onclick = _onRemoveFile;
         _dragZone.ondragenter = function (event) {
@@ -251,6 +261,7 @@ export default function AdminNewDocumento() {
                 this.classList.remove("changed");
             }
         };
+        _form["tipo"].onchange = _onChangeTipos;
         _form["emisor"].onchange = _onChangeEmisores;
         _form["fileBtn"].onclick = function () {
             this.nextElementSibling.click();
@@ -393,7 +404,6 @@ export default function AdminNewDocumento() {
             this.value = "";
         } else {
             this.value = "";
-
         }
         _createTag = false;
     }
@@ -465,6 +475,56 @@ export default function AdminNewDocumento() {
 
     /**
      *
+     * @private
+     */
+     function _onChangeTipos() {
+        if (this.value !== "-1") {
+            _form["nuevoTipo"].parentElement.classList.add("d-none");
+            _form["nuevoTipo"].disabled = true;
+            _form["nuevoTipo"].required = false;
+            return;
+        }
+        _form["nuevoTipo"].disabled = false;
+        _form["nuevoTipo"].required = true;
+        _form["nuevoTipo"].parentElement.classList.remove("d-none");
+    }
+
+    /**
+     *
+     * @private
+     */
+    function _fetchTipos() {
+        fetch(`/api/tipos`)
+            .then((httpResp) => httpResp.json())
+            .then((response) => {
+                if (response.code === 200) {
+                    _processTipos(response.data);
+                } else {
+                    _this.setClassState("css-error");
+                    errorAlert(response.error.message.toString());
+                }
+            })
+            .catch((reason) => {
+                errorAlert(reason.toString());
+            });
+    }
+
+    /**
+     *
+     * @param data
+     * @private
+     */
+    function _processTipos(data) {
+        _form["tipo"].innerHTML = "";
+        _form["tipo"].append(_createOption(0, "Seleccionar tipo"));
+        data.tipos.forEach((tipo) => {
+            _form["tipo"].append(_createOption(tipo.nombre, tipo.nombre));
+        });
+        _form["tipo"].append(_createOption(-1, "Nuevo tipo"));
+    }
+
+    /**
+     *
      * @param event
      * @private
      */
@@ -488,12 +548,6 @@ export default function AdminNewDocumento() {
 
         formData.append("descripcion", _form["descripcion"].value);
         formData.append("fechaEmision", _form["fechaEmision"].value);
-
-        if (_form["tipo"].value.length >= 25) {
-            warningAlert("El tipo es demasido largo");
-            return false;
-        }
-        formData.append("tipo", _form["tipo"].value);
         formData.append("descargable", _form["descargable"].value);
         formData.append("publico", _form["publico"].value);
 
@@ -510,6 +564,21 @@ export default function AdminNewDocumento() {
                 return false;
             }
             formData.append("emisor", _form["emisor"].value);
+        }
+
+        if (_form["tipo"].value === "-1") {
+            formData.append("tipo", _form["nuevoTipo"].value);
+        } else if (_form["tipo"].value === "0") {
+            warningAlert("Debe seleccionar un tipo");
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
+            return false;
+        } else {
+            if (_form["tipo"].value.length >= 25) {
+                warningAlert("El nombre del tipo es demasido largo");
+                return false;
+            }
+            formData.append("tipo", _form["tipo"].value);
         }
 
         if (Object.keys(_tags).length === 0) {
@@ -547,6 +616,7 @@ export default function AdminNewDocumento() {
             .catch((reason) => {
                 _form["submitBtn"].disabled = false;
                 _form["submitBtn"].lastElementChild.classList.add("d-none");
+                console.log(resaon)
                 errorAlert(reason.toString());
             });
     }
