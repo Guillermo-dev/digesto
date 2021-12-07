@@ -377,7 +377,7 @@ class Documento implements JsonSerializable {
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
             $documento->setPublico($row['publico'] === 't');
-            $documento->setDerogado($row['derogado']);
+            $documento->setDerogado($row['derogado'] === 't');
             $documento->setPdfId($row['pdf_id']);
             $documento->setTipoId($row['tipo_id']);
             $documento->setEmisorId($row['emisor_id']);
@@ -451,7 +451,7 @@ class Documento implements JsonSerializable {
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
             $documento->setPublico($row['publico'] === 't');
-            $documento->setDerogado($row['derogado']);
+            $documento->setDerogado($row['derogado'] === 't');
             $documento->setPdfId($row['pdf_id']);
             $documento->setTipoId($row['tipo_id']);
             $documento->setEmisorId($row['emisor_id']);
@@ -492,7 +492,7 @@ class Documento implements JsonSerializable {
             $documento->setFechaEmision($row['fecha_emision']);
             $documento->setDescargable($row['descargable'] === 't');
             $documento->setPublico($row['publico'] === 't');
-            $documento->setDerogado($row['derogado']);
+            $documento->setDerogado($row['derogado'] === 't');
             $documento->setPdfId($row['pdf_id']);
             $documento->setTipoId($row['tipo_id']);
             $documento->setEmisorId($row['emisor_id']);
@@ -563,7 +563,7 @@ class Documento implements JsonSerializable {
             $documento->getPdfId(),
             $documento->getTipoId(),
             $documento->getEmisorId(),
-            !$documento->getDerogadoId() ? $documento->getDerogadoId() : 'null',
+            !$documento->getDerogadoId() ? 'null': $documento->getDerogadoId(),
             $documento->getId(),
         );
 

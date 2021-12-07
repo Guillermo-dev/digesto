@@ -253,7 +253,7 @@ abstract class Documentos {
             $documento->setPublico($_POST['publico'] === 'false' ? false : true);
 
         if (isset($_POST['derogado'])) {
-            if ($_POST['derogado']) {
+            if ($_POST['derogado'] == "true") {
                 if (isset($_POST['derogadoId'])) {
                     $documentoDerogado = Documento::getDocumentoById($_POST['derogadoId']);
                     if ($documentoDerogado != null) {
@@ -342,7 +342,6 @@ abstract class Documentos {
                 Documento::assignTagDocumento($documento->getId(), $tagId);
             }
         }
-
         $documento->setUsuarioId($usuarioId);
         Documento::updateDocumento($documento);
     }

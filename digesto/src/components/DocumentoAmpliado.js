@@ -97,6 +97,7 @@ export default function DocumentoAmpliado() {
         const emisor = data["emisor"];
         const tags = data["tags"];
         const pdf = data["pdf"];
+        const tipo = data["tipo"];
 
         _content.append(
                 (_this.root = createElement("div")._class("Documento")._html(`
@@ -116,6 +117,10 @@ export default function DocumentoAmpliado() {
                 <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Fecha:</p>
                     <p data-js="infoBD">${documento.fechaEmision}</p>
+                </div>
+                <div class="pContenedor border-bottom mb-3">
+                    <p class=" fw-bold ">Tipo:</p>
+                    <p data-js="infoBD">${tipo.nombre}</p>
                 </div>
                 <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Descripción:</p>
