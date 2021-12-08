@@ -517,8 +517,8 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf(
-            "INSERT INTO documentos (numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id, derogado_id) 
-      VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, null) RETURNING Currval('documentos_documento_id_seq')",
+            "INSERT INTO documentos (numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id,usuario_id) 
+      VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
@@ -529,6 +529,7 @@ class Documento implements JsonSerializable {
             $documento->getPdfId(),
             $documento->getTipoId(),
             $documento->getEmisorId(),
+            $documento->getUsuarioId(),
         );
 
         if (($rs = pg_query($conn, $query)) === false)

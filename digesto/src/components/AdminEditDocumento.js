@@ -97,7 +97,7 @@ export default function AdminEditDocumento() {
                         <input type="text" class="form-control" name="titulo" required id="titulo " placeholder=""  autocomplete="off">
                     </div>
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="numero">Número expediente<span class="text-danger">*</span></label>
+                        <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="" autocomplete="off">
                     </div>
                 </div>
@@ -248,6 +248,9 @@ export default function AdminEditDocumento() {
     );
     const _exitButton = _this.root.querySelector('[data-js="button"]');
 
+    const _url = window.location.pathname;
+    const _id = _url.substring(_url.lastIndexOf("/") + 1);
+
     let _oldPath;
     let _file = null;
     let _tags = {};
@@ -325,9 +328,7 @@ export default function AdminEditDocumento() {
      */
     function _fetchData() {
         _this.setClassState("css-loading");
-        const url = window.location.pathname;
-        const id = url.substring(url.lastIndexOf("/") + 1);
-        fetch(`/api/documentos/${id}`)
+        fetch(`/api/documentos/${_id}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
                 if (response.code === 200) {
@@ -667,17 +668,15 @@ export default function AdminEditDocumento() {
             _createOption(0, "Seleccionar documento derogador")
         );
         data.documentos.forEach((documento) => {
-            _form["documentoDerogador"].append(
-                _createOption(
-                    documento.id,
-                    "Titulo: " +
-                        documento.titulo +
-                        ", Numero: " +
-                        documento.numeroExpediente +
-                        ", Fecha: " +
-                        documento.fechaEmision
-                )
-            );
+            if(documento.id != _id){
+                _form["documentoDerogador"].append(
+                    _createOption(
+                        documento.id,
+                        "Numero: " + documento.numeroExpediente + 
+                        " - Fecha: " + documento.fechaEmision
+                    )
+                );
+            }
         });
         if (_documentoDerogador != "") {
             _form["documentoDerogador"].value = _documentoDerogador;
@@ -702,7 +701,7 @@ export default function AdminEditDocumento() {
         formData.append("titulo", _form["titulo"].value);
 
         if (_form["numeroExpediente"].value.length >= 45) {
-            warningAlert("El numero de expediente es demasido largo");
+            warningAlert("El número es demasido largo");
             return false;
         }
         formData.append("numeroExpediente", _form["numeroExpediente"].value);

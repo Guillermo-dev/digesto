@@ -94,7 +94,7 @@ export default function AdminNewDocumento() {
                     <input type="text" class="form-control" name="titulo" id="titulo " placeholder="" autocomplete="off">
                 </div>
                 <div class="col-sm">
-                    <label class="fw-bold mt-2" for="numero">Número expediente<span class="text-danger">*</span></label>
+                    <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="numeroExpediente" id="numero" placeholder="" autocomplete="off">
                 </div>
             </div>
@@ -541,7 +541,7 @@ export default function AdminNewDocumento() {
         formData.append("titulo", _form["titulo"].value);
 
         if (_form["numeroExpediente"].value.length >= 25) {
-            warningAlert("El numero de expediente es demasido largo");
+            warningAlert("El número es demasido largo");
             return false;
         }
         formData.append("numeroExpediente", _form["numeroExpediente"].value);
