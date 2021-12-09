@@ -255,12 +255,12 @@ abstract class Documentos {
         if (isset($_POST['derogado'])) {
             if ($_POST['derogado'] == "true") {
                 if (isset($_POST['derogadoId'])) {
-                    $documentoDerogado = Documento::getDocumentoById($_POST['derogadoId']);
+                    $documentoDerogado = Documento::getDocumentoByNumero($_POST['derogadoId']);
                     if ($documentoDerogado != null) {
                         $documento->setDerogado(true);
                         $documento->setDerogadoId($documentoDerogado->getId());
                     } else
-                        throw new ApiException('Documento derogado necesario', Response::BAD_REQUEST);
+                        throw new ApiException('Documento derogador invalido', Response::BAD_REQUEST);
                 }
             } else {
                 $documento->setDerogado(false);

@@ -52,7 +52,7 @@ CREATE TABLE tipos
 CREATE TABLE documentos
 (
     documento_id      SERIAL PRIMARY KEY,
-    numero_expediente VARCHAR(25) NOT NULL,
+    numero_expediente VARCHAR(25) NOT NULL UNIQUE,
     titulo            VARCHAR(45) NOT NULL,
     descripcion       TEXT,
     fecha_emision     DATE        NOT NULL,

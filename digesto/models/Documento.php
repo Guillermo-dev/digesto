@@ -67,7 +67,7 @@ class Documento implements JsonSerializable {
      */
     private $emisor_id;
 
-     /**
+    /**
      * @var int
      */
     private $derogado_id;
@@ -93,7 +93,7 @@ class Documento implements JsonSerializable {
      * @param int    $emisor_id
      * @param int    $usuario_id
      */
-    public function __construct(int $id = 0, string $numeroExpediente = '', string $titulo = '', string $descripcion = '', string $fechaEmision = '', bool $descargable = false, bool $publico = false, bool $derogado = false, int $pdf_id = 0, int $tipo_id = 0, int $emisor_id = 0,int $derogado_id = null, int $usuario_id = 0) {
+    public function __construct(int $id = 0, string $numeroExpediente = '', string $titulo = '', string $descripcion = '', string $fechaEmision = '', bool $descargable = false, bool $publico = false, bool $derogado = false, int $pdf_id = 0, int $tipo_id = 0, int $emisor_id = 0, int $derogado_id = null, int $usuario_id = 0) {
         $this->id = $id;
         $this->numeroExpediente = $numeroExpediente;
         $this->titulo = $titulo;
@@ -320,7 +320,7 @@ class Documento implements JsonSerializable {
         return $this;
     }
 
-        /**
+    /**
      * @param int $derogado_id
      *
      * @return $this
@@ -509,6 +509,46 @@ class Documento implements JsonSerializable {
     }
 
     /**
+     * @param int $id
+     *
+     * @return Documento|null
+     * @throws ModalException
+     */
+    public static function getDocumentoByNumero(string $numero): ?Documento {
+        $conn = Connection::getConnection();
+
+        $query = sprintf("SELECT documento_id, numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id , derogado_id
+    FROM documentos WHERE numero_expediente='%s'", $numero);
+        if (($rs = pg_query($conn, $query)) === false)
+            throw new ModalException(pg_last_error($conn));
+
+        $documento = null;
+        if (($row = pg_fetch_assoc($rs)) != false) {
+            $documento = new Documento();
+            $documento->setId($row['documento_id']);
+            $documento->setNumeroExpediente($row['numero_expediente']);
+            $documento->setTitulo($row['titulo']);
+            $documento->setDescripcion($row['descripcion'] != '' ? $row['descripcion'] : 'No hay descripción de este documento');
+            $documento->setFechaEmision($row['fecha_emision']);
+            $documento->setDescargable($row['descargable'] === 't');
+            $documento->setPublico($row['publico'] === 't');
+            $documento->setDerogado($row['derogado'] === 't');
+            $documento->setPdfId($row['pdf_id']);
+            $documento->setTipoId($row['tipo_id']);
+            $documento->setEmisorId($row['emisor_id']);
+            $documento->setDerogadoId($row['derogado_id']);
+        }
+
+        if (($error = pg_last_error($conn)) != false)
+            throw new ModalException($error);
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error());
+
+        return $documento;
+    }
+
+    /**
      * @param Documento $documento
      *
      * @throws ModalException
@@ -532,8 +572,15 @@ class Documento implements JsonSerializable {
             $documento->getUsuarioId(),
         );
 
-        if (($rs = pg_query($conn, $query)) === false)
-            throw new ModalException(pg_last_error($conn));
+        $rs = pg_send_query($conn, $query);
+
+        $rs = pg_get_result($conn);
+
+        if (pg_result_error_field($rs, PGSQL_DIAG_SQLSTATE) == '23505') {
+            throw new ModalException("Ya existe un documento con ese nuemro, intenta cambiarlo");
+        } else if (pg_result_error_field($rs, PGSQL_DIAG_SQLSTATE) != null) {
+            throw new ModalException('Error interno, intentalo otra vez');
+        }
 
         if (($row = pg_fetch_row($rs)))
             $documento->setId(($row[0]));
@@ -564,7 +611,7 @@ class Documento implements JsonSerializable {
             $documento->getPdfId(),
             $documento->getTipoId(),
             $documento->getEmisorId(),
-            !$documento->getDerogadoId() ? 'null': $documento->getDerogadoId(),
+            !$documento->getDerogadoId() ? 'null' : $documento->getDerogadoId(),
             $documento->getId(),
         );
 
