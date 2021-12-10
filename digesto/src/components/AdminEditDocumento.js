@@ -189,14 +189,13 @@ export default function AdminEditDocumento() {
                             </div>
                         </div>
                         <div class="d-none" data-js="documentoDerogador">
-                            <label class="fw-bold mt-2" for="documentoDerogador">Documento</label>
-                            <select class="form-control" name="documentoDerogador" required>
+                            <label class="fw-bold mt-2">Documento</label>
+                            <input name="documentoDerogador" list="documentoDerogadorList" placeholder="Número de documento" autocomplete="off">
+                            <datalist id ="documentoDerogadorList"  data-js="documentoDerogadorList">
                                 <!--carga dinamica-->
-                                <option value="0">Selecconar documento Derogador</option>
-                            </select>
+                            </datalist>
                         </div>
                     </div>
-
                 </div>
                 <div class="mb-3">
                     <label class="fw-bold">Cargar documento<span class="text-danger">*</span></label>
@@ -262,10 +261,9 @@ export default function AdminEditDocumento() {
      * @private
      */
     function _constructor() {
-        _fetchEmisores();
         _fetchTipos();
-        _fetchData();
-        _fetchDocumentos();
+        _fetchEmisores();
+        _fetchData(_fetchDocumentos);
         let counter = 0;
         _fileText.children[1].onclick = _onRemoveFile;
         _dragZone.ondragenter = function (event) {
@@ -326,13 +324,14 @@ export default function AdminEditDocumento() {
      *
      * @private
      */
-    function _fetchData() {
+    function _fetchData(fn) {
         _this.setClassState("css-loading");
         fetch(`/api/documentos/${_id}`)
             .then((httpResp) => httpResp.json())
             .then((response) => {
                 if (response.code === 200) {
                     _processData(response.data);
+                    fn();
                 } else {
                     _this.setClassState("css-error");
                     errorAlert(response.error.message);
@@ -375,15 +374,9 @@ export default function AdminEditDocumento() {
         if (data["documento"].derogado) {
             _form["derogar"].value = 0;
             _documentoDerogador = data["documento"].derogado_id;
-            _form["documentoDerogador"].value = _documentoDerogador;
             _documentoDerogadorForm.classList.remove("d-none");
             _documentoDerogadorForm.disabled = false;
             _documentoDerogadorForm.required = true;
-        } else {
-            _form["derogar"].value = 1;
-            _form["documentoDerogador"].value = 0;
-            _documentoDerogadorForm.disabled = true;
-            _documentoDerogadorForm.required = false;
         }
 
         _oldPath = `../../../${data["pdf"].path}`;
@@ -663,24 +656,26 @@ export default function AdminEditDocumento() {
      * @private
      */
     function _processDocumentos(data) {
-        _form["documentoDerogador"].innerHTML = "";
-        _form["documentoDerogador"].append(
-            _createOption(0, "Seleccionar documento derogador")
+        const _documentoDerogadorList = _this.root.querySelector(
+            '[data-js="documentoDerogadorList"]'
         );
+        _documentoDerogadorList.innerHTML = "";
         data.documentos.forEach((documento) => {
-            if(documento.id != _id){
-                _form["documentoDerogador"].append(
+            if (documento.id != _id) {
+                _documentoDerogadorList.append(
                     _createOption(
-                        documento.id,
-                        "Numero: " + documento.numeroExpediente + 
-                        " - Fecha: " + documento.fechaEmision
+                            documento.numeroExpediente,
+                            "Numero: " +
+                            documento.numeroExpediente+
+                            " Fehca: " +
+                            documento.fechaEmision
                     )
                 );
+                if( documento.id == _documentoDerogador){
+                    _form["documentoDerogador"].value = documento.numeroExpediente;
+                }
             }
         });
-        if (_documentoDerogador != "") {
-            _form["documentoDerogador"].value = _documentoDerogador;
-        }
     }
 
     /**
@@ -689,7 +684,6 @@ export default function AdminEditDocumento() {
      * @private
      */
     function _onSubmit(event) {
-        console.log(_form["derogar"].value);
         _form["submitBtn"].disabled = true;
         _form["submitBtn"].lastElementChild.classList.remove("d-none");
         const formData = new FormData();
@@ -744,21 +738,14 @@ export default function AdminEditDocumento() {
             formData.append("tipo", _form["tipo"].value);
         }
 
+        
         if (_form["derogar"].value == 0) {
-            if (_form["documentoDerogador"].value == 0) {
-                warningAlert(
-                    "Debe seleccionar un documento para derogar este documento"
-                );
-                _form["submitBtn"].disabled = false;
-                _form["submitBtn"].lastElementChild.classList.add("d-none");
+            if( _form["documentoDerogador"].value == ''){
+                warningAlert("Seleccionar un documento para derogar");
                 return false;
-            } else {
-                formData.append("derogado", true);
-                formData.append(
-                    "derogadoId",
-                    _form["documentoDerogador"].value
-                );
             }
+            formData.append("derogado", true);
+            formData.append("derogadoId", _form["documentoDerogador"].value);
         } else {
             formData.append("derogado", false);
             formData.append("derogadoId", null);

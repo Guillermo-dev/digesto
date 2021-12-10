@@ -38,7 +38,7 @@ abstract class Tipos {
             throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('tipos_create', $usuarioId))
+        if (!Permiso::hasPermiso('documentos_create', $usuarioId))
             throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tipoData = Request::getBodyAsJson();
@@ -65,7 +65,7 @@ abstract class Tipos {
             throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('tipos_update', $usuarioId))
+        if (!Permiso::hasPermiso('documentos_update', $usuarioId))
             throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tipoData = Request::getBodyAsJson();
@@ -91,7 +91,7 @@ abstract class Tipos {
             throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('tipo_delete', $usuarioId))
+        if (!Permiso::hasPermiso('documentos_delete', $usuarioId))
             throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tipo = Tipo::getTipoById($id);

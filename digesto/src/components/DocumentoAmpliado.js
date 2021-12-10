@@ -93,11 +93,14 @@ export default function DocumentoAmpliado() {
     }
 
     function _processDocumento(data) {
+        console.log(data)
         const documento = data["documento"];
         const emisor = data["emisor"];
         const tags = data["tags"];
         const pdf = data["pdf"];
         const tipo = data["tipo"];
+        console.log(data["derogado"])
+        const derogado = data["derogado"]
 
         _content.append(
                 (_this.root = createElement("div")._class("Documento")._html(`
@@ -130,12 +133,18 @@ export default function DocumentoAmpliado() {
                     <p class=" fw-bold ">Emisor: </p>
                     <p data-js="infoBD">${emisor.nombre}</p>
                 </div>
-                <div class="pContenedor">
+                <div class="pContenedor border-bottom mb-3">
                     <p class=" fw-bold ">Etiquetas:</p>
                     <div class="mb-2 d-flex flex-wrap" data-js="tag-zone">
                         <!---->
                     </div>
                 </div>
+                ${derogado != undefined ? ` 
+                <div class="pContenedor">
+                    <p class=" fw-bold text-danger me-3">Este documento esta derogado por el documento: </p>
+                    <a href="/documentos/${derogado.id}" class="text-dark">${derogado.numeroExpediente}</a>
+                </div>`:""
+                }
             </div>
             <div class="vistaDoc " id="vistaDoc ">
                 <iframe src= ${

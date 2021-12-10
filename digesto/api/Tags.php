@@ -43,7 +43,7 @@ abstract class Tags {
             throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('tags_create', $usuarioId))
+        if (!Permiso::hasPermiso('documentos_create', $usuarioId))
             throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tagData = Request::getBodyAsJson();
@@ -67,7 +67,7 @@ abstract class Tags {
             throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('tags_update', $usuarioId))
+        if (!Permiso::hasPermiso('documentos_update', $usuarioId))
             throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tagData = Request::getBodyAsJson();
@@ -93,7 +93,7 @@ abstract class Tags {
             throw new ApiException('Debe iniciar sesión para realizar esta acción', Response::UNAUTHORIZED);
 
         $usuarioId = unserialize($_SESSION['user'])->getId();
-        if (!Permiso::hasPermiso('tags_delete', $usuarioId))
+        if (!Permiso::hasPermiso('documentos_delete', $usuarioId))
             throw new ApiException('No tiene permisos necesarios', Response::FORBIDDEN);
 
         $tag = Tag::getTagById($id);

@@ -616,7 +616,6 @@ export default function AdminNewDocumento() {
             .catch((reason) => {
                 _form["submitBtn"].disabled = false;
                 _form["submitBtn"].lastElementChild.classList.add("d-none");
-                console.log(resaon)
                 errorAlert(reason.toString());
             });
     }

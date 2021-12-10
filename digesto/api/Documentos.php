@@ -90,12 +90,16 @@ abstract class Documentos {
             Response::getResponse()->appendData('tipo', Tipo::getTipoById($documento->getTipoId()));
             Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
             Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
+            if ($documento->getDerogadoId() != null)
+                Response::getResponse()->appendData('derogado', Documento::getDocumentoById($documento->getDerogadoId()));
         }
         if ($documento->getPublico()) {
             Response::getResponse()->appendData('documento', $documento);
             Response::getResponse()->appendData('emisor', Emisor::getEmisorById($documento->getEmisorId()));
             Response::getResponse()->appendData('tipo', Tipo::getTipoById($documento->getTipoId()));
             Response::getResponse()->appendData('tags', Tag::getTagsByDocumento($documento));
+            if ($documento->getDerogadoId() != null)
+                Response::getResponse()->appendData('derogado', Documento::getDocumentoById($documento->getDerogadoId()));
             if ($documento->getDescargable())
                 Response::getResponse()->appendData('pdf', Pdf::getPdfById($documento->getPdfId()));
         }
