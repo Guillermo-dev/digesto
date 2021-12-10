@@ -24,7 +24,7 @@ createStyle()._content(`
         display: none;
     }
 
-    .AdminDocumentos .DocumentoEntry:not(.private) span[class~="badge"] {
+    .AdminDocumentos .DocumentoEntry:not(.private) span[class~="badgeP"] {
         display: none;
     }
 
@@ -33,6 +33,18 @@ createStyle()._content(`
     }
 
     .AdminDocumentos .DocumentoEntry.private i[class~="bi-eye-slash-fill"] {
+        display: none;
+    }
+
+    .AdminDocumentos .DocumentoEntry.noDescargable i[class~="bi-shield-slash-fill"] {
+        display: none;
+    }
+
+    .AdminDocumentos .DocumentoEntry:not(.noDescargable) i[class~="bi-shield-fill"] {
+        display: none;
+    }
+
+    .AdminDocumentos .DocumentoEntry:not(.noDescargable) span[class~="badgeD"] {
         display: none;
     }
 
@@ -165,7 +177,7 @@ export default function AdminDocumentos() {
             <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"]} <span class="badge bg-secondary ms-1">Privado</span></p>
+                        <p class="mb-0 fw-bold">${documento["titulo"]} <span class="badge badgeP bg-secondary ms-1">Privado</span><span class="badge badgeD bg-secondary ms-1">No descargable</span></p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
@@ -174,9 +186,17 @@ export default function AdminDocumentos() {
                 <p class="mb-4 mb-sm-2 text-muted">${documento["descripcion"]}</p>
                 <div class="text-end">
                     <button type="button" data-js="button" class="btn btn-sm btn-warning">
-                        <i class="bi-eye-fill" title="Hacer publico"></i>
-                        <i class="bi-eye-slash-fill" title="Hacer privado"></i>
+                        <i class="bi-eye-fill me-1" title="Hacer publico"></i>
+                        <i class="bi-eye-slash-fill me-1" title="Hacer privado"></i>
+                        <span>Visibilidad</span>
                     </button>
+
+                    <button type="button" data-js="button" class="btn btn-sm btn-warning">
+                        <i class="bi-shield-fill me-1" title="Hacer publico"></i>
+                        <i class="bi-shield-slash-fill me-1" title="Hacer privado"></i>
+                        <span>Descargable</span>
+                    </button>
+
                     <button type="button" data-js="button" class="btn btn-sm btn-warning">
                         <i class="bi-pencil me-1"></i>
                         <span>Editar</span>
@@ -195,12 +215,14 @@ export default function AdminDocumentos() {
          */
         function _constructor() {
             if (!documento['publico']) _this.root.classList.add('private');
+            if (!documento['descargable']) _this.root.classList.add('noDescargable');
             _this.root.classList.add('d-none');
             _buttons[0].onclick = _onChangeVisibility;
-            _buttons[1].onclick = function() {
+            _buttons[1].onclick = _onChangeDescargable;
+            _buttons[2].onclick = function() {
                 location.href = `/admin/documento/${documento.id}`;
             }
-            _buttons[2].onclick = _onDelete
+            _buttons[3].onclick = _onDelete
         }
 
         /**
@@ -299,6 +321,64 @@ export default function AdminDocumentos() {
             })
         }
 
+        /**
+         *
+         * @private
+         */
+        function _onChangeDescargable(){
+            if (documento['descargable']) {
+                window.Sweetalert2.fire({
+                    icon: 'question',
+                    title: '¿Cambiar descargable?',
+                    html: 'Vas a cambiar el estado del documento a <b>No descargable</b>',
+                    cancelButtonText: 'No, lo pensaré',
+                    confirmButtonText: 'Si, estoy seguro!',
+                    showCancelButton: true,
+                    showCloseButton: true,
+                    reverseButtons:true,
+                }).then(result => {
+                    if (result.isConfirmed) _changeDescargable(false, () => {
+                        successAlert('Cambiaste el estado del documento a <b>No descargable</b>');
+                        _this.root.classList.add('noDescargable');
+                        documento['descargable'] = false;
+                    })
+                });
+            } else {
+                window.Sweetalert2.fire({
+                    icon: 'question',
+                    title: '¿Cambiar descargable?',
+                    html: 'Vas a cambiar el estado del documento a <b>Descargable</b>',
+                    cancelButtonText: 'No, lo pensaré',
+                    confirmButtonText: 'Si, estoy seguro!',
+                    reverseButtons:true,
+                    showCancelButton: true,
+                    showCloseButton: true,
+                }).then(result => {
+                    if (result.isConfirmed) _changeDescargable(true, () => {
+                        successAlert('Cambiaste el estado del documento a <b>Descargable</b>');
+                        _this.root.classList.remove('noDescargable');
+                        documento['descargable'] = true;
+                    })
+                });
+            }
+        }
+
+        function _changeDescargable(descargable, fn){
+            const formData = new FormData();
+            formData.append('descargable',descargable);
+            fetch(`/api/documentos/${documento.id}`, {method: 'POST', body: formData})
+            .then(httpResp => httpResp.json())
+            .then(response => {
+                if (response.code === 200) {
+                    fn();
+                } else {
+                    errorAlert(response.error.message);
+                }
+            })
+            .catch(reason => {
+                errorAlert(reason);
+            })
+        }
         //Invoke
         _constructor()
     }

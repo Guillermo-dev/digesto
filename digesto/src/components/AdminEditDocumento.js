@@ -158,7 +158,7 @@ export default function AdminEditDocumento() {
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="publico" id="Privado" value="0">
-                                <label class="form-check-label" for="Privado">Privado</label>
+                                <label class="form-check-label" for="Reservado">Reservado</label>
                             </div>
                         </div>
                     </div>
