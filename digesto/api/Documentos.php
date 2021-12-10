@@ -68,10 +68,21 @@ abstract class Documentos {
             $filtered = true;
         }
 
-        if ($filtered)
-            Response::getResponse()->appendData('documentos', Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic, $publicos, $privados));
-        else
-            Response::getResponse()->appendData('documentos', Documento::getDocumentos($onlyPublic));
+        if ($filtered){
+            $documentos = Documento::getDocumentosSearch($_GET['search'], $_GET['emisores'], $_GET['etiquetas'], $_GET['anios'], $onlyPublic, $publicos, $privados);
+            foreach($documentos as $i => $documento) {
+                $documentos[$i]->tags =  Tag::getTagsByDocumento($documento);
+            }
+            Response::getResponse()->appendData('documentos', $documentos);
+     
+        }else{
+            $documentos = Documento::getDocumentos($onlyPublic);
+            foreach($documentos as $i => $documento) {
+                $documentos[$i]->tags =  Tag::getTagsByDocumento($documento);
+            }
+            Response::getResponse()->appendData('documentos', $documentos);
+        }
+           
     }
 
     /**

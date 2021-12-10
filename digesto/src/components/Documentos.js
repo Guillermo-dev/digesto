@@ -1,5 +1,5 @@
-import {createElement, createStyle} from "../global/js/util.js";
-import {Component} from "./Component.js";
+import { createElement, createStyle } from "../global/js/util.js";
+import { Component } from "./Component.js";
 
 // language=CSS
 createStyle()._content(`
@@ -37,7 +37,7 @@ createStyle()._content(`
  */
 export default function Documentos() {
     const _this = this;
-    this.root = createElement('div')._class('Documentos')._html(`
+    this.root = createElement("div")._class("Documentos")._html(`
         <!--Loaded-->
         <div class="container css-loaded">
             <div class="" data-js="content"><!----></div>
@@ -81,49 +81,47 @@ export default function Documentos() {
     function _paginate() {
         let from = _paginator.i;
 
-        let to = from + _paginator.window
-        if (to >= _paginator.length)
-            to = _paginator.length;
+        let to = from + _paginator.window;
+        if (to >= _paginator.length) to = _paginator.length;
 
-        while (from < to)
-            _content.children[from++].classList.remove('d-none');
+        while (from < to) _content.children[from++].classList.remove("d-none");
 
         _paginator.i = from;
 
         if (_paginator.i < _paginator.length)
-            _this.setClassState('css-more-btn', 1);
+            _this.setClassState("css-more-btn", 1);
         else _this.removeClassState(1);
     }
 
     /**
      *
      */
-    this.setLoading = function() {
-        _this.setClassState('css-loading');
+    this.setLoading = function () {
+        _this.setClassState("css-loading");
     };
 
     /**
      *
      */
-    this.setError = function() {
-        _this.setClassState('css-error');
+    this.setError = function () {
+        _this.setClassState("css-error");
     };
 
     /**
      *
      */
-    this.processDocumentos = function(documentos) {
+    this.processDocumentos = function (documentos) {
         _content.innerHTML = "";
         if (documentos.length > 0) {
-            documentos.forEach(documento => {
+            documentos.forEach((documento) => {
                 _content.append(new DocumentoEntry(documento).root);
             });
-            _this.setClassState('css-loaded');
+            _this.setClassState("css-loaded");
 
             _paginator.length = documentos.length;
             _paginator.i = 0;
             _paginate();
-        } else _this.setClassState('css-no-entries');
+        } else _this.setClassState("css-no-entries");
     };
 
     /**
@@ -133,17 +131,26 @@ export default function Documentos() {
      */
     function DocumentoEntry(documento) {
         const _this = this;
-        this.root = createElement('div')._class('DocumentoEntry')._html(`
+        const fecha = new Date(documento["fechaEmision"])
+            .toLocaleString()
+            .split(" ")[0];
+        this.root = createElement("div")._class("DocumentoEntry")._html(`
             <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"]}</p>
+                        <p class="mb-0 fw-bold">${documento["titulo"]+ " " + documento["numeroExpediente"]}</p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
-                    <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
+                    <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${fecha}</div>
                 </div>
                 <p class="mb-0">Descripcion</p>
-                <p class="mb-0 text-muted">${documento["descripcion"]}</p>
+                <p class="text-muted">${documento["descripcion"]}</p>
+
+                <p class="mb-0"> Etiquetas</p>
+                <div class="d-flex flex-wrap mb-0" data-js="etiquetas"> 
+                    <!--tags :D-->
+                </div>
+               
                 <div class="text-end">
                     <button type="button" data-js="button" class="btn btn-primary btn-sm">
                         <i class="bi-search me-2"></i><span>Ver detalles</span>
@@ -152,15 +159,24 @@ export default function Documentos() {
             </div>
         `);
         const buttons = _this.root.querySelectorAll('[data-js="button"]');
+        const etiquetas = _this.root.querySelector('[data-js="etiquetas"]');
+
+        documento.tags.forEach((tag, i) => {
+            if (i == documento.tags.length-1) {
+                etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre}</p>`;
+            } else {
+                etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre},</p>`;
+            }
+        });
 
         /**
          * Constructor
          */
         function _constructor() {
-            _this.root.classList.add('d-none');
-            buttons[0].onclick = function() {
+            _this.root.classList.add("d-none");
+            buttons[0].onclick = function () {
                 location.href = `/documentos/${documento.id}`;
-            }
+            };
         }
 
         //Invoke

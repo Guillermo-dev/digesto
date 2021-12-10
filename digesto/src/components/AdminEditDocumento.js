@@ -101,11 +101,11 @@ export default function AdminEditDocumento() {
                         <input type="text" class="form-control" name="numeroExpediente" id="numero" required placeholder="" autocomplete="off">
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="fw-bold mt-2" for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
-                </div>
                 <div class="row g-3 mb-3">
+                    <div class="col-sm">
+                        <label class="fw-bold mt-2" for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
+                    </div>
                     <div class="col-sm">
                         <label class="fw-bold mt-2" for="campaña">Fecha de emisión<span class="text-danger">*</span></label>
                         <input type="date" class="form-control" name="fechaEmision" required id="fecha " placeholder="">

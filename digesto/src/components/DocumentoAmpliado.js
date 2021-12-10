@@ -40,6 +40,9 @@ createStyle("DocumentoAmpliadoEstilos")._content(`
     background-color: rgb(240, 240, 240);
     padding: 10px 10px 10px 10px;
 }
+p {
+    word-break: break-all;
+}
  
 `);
 
@@ -93,13 +96,11 @@ export default function DocumentoAmpliado() {
     }
 
     function _processDocumento(data) {
-        console.log(data)
         const documento = data["documento"];
         const emisor = data["emisor"];
         const tags = data["tags"];
         const pdf = data["pdf"];
         const tipo = data["tipo"];
-        console.log(data["derogado"])
         const derogado = data["derogado"]
 
         _content.append(
@@ -152,6 +153,7 @@ export default function DocumentoAmpliado() {
                         ? `../../../${pdf.path}`
                         : "../../../uploads/pdfNoDisponible.pdf"
                 } class="frame" frameborder="5" width="100%" height="680px" > </iframe>
+                <p class="mb-0">Para solicitar el documento original envie un email a <a href="mailto:unsada@unsada.edu.ar">unsada@unsada.edu.ar</a></p>
             </div> 
         </div>
         `))

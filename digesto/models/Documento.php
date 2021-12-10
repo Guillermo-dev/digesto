@@ -464,8 +464,30 @@ class Documento implements JsonSerializable {
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));
+        if($search != '')
+            self::createBusqueda($search);
 
         return $documentos;
+    }
+
+    /**
+     * @param string $busqueda
+     *
+     * @throws ModalException
+     */
+    public static function createBusqueda(string $busqueda): void {
+        $conn = Connection::getConnection();
+
+        $query = sprintf(
+            "INSERT INTO busquedas (texto) VALUES ('%s')",
+            pg_escape_string($busqueda),
+        );
+
+        if (($rs = pg_query($conn, $query)) === false)
+        throw new ModalException(pg_last_error($conn));
+
+        if (!pg_free_result($rs))
+            throw new ModalException(pg_last_error($conn));
     }
 
     /**
@@ -478,7 +500,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf('SELECT documento_id, numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id , derogado_id
-    FROM documentos WHERE documento_id=%d', $id);
+        FROM documentos WHERE documento_id=%d', $id);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -518,7 +540,7 @@ class Documento implements JsonSerializable {
         $conn = Connection::getConnection();
 
         $query = sprintf("SELECT documento_id, numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id , derogado_id
-    FROM documentos WHERE numero_expediente='%s'", $numero);
+        FROM documentos WHERE numero_expediente='%s'", $numero);
         if (($rs = pg_query($conn, $query)) === false)
             throw new ModalException(pg_last_error($conn));
 
@@ -558,7 +580,7 @@ class Documento implements JsonSerializable {
 
         $query = sprintf(
             "INSERT INTO documentos (numero_expediente, titulo, descripcion, fecha_emision, descargable, publico, derogado, pdf_id, tipo_id, emisor_id,usuario_id) 
-      VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
+            VALUES ('%s','%s','%s','%s',%s ,%s ,%s, %d ,%d ,%d, %d) RETURNING Currval('documentos_documento_id_seq')",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
@@ -600,7 +622,7 @@ class Documento implements JsonSerializable {
 
         $query = sprintf(
             "UPDATE documentos SET numero_expediente='%s', titulo='%s', descripcion='%s', fecha_emision='%s', descargable=%s, publico=%s, derogado=%s, pdf_id=%d, tipo_id=%d, emisor_id=%d, derogado_id=%s  
-      WHERE documento_id=%d",
+            WHERE documento_id=%d",
             pg_escape_string($documento->getNumeroExpediente()),
             pg_escape_string($documento->getTitulo()),
             pg_escape_string($documento->getDescripcion()),
@@ -615,8 +637,15 @@ class Documento implements JsonSerializable {
             $documento->getId(),
         );
 
-        if (($rs = pg_query($conn, $query)) === false)
-            throw new ModalException(pg_errormessage($conn));
+        $rs = pg_send_query($conn, $query);
+
+        $rs = pg_get_result($conn);
+
+        if (pg_result_error_field($rs, PGSQL_DIAG_SQLSTATE) == '23505') {
+            throw new ModalException("Ya existe un documento con ese nuemro, intenta cambiarlo");
+        } else if (pg_result_error_field($rs, PGSQL_DIAG_SQLSTATE) != null) {
+            throw new ModalException('Error interno, intentalo otra vez');
+        }
 
         if (!pg_free_result($rs))
             throw new ModalException(pg_last_error($conn));

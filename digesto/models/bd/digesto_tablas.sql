@@ -86,6 +86,12 @@ CREATE TABLE documentos_tags
     CONSTRAINT documentos_tags_pk PRIMARY KEY (documento_id, tag_id)
 );
 
+CREATE TABLE busquedas 
+(
+    busqueda_id SERIAL PRIMARY KEY,
+    texto VARCHAR(255)
+);
+
 /*******************/
 
 INSERT INTO permisos (nombre, descripcion)

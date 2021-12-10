@@ -145,10 +145,11 @@ export default function Usuarios() {
             <div class="p-4 mb-3 border">
                 <div class="row g-2">
                     <div class="col-sm">
-                        <p class="mb-0 fw-bold">${usuario["nombre"]}</p>
-                        <p class="text-muted mb-0">${usuario["email"]}</p>
+                        <p class="mb-0 fw-bold">${usuario["nombre"]} ${usuario["admin"] ? `<span class="badge bg-secondary ms-1">Admin</span>`: ""}</p>
+                        <p class="text-muted mb-0">${usuario["email"]}</p>  
                     </div>
                     <div class="col-sm-auto text-end">
+                        
                         <button type="button" data-js="button" class="btn btn-warning btn-sm">
                             <i class="bi-shield-fill me-2"></i><span>Permisos</span>
                         </button>

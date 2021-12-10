@@ -141,7 +141,7 @@ class Usuario implements JsonSerializable {
             $usuario->setId($row['usuario_id']);
             $usuario->setEmail($row['email']);
             $usuario->setNombre($row['nombre']);
-            $usuario->setAdmin($row['admin']);
+            $usuario->setAdmin($row['admin'] === 't');
             $usuarios[] = $usuario;
         }
 
@@ -206,7 +206,7 @@ class Usuario implements JsonSerializable {
             $usuario->setId($row['usuario_id']);
             $usuario->setEmail($row['email']);
             $usuario->setNombre($row['nombre']);
-            $usuario->setAdmin($row['admin']);
+            $usuario->setAdmin($row['admin'] === 't');
         }
         if (($error = pg_last_error($conn)) != false)
             throw new ModalException($error);
