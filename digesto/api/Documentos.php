@@ -270,9 +270,6 @@ abstract class Documentos {
                 $documento->setDerogado(false);
                 $documento->setDerogadoId(null);
             }
-        } else {
-            $documento->setDerogado(false);
-            $documento->setDerogadoId(null);
         }
 
         if (isset($_POST['tags'])) {

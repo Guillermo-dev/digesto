@@ -48,6 +48,10 @@ createStyle()._content(`
         display: none;
     }
 
+    .AdminDocumentos .DocumentoEntry.derogado span[class~="badgeDe"] {
+        display: none;
+    }
+
     .AdminDocumentos .more-btn {
         background-color: #f6f6f6;
         cursor: pointer;
@@ -177,7 +181,11 @@ export default function AdminDocumentos() {
             <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"]} <span class="badge badgeP bg-secondary ms-1">Privado</span><span class="badge badgeD bg-secondary ms-1">No descargable</span></p>
+                        <p class="mb-0 fw-bold">${documento["titulo"]} 
+                        <span class="badge badgeP bg-secondary ms-1">Privado</span>
+                        <span class="badge badgeD bg-secondary ms-1">No descargable</span>
+                        <span class="badge badgeDe bg-secondary ms-1">Derogado</span>
+                        </p>
                         <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${documento["fechaEmision"]}</div>
@@ -216,6 +224,7 @@ export default function AdminDocumentos() {
         function _constructor() {
             if (!documento['publico']) _this.root.classList.add('private');
             if (!documento['descargable']) _this.root.classList.add('noDescargable');
+            if (!documento['derogado']) _this.root.classList.add('derogado');
             _this.root.classList.add('d-none');
             _buttons[0].onclick = _onChangeVisibility;
             _buttons[1].onclick = _onChangeDescargable;
