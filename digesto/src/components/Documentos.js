@@ -145,12 +145,10 @@ export default function Documentos() {
                 </div>
                 <p class="mb-0">Descripcion</p>
                 <p class="text-muted">${documento["descripcion"]}</p>
-
                 <p class="mb-0"> Etiquetas</p>
                 <div class="d-flex flex-wrap mb-0" data-js="etiquetas"> 
-                    <!--tags :D-->
-                </div>
-               
+                    <!--tags -->
+                </div>  
                 <div class="text-end">
                     <button type="button" data-js="button" class="btn btn-primary btn-sm">
                         <i class="bi-search me-2"></i><span>Ver detalles</span>
@@ -165,7 +163,7 @@ export default function Documentos() {
             if (i == documento.tags.length-1) {
                 etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre}</p>`;
             } else {
-                etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre},</p>`;
+                etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre} -</p>`;
             }
         });
 

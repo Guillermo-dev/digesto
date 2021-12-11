@@ -193,6 +193,12 @@ export default function AdminDocumentos() {
                 </div>
                 <p class="mb-0">Descripcion</p>
                 <p class="mb-4 mb-sm-2 text-muted">${documento["descripcion"]}</p>
+
+                <p class="mb-0"> Etiquetas</p>
+                <div class="d-flex flex-wrap mb-0" data-js="etiquetas"> 
+                    <!--tags -->
+                </div>
+
                 <div class="text-end">
                     <button type="button" data-js="button" class="btn btn-sm btn-warning">
                         <i class="bi-eye-fill me-1" title="Hacer publico"></i>
@@ -218,6 +224,15 @@ export default function AdminDocumentos() {
             </div>
         `);
         const _buttons = _this.root.querySelectorAll('[data-js="button"]');
+        const etiquetas = _this.root.querySelector('[data-js="etiquetas"]');
+
+        documento.tags.forEach((tag, i) => {
+            if (i == documento.tags.length-1) {
+                etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre}</p>`;
+            } else {
+                etiquetas.innerHTML += `<p class="text-muted me-2 mb-0">${tag.nombre} -</p>`;
+            }
+        });
 
         /**
          * Constructor

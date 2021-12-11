@@ -94,7 +94,7 @@ export default function AdminEditDocumento() {
                 <div class="row g-3 mb-3">
                     <div class="col-sm">
                         <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="titulo" required id="titulo " placeholder=""  autocomplete="off">
+                        <input type="text" class="form-control" name="titulo" required id="titulo" placeholder=""  autocomplete="off">
                     </div>
                     <div class="col-sm">
                         <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
@@ -107,14 +107,14 @@ export default function AdminEditDocumento() {
                         <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
                     </div>
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="campaña">Fecha de emisión<span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" name="fechaEmision" required id="fecha " placeholder="">
+                        <label class="fw-bold mt-2" for="fecha">Fecha de emisión<span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" name="fechaEmision" required id="fecha" placeholder="">
                     </div>
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="campaña">Tipo<span class="text-danger">*</span></label>
-                        <select class="form-control" name="tipo">
+                        <label class="fw-bold mt-2" for="tipo">Tipo<span class="text-danger">*</span></label>
+                        <select class="form-control" name="tipo" id="tipo">
                             <!--carga dinamica-->
                             <option value="0">Agregar nuevo</option>
                         </select>
@@ -126,8 +126,8 @@ export default function AdminEditDocumento() {
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="campaña">Emisor<span class="text-danger">*</span></label>
-                        <select class="form-control" name="emisor" required>
+                        <label class="fw-bold mt-2" for="emisor">Emisor<span class="text-danger">*</span></label>
+                        <select class="form-control" name="emisor" id="emisor" required>
                             <!--carga dinamica-->
                             <option value="0">Agregar nuevo</option>
                         </select>
@@ -138,7 +138,7 @@ export default function AdminEditDocumento() {
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="fw-bold mt-2" for="campaña">Etiquetas<span class="text-danger">*</span></label>
+                    <label class="fw-bold mt-2" for="etiquetas">Etiquetas<span class="text-danger">*</span></label>
                     <input type="text" list="datalist" class="form-control mb-2" id="etiquetas" name="etiqueta" placeholder="Ingrese una etiqueta y presione ENTER para agregarla" autocomplete="off">
                     <datalist id="datalist" data-js="datalist-tags">
                         <!---->
@@ -157,7 +157,7 @@ export default function AdminEditDocumento() {
                                 <label class="form-check-label" for="publico">Público</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="publico" id="Privado" value="0">
+                                <input class="form-check-input" type="radio" name="publico" id="Reservado" value="0">
                                 <label class="form-check-label" for="Reservado">Reservado</label>
                             </div>
                         </div>
