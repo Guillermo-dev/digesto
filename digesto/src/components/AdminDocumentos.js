@@ -182,16 +182,15 @@ export default function AdminDocumentos() {
             <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"] + " " + documento["numeroExpediente"]} 
+                        <p class="mb-0 fw-bold">${documento["titulo"] + " - " + documento["numeroExpediente"]} 
                         <span class="badge badgeP bg-secondary ms-1">Privado</span>
                         <span class="badge badgeD bg-secondary ms-1">No descargable</span>
                         <span class="badge badgeDe bg-secondary ms-1">Derogado</span>
                         </p>
-                        <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${fecha}</div>
                 </div>
-                <p class="mb-0">Descripcion</p>
+                <p class="mb-0">Descripción</p>
                 <p class="mb-4 mb-sm-2 text-muted">${documento["descripcion"]}</p>
 
                 <p class="mb-0"> Etiquetas</p>

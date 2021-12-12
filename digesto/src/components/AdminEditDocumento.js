@@ -103,12 +103,12 @@ export default function AdminEditDocumento() {
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm">
-                        <label class="fw-bold mt-2" for="descripcion">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
-                    </div>
-                    <div class="col-sm">
                         <label class="fw-bold mt-2" for="fecha">Fecha de emisión<span class="text-danger">*</span></label>
                         <input type="date" class="form-control" name="fechaEmision" required id="fecha" placeholder="">
+                    </div>
+                    <div class="col-sm">
+                        <label class="fw-bold mt-2" for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
                     </div>
                 </div>
                 <div class="row g-3 mb-3">
@@ -214,15 +214,15 @@ export default function AdminEditDocumento() {
                     </div>
                 </div>
                 <div data-js="archivo"> 
-                    <iframe data-js="NoTieneQueSerNecesariamenteLoQueQuieras" src="" class="frame" frameborder="5" width="100%" height="680px" ></iframe>
+                    <iframe data-js="pdfContainer" src="" class="frame" frameborder="5" width="100%" height="680px" ></iframe>
                 </div>
                 <p class="fw-bold text-danger mb-3">*Campos obligatorios</p>
                 <div class="text-end">
                     <button type="button" class="btn btn-primary"  data-js="button">Cancelar</button>
                     <button name ="submitBtn" type="submit" class="btn btn-primary">Guardar<span class="ms-2 spinner-border spinner-border-sm d-none"></span></button>
                 </div>
-                </form>
-            </div>
+            </form>
+        </div>
     </div>
     <!--Error-->
     <div class="css-error p-3 text-center h-100 d-flex justify-content-center align-items-center flex-column">
@@ -240,7 +240,7 @@ export default function AdminEditDocumento() {
     const _form = _this.root.querySelector('[data-js="form"]');
     const _archivoContainer = _this.root.querySelector('[data-js="archivo"]');
     const _pdf = _this.root.querySelector(
-        '[data-js="NoTieneQueSerNecesariamenteLoQueQuieras"]'
+        '[data-js="pdfContainer"]'
     );
     const _documentoDerogadorForm = _this.root.querySelector(
         '[data-js="documentoDerogador"]'

@@ -83,7 +83,7 @@ export default function AdminSearch() {
         <div class="col-md-auto">
             <form data-js="form">
                 <div class="input-group search-group">
-                    <input type="text" class="form-control p-2" placeholder="Buscar por titulo, numero" name="search" autocomplete="off">
+                    <input type="text" class="form-control p-2" placeholder="Buscar por titulo, número" name="search" autocomplete="off">
                     <button type="submit" name="submitSearchBtn" class="bi-search btn btn-primary"></button>
                 </div>
             </form>

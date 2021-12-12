@@ -100,12 +100,12 @@ export default function AdminNewDocumento() {
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-sm">
-                    <label class="fw-bold mt-2" for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
-                </div>
-                <div class="col-sm">
                     <label class="fw-bold mt-2" for="fecha">Fecha de emisión<span class="text-danger">*</span></label>
                     <input type="date" class="form-control" name="fechaEmision" id="fecha" placeholder="">
+                </div>
+                <div class="col-sm">
+                    <label class="fw-bold mt-2" for="descripcion">Descripción</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Pequeño resumen del contenido del documento (opcional)"></textarea>
                 </div>
             </div>
             <div class="row g-3 mb-3">

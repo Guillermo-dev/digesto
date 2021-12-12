@@ -138,12 +138,11 @@ export default function Documentos() {
             <div class="p-4 mb-3 border document">
                 <div class="row g-2 mb-2">
                     <div class="col">
-                        <p class="mb-0 fw-bold">${documento["titulo"]+ " " + documento["numeroExpediente"]}</p>
-                        <p class="text-muted mb-0">${documento["numeroExpediente"]}</p>
+                        <p class="mb-0 fw-bold">${documento["titulo"]+ " - " + documento["numeroExpediente"]}</p>
                     </div>
                     <div class="col-auto small"><i class="bi-calendar3 me-2"></i>${fecha}</div>
                 </div>
-                <p class="mb-0">Descripcion</p>
+                <p class="mb-0">Descripción</p>
                 <p class="text-muted">${documento["descripcion"]}</p>
                 <p class="mb-0"> Etiquetas</p>
                 <div class="d-flex flex-wrap mb-0" data-js="etiquetas"> 
