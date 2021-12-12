@@ -689,12 +689,16 @@ export default function AdminEditDocumento() {
         const formData = new FormData();
 
         if (_form["titulo"].value.length >= 45) {
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             warningAlert("El titulo es demasido largo");
             return false;
         }
         formData.append("titulo", _form["titulo"].value);
 
         if (_form["numeroExpediente"].value.length >= 45) {
+            _form["submitBtn"].disabled = false;
+            _form["submitBtn"].lastElementChild.classList.add("d-none");
             warningAlert("El número es demasido largo");
             return false;
         }
@@ -717,6 +721,8 @@ export default function AdminEditDocumento() {
             return false;
         } else {
             if (_form["emisor"].value.length >= 25) {
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
                 warningAlert("El emisor es demasido largo");
                 return false;
             }
@@ -732,6 +738,8 @@ export default function AdminEditDocumento() {
             return false;
         } else {
             if (_form["tipo"].value.length >= 25) {
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
                 warningAlert("El nombre del tipo es demasido largo");
                 return false;
             }
@@ -741,6 +749,8 @@ export default function AdminEditDocumento() {
         
         if (_form["derogar"].value == 0) {
             if( _form["documentoDerogador"].value == ''){
+                _form["submitBtn"].disabled = false;
+                _form["submitBtn"].lastElementChild.classList.add("d-none");
                 warningAlert("Seleccionar un documento para derogar");
                 return false;
             }
