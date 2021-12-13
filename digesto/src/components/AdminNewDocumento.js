@@ -91,17 +91,17 @@ export default function AdminNewDocumento() {
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="titulo">Título<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="titulo" id="titulo" placeholder="" autocomplete="off">
+                    <input type="text" class="form-control" name="titulo" required id="titulo" placeholder="" autocomplete="off">
                 </div>
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="numero">Número<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="numeroExpediente" id="numero" placeholder="" autocomplete="off">
+                    <input type="text" class="form-control" name="numeroExpediente" required id="numero" placeholder="" autocomplete="off">
                 </div>
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="fecha">Fecha de emisión<span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="fechaEmision" id="fecha" placeholder="">
+                    <input type="date" class="form-control" name="fechaEmision" required id="fecha" placeholder="">
                 </div>
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="descripcion">Descripción</label>
@@ -124,7 +124,7 @@ export default function AdminNewDocumento() {
             <div class="row g-3 mb-3">
                 <div class="col-sm">
                     <label class="fw-bold mt-2" for="emisor">Emisor<span class="text-danger">*</span></label>
-                    <select class="form-control" name="emisor" id="emisor">
+                    <select class="form-control" name="emisor" id="emisor" required>
                         <!--carga dinamica-->
                         <option value="0">Agregar nuevo</option>
                     </select>

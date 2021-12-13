@@ -667,8 +667,8 @@ export default function AdminEditDocumento() {
                             documento.numeroExpediente,
                             "Numero: " +
                             documento.numeroExpediente+
-                            " Fehca: " +
-                            documento.fechaEmision
+                            " Titulo: " +
+                            documento.titulo
                     )
                 );
                 if( documento.id == _documentoDerogador){
