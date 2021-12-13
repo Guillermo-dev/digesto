@@ -143,7 +143,7 @@ export default function DocumentoAmpliado() {
                 ${derogado != undefined ? ` 
                 <div class="pContenedor">
                     <p class=" fw-bold text-danger me-3">Este documento esta derogado por el documento: </p>
-                    <a href="/documentos/${derogado.id}" class="text-dark">${derogado.numeroExpediente}</a>
+                    <a href="/documentos/${derogado.id}" class="text-dark">${derogado.titulo} - ${derogado.numeroExpediente}</a>
                 </div>`:""
                 }
             </div>
