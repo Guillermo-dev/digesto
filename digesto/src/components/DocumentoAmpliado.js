@@ -143,7 +143,9 @@ export default function DocumentoAmpliado() {
                 ${derogado != undefined ? ` 
                 <div class="pContenedor">
                     <p class=" fw-bold text-danger me-3">Este documento esta derogado por el documento: </p>
-                    <a href="/documentos/${derogado.id}" class="text-dark">${derogado.titulo} - ${derogado.numeroExpediente}</a>
+                    ${derogado.publico ? `
+                    <a href="/documentos/${derogado.id}" class="text-dark">${derogado.titulo} - ${derogado.numeroExpediente}</a>` : `
+                    <p>El documento que lo deroga se encuentra reservado</p>`}
                 </div>`:""
                 }
             </div>
